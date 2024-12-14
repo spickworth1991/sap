@@ -1,0 +1,209 @@
+       /* Base Button Styles */
+        .button {
+            padding: 10px 20px;
+            font-weight: bold;
+            border-radius: 10px;
+            transition: background-color 0.5s ease;
+            cursor: pointer;
+            touch-action: manipulation;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+
+        /* Navigation Buttons */
+        .button.nav-button {
+            font-size: 20px;
+            background-color: #E8E8E8;
+            color: blue;
+            border: 1px solid #ccc;
+        }
+
+        /* Punch Buttons */
+        .button.punch-button {
+            font-size: 40px;
+            width: 300px;
+            margin: 10px 0;
+            color: black;
+            border: none;
+        }
+
+        #punchInButton {
+            background-color: #4CAF50; /* Green */
+        }
+
+        #punchOutButton {
+            background-color: #FF4136; /* Red */
+        }
+
+        /* Edit Button */
+        .button.edit-button {
+            font-size: 16px;
+            background-color: #FFD700;
+            border: none;
+        }
+
+        /* Error Highlight */
+        .input-error {
+            border-color: red !important;
+        }
+
+        /* Status Box */
+        #statusBox {
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+
+        #statusBox.info {
+            background-color: #D9EDF7;
+            color: #31708F;
+        }
+
+        #statusBox.error {
+            background-color: #F2DEDE;
+            color: #A94442;
+        }
+
+        #statusBox.success {
+            background-color: #DFF0D8;
+            color: #3C763D;
+        }
+
+        /* Ensure the body and all page containers are centered */
+        body, .center {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            width: 100%;
+            text-align: center;
+            margin: 0;
+        }
+        /* Prevent dragging and scrolling on all devices */
+        body {
+            overscroll-behavior: none; /* Prevent overscroll on mobile */
+            touch-action: manipulation; /* Disable pinch-zoom and double-tap zoom */
+            user-select: none; /* Prevent text selection */
+        }
+
+        /* Ensure each page container has full height and centers content */
+        .center {
+            width: 100%;
+            text-align: center;
+            touch-action: manipulation;
+            user-select: none;
+            -webkit-user-drag: none; /* Prevent image or element drag on iOS */
+        }
+
+
+        /* Calendar Styles */
+        #datePicker {
+            font-size: 16px;
+            padding: 10px;
+            margin: 10px 0;
+        }
+
+        .entry {
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 80%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .entry span {
+            margin-right: 10px;
+        }
+        /* Prevent textarea from being draggable and selectable */
+        #inputBox {
+            touch-action: manipulation;
+            user-select: none;
+        }
+
+       /* Responsive Design for Mobile */
+        @media (pointer: coarse) {
+            /* Ensure full height for center containers */
+            .center {
+                min-height: 100vh;
+                padding: 20px;
+            }
+
+            body.mobile .button {
+                font-size: 30px;
+                padding: 20px;
+                width: 90%;
+            }
+
+            body {
+              overscroll-behavior: none;
+              touch-action: manipulation;
+              user-select: none;
+          }
+
+          .center, .button, #inputBox {
+              touch-action: manipulation;
+              user-select: none;
+              -webkit-user-drag: none;
+          }
+
+            /* Resize heights of elements within divs */
+            .button.nav-button{
+                width: 90%;
+                height: 300px; /* Adjust button height */
+                padding: 15px;
+                font-size: 35px;
+            }
+
+            /* Resize punch buttons */
+            .button.punch-button {
+                width: 90%;
+                padding: 15px;
+                height: 400px; /* Set a specific height for punch buttons */
+                font-size: 50px;
+            }
+
+            /* Resize divs containing buttons */
+            .center div {
+                width: 100%;
+                min-height: 300px; /* Adjust div height */
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 15px; /* Add space between buttons */
+            }
+
+            /* Ensure textarea and date picker fit well */
+            #inputBox, #datePicker {
+                width: 200%;
+                height: 400px; /* Adjust height for mobile */
+                font-size: 25px;
+            }
+
+            /* Make entries full-width */
+            .entry {
+                width: 90%;
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .entry span {
+                display: block;
+                margin-bottom: 10px;
+            }
+
+            /* Status box full-width */
+            #statusBox {
+                width: 90%;
+                font-size: 14px;
+                padding: 12px;
+            }
+
+            /* Center text and buttons vertically */
+            .center {
+                padding: 20px;
+            }
+        }
