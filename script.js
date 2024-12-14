@@ -1,5 +1,6 @@
 /* global google */
 // eslint-disable-next-line no-undef
+console.log("script.js loaded successfully");
 
 function setMobileClass() {
     if (isMobileDevice() || window.matchMedia("(pointer: coarse)").matches) {
