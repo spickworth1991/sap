@@ -1,6 +1,7 @@
 const express = require('express');
 const { google } = require('googleapis');
 const cors = require('cors');
+const moment = require('moment-timezone'); // Import moment-timezone
 require('dotenv').config();
 
 const app = express();
@@ -34,17 +35,13 @@ function getCurrentMonthName() {
     'January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December'
   ];
-  const now = new Date();
-  return monthNames[now.getMonth()]; // Returns current month name
+  const now = moment().tz('America/New_York'); // Set timezone to Eastern Time
+  return monthNames[now.month()]; // Returns current month name
 }
 
 // Helper function to format the current date as MM/DD/YYYY
 function getCurrentDate() {
-  const now = new Date();
-  const month = String(now.getMonth() + 1).padStart(2, '0');
-  const day = String(now.getDate()).padStart(2, '0');
-  const year = now.getFullYear();
-  return `${month}/${day}/${year}`;
+  return moment().tz('America/New_York').format('MM/DD/YYYY');
 }
 
 // Punch In Route
@@ -53,9 +50,10 @@ app.post('/api/punchIn', async (req, res) => {
     console.log('Received request for Punch In');
 
     const sheets = await getGoogleSheetsService();
-    const now = new Date().toLocaleTimeString();
+    const now = moment().tz('America/New_York').format('hh:mm:ss A');
     const currentDate = getCurrentDate();
     const monthName = getCurrentMonthName();
+
     const range = `'${monthName}'!B:B`;
 
     console.log('SPREADSHEET_ID:', SPREADSHEET_ID);
@@ -111,9 +109,10 @@ app.post('/api/punchOut', async (req, res) => {
     console.log('Received request for Punch Out');
 
     const sheets = await getGoogleSheetsService();
-    const now = new Date().toLocaleTimeString();
+    const now = moment().tz('America/New_York').format('hh:mm:ss A');
     const currentDate = getCurrentDate();
     const monthName = getCurrentMonthName();
+
     const range = `'${monthName}'!B:B`;
 
     console.log('SPREADSHEET_ID:', SPREADSHEET_ID);
