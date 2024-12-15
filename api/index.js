@@ -430,7 +430,7 @@ app.post('/api/editEntry', async (req, res) => {
         const sapTime2 = row.row[4];
 
         if (elapsedTime2 && sapTime2) {
-          const [hours, minutes, seconds] = elapsed2Time.split(':').map(Number);
+          const [hours, minutes, seconds] = elapsedTime2.split(':').map(Number);
           totalElapsedTime2 += hours * 3600 + minutes * 60 + seconds;
           totalSapTime2 += parseFloat(sapTime2);
         }
