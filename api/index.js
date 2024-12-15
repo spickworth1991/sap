@@ -128,23 +128,28 @@ app.post('/api/punchIn', async (req, res) => {
     const currentDate = getCurrentDate();
     const currentTime = getCurrentTime();
     const monthName = getCurrentMonthName();
-    const monthSheetName = monthName;
     const sapSheetName = `${monthName}:SAP`;
 
     console.log(`Punch In - Date: ${currentDate}, Time: ${currentTime}`);
 
-    // Find or create the row for the current date
+    // Find the row for the current date in the month sheet
+    const monthSheetName = monthName;
     let rowIndex = await findDateRow(sheets, monthSheetName, currentDate);
 
+    // If the row doesn't exist, add headers and a new row
     if (!rowIndex) {
-      rowIndex = 3; // Start from row 3 if no entry exists
+      rowIndex = 3; // Assuming row 3 is where data starts after headers
       await sheets.spreadsheets.values.append({
         spreadsheetId: SPREADSHEET_ID,
         range: `${monthSheetName}!A:E`,
         valueInputOption: 'USER_ENTERED',
-        requestBody: {
-          values: [['Date', 'Time', 'Punch In', '', 'Punch Out'], [currentDate, '', '', '', '']],
-        },
+        requestBody: { values: [['Date', 'Time', 'Punch In', '', 'Punch Out']] },
+      });
+      await sheets.spreadsheets.values.append({
+        spreadsheetId: SPREADSHEET_ID,
+        range: `${monthSheetName}!B:B`,
+        valueInputOption: 'USER_ENTERED',
+        requestBody: { values: [[currentDate]] },
       });
     } else {
       // Check if Punch In already exists
@@ -152,10 +157,19 @@ app.post('/api/punchIn', async (req, res) => {
         spreadsheetId: SPREADSHEET_ID,
         range: `${monthSheetName}!C${rowIndex}`,
       });
-      if (punchInResponse.data.values?.[0]?.[0]) {
+      const punchInValue = punchInResponse.data.values?.[0]?.[0];
+      if (punchInValue) {
         return res.status(400).json({ error: `Already punched in on ${currentDate}` });
       }
     }
+
+    // Append Punch In time to SAP sheet
+    await sheets.spreadsheets.values.append({
+      spreadsheetId: SPREADSHEET_ID,
+      range: `${sapSheetName}!A:E`,
+      valueInputOption: 'USER_ENTERED',
+      requestBody: { values: [[currentDate, currentTime, 'Punch In', '', '']] },
+    });
 
     // Update Punch In time in the month sheet (Column C)
     await sheets.spreadsheets.values.update({
@@ -180,11 +194,12 @@ app.post('/api/punchOut', async (req, res) => {
     const currentDate = getCurrentDate();
     const currentTime = getCurrentTime();
     const monthName = getCurrentMonthName();
-    const monthSheetName = monthName;
+    const sapSheetName = `${monthName}:SAP`;
 
     console.log(`Punch Out - Date: ${currentDate}, Time: ${currentTime}`);
 
     // Find the row for the current date in the month sheet
+    const monthSheetName = monthName;
     const rowIndex = await findDateRow(sheets, monthSheetName, currentDate);
 
     if (!rowIndex) {
@@ -196,7 +211,8 @@ app.post('/api/punchOut', async (req, res) => {
       spreadsheetId: SPREADSHEET_ID,
       range: `${monthSheetName}!E${rowIndex}`,
     });
-    if (punchOutResponse.data.values?.[0]?.[0]) {
+    const punchOutValue = punchOutResponse.data.values?.[0]?.[0];
+    if (punchOutValue) {
       return res.status(400).json({ error: `Already punched out on ${currentDate}` });
     }
 
@@ -216,6 +232,15 @@ app.post('/api/punchOut', async (req, res) => {
     const now = moment.tz('America/New_York');
     const elapsedMilliseconds = now.diff(punchInDateTime);
     const elapsedFormatted = formatElapsedTime(elapsedMilliseconds);
+    const elapsedDecimal = calculateElapsedTimeDecimal(elapsedMilliseconds);
+
+    // Append Punch Out to SAP sheet
+    await sheets.spreadsheets.values.append({
+      spreadsheetId: SPREADSHEET_ID,
+      range: `${sapSheetName}!A:E`,
+      valueInputOption: 'USER_ENTERED',
+      requestBody: { values: [[currentDate, currentTime, 'Punch Out', elapsedFormatted, elapsedDecimal]] },
+    });
 
     // Update Punch Out time in the month sheet (Column E)
     await sheets.spreadsheets.values.update({
@@ -226,7 +251,7 @@ app.post('/api/punchOut', async (req, res) => {
     });
 
     console.log('Punch Out recorded successfully');
-    res.status(200).json({ message: 'Punch Out Accepted', elapsedTime: elapsedFormatted });
+    res.status(200).json({ message: 'Punch Out Accepted' });
   } catch (error) {
     console.error('Error in Punch Out:', error);
     res.status(500).json({ error: error.message || 'Unknown error occurred' });
