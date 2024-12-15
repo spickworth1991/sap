@@ -399,11 +399,10 @@ app.post('/api/editEntry', async (req, res) => {
       }
     }
 
-    // 4. Check for "Punch Out" in Column C and recalculate totals
+    // 4. Find the "Totals" row (after the last row with the current date)
     let lastRowWithDate = dateRows[dateRows.length - 1].index;
     let totalsRowIndex = null;
 
-    // Identify the totals row (it should be after the last entry with the current date)
     for (let i = lastRowWithDate + 1; i <= sapData.length; i++) {
       const row = sapData[i - 1];
       if (row && row[2] === 'Totals') {
@@ -412,7 +411,7 @@ app.post('/api/editEntry', async (req, res) => {
       }
     }
 
-    // If a totals row is found, recalculate the totals
+    // 5. If a totals row is found, recalculate the totals
     if (totalsRowIndex) {
       let totalElapsedTime = 0;
       let totalSapTime = 0;
@@ -446,8 +445,6 @@ app.post('/api/editEntry', async (req, res) => {
     res.status(500).json({ error: error.message || 'Unknown error occurred' });
   }
 });
-
-
 
 
 // Start the Server
