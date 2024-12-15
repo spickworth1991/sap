@@ -403,6 +403,7 @@ app.post('/api/editEntry', async (req, res) => {
     let lastRowWithDate = dateRows[dateRows.length - 1].index;
     let totalsRowIndex = null;
 
+    // Find the "Totals" row after the last row with the current date
     for (let i = lastRowWithDate + 1; i <= sapData.length; i++) {
       const row = sapData[i - 1];
       if (row && row[2] === 'Totals') {
