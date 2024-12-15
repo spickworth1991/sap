@@ -115,24 +115,6 @@ async function punchOut(button) {
     }
 }
 
-// Punch Out function
-async function punchOut(button) {
-    button.style.backgroundColor = "#555";
-
-    try {
-        const response = await fetch("/api/punchOut", { method: "POST" });
-
-        if (response.ok) {
-            updateStatus(result, "success");;
-        } else {
-            updateStatus(result, "error");
-        }
-    } catch (error) {
-        updateStatus({ code: 9999, message: error.message || "An unexpected error occurred." }, "error");
-    } finally {
-        button.style.backgroundColor = "";
-    }
-}
 
 async function fetchEntriesByDate() {
     const dateInput = document.getElementById('datePicker').value;
