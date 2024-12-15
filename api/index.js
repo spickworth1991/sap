@@ -361,7 +361,7 @@ app.post('/api/editEntry', async (req, res) => {
       requestBody: { values: [[time, projectActivity]] },
     });
 
-    // 2. Fetch all rows for the current date to recalculate elapsed times and SAP times
+    // 2. Fetch the updated sheet data to recalculate elapsed times and SAP times
     const sapDataResponse = await sheets.spreadsheets.values.get({
       spreadsheetId: SPREADSHEET_ID,
       range: `${sapSheetName}!A:E`,
@@ -446,6 +446,7 @@ app.post('/api/editEntry', async (req, res) => {
     res.status(500).json({ error: error.message || 'Unknown error occurred' });
   }
 });
+
 
 
 // Start the Server
