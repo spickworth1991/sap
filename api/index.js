@@ -106,62 +106,48 @@ app.post('/api/sapInput', async (req, res) => {
   }
 });
 
+// Function to find the row for the current date in the month sheet
+async function findDateRow(sheets, monthSheetName, currentDate) {
+  const response = await sheets.spreadsheets.values.get({
+    spreadsheetId: SPREADSHEET_ID,
+    range: `${monthSheetName}!B:B`, // Assuming dates are in Column B
+  });
+  const rows = response.data.values || [];
+  for (let i = 0; i < rows.length; i++) {
+    if (rows[i][0] === currentDate) {
+      return i + 1; // Google Sheets uses 1-based indexing
+    }
+  }
+  throw new Error(`Date ${currentDate} not found in ${monthSheetName} sheet.`);
+}
+
 // Punch In Route
 app.post('/api/punchIn', async (req, res) => {
   try {
     const sheets = await getGoogleSheetsService();
-    const now = moment().tz('America/New_York');
     const currentDate = getCurrentDate();
     const currentTime = getCurrentTime();
     const monthName = getCurrentMonthName();
     const sapSheetName = `${monthName}:SAP`;
 
-    console.log(`Punch In - Date: ${currentDate}, Time: ${currentTime}, Sheet: ${sapSheetName}`);
+    console.log(`Punch In - Date: ${currentDate}, Time: ${currentTime}`);
 
-    // Fetch existing sheet data
-    const response = await sheets.spreadsheets.values.get({
-      spreadsheetId: SPREADSHEET_ID,
-      range: `${sapSheetName}!A:E`,
-    });
-    const rows = response.data.values || [];
-
-    let lastRow = rows.length;
-    let lastDate = lastRow > 0 ? rows[lastRow - 1][0] : null;
-
-    // Add headers if the sheet is empty or the date has changed
-    if (!lastRow || lastDate !== currentDate) {
-      await sheets.spreadsheets.values.append({
-        spreadsheetId: SPREADSHEET_ID,
-        range: `${sapSheetName}!A:E`,
-        valueInputOption: 'USER_ENTERED',
-        requestBody: {
-          values: [
-            ['Date', 'Time', 'Project/Info', 'Elapsed Time', 'SAP Time'], // Headers
-            [currentDate, currentTime, 'Punch In', '', ''], // First entry
-          ],
-        },
-      });
-    } else {
-      // Add Punch In to the existing row
-      await sheets.spreadsheets.values.append({
-        spreadsheetId: SPREADSHEET_ID,
-        range: `${sapSheetName}!A:E`,
-        valueInputOption: 'USER_ENTERED',
-        requestBody: {
-          values: [[currentDate, currentTime, 'Punch In', '', '']],
-        },
-      });
-    }
-
-    // Update the month sheet with Punch In time in Column C
-    const monthSheetName = monthName;
+    // Append Punch In to SAP sheet
     await sheets.spreadsheets.values.append({
       spreadsheetId: SPREADSHEET_ID,
-      range: `${monthSheetName}!C:C`,
+      range: `${sapSheetName}!A:E`,
       valueInputOption: 'USER_ENTERED',
-      requestBody: {
-        values: [[currentTime]],
-      },
+      requestBody: { values: [[currentDate, currentTime, 'Punch In', '', '']] },
+    });
+
+    // Find and update the month sheet with Punch In time in Column C
+    const monthSheetName = monthName;
+    const rowIndex = await findDateRow(sheets, monthSheetName, currentDate);
+    await sheets.spreadsheets.values.update({
+      spreadsheetId: SPREADSHEET_ID,
+      range: `${monthSheetName}!C${rowIndex}`,
+      valueInputOption: 'USER_ENTERED',
+      requestBody: { values: [[currentTime]] },
     });
 
     console.log('Punch In recorded successfully');
@@ -176,15 +162,14 @@ app.post('/api/punchIn', async (req, res) => {
 app.post('/api/punchOut', async (req, res) => {
   try {
     const sheets = await getGoogleSheetsService();
-    const now = moment().tz('America/New_York');
     const currentDate = getCurrentDate();
     const currentTime = getCurrentTime();
     const monthName = getCurrentMonthName();
     const sapSheetName = `${monthName}:SAP`;
 
-    console.log(`Punch Out - Date: ${currentDate}, Time: ${currentTime}, Sheet: ${sapSheetName}`);
+    console.log(`Punch Out - Date: ${currentDate}, Time: ${currentTime}`);
 
-    // Fetch existing sheet data
+    // Fetch SAP sheet data
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId: SPREADSHEET_ID,
       range: `${sapSheetName}!A:E`,
@@ -206,41 +191,35 @@ app.post('/api/punchOut', async (req, res) => {
 
     // Calculate elapsed time
     const lastDateTime = moment.tz(`${lastDate} ${lastTime}`, 'MM/DD/YYYY HH:mm:ss', 'America/New_York');
-    const elapsedMilliseconds = now.diff(lastDateTime);
+    const elapsedMilliseconds = moment().tz('America/New_York').diff(lastDateTime);
     const elapsedFormatted = formatElapsedTime(elapsedMilliseconds);
     const elapsedDecimal = calculateElapsedTimeDecimal(elapsedMilliseconds);
 
-    // Append Punch Out entry
+    // Append Punch Out to SAP sheet
     await sheets.spreadsheets.values.append({
       spreadsheetId: SPREADSHEET_ID,
       range: `${sapSheetName}!A:E`,
       valueInputOption: 'USER_ENTERED',
-      requestBody: {
-        values: [
-          [currentDate, currentTime, 'Punch Out', elapsedFormatted, elapsedDecimal],
-        ],
-      },
+      requestBody: { values: [[currentDate, currentTime, 'Punch Out', elapsedFormatted, elapsedDecimal]] },
     });
 
-    // Update the month sheet with Punch Out time in Column E
+    // Find and update the month sheet with Punch Out time in Column E
     const monthSheetName = monthName;
-    await sheets.spreadsheets.values.append({
+    const rowIndex = await findDateRow(sheets, monthSheetName, currentDate);
+    await sheets.spreadsheets.values.update({
       spreadsheetId: SPREADSHEET_ID,
-      range: `${monthSheetName}!E:E`,
+      range: `${monthSheetName}!E${rowIndex}`,
       valueInputOption: 'USER_ENTERED',
-      requestBody: {
-        values: [[currentTime]],
-      },
+      requestBody: { values: [[currentTime]] },
     });
 
-    console.log('Punch Out recorded successfully with elapsed time');
+    console.log('Punch Out recorded successfully');
     res.status(200).json({ message: 'Punch Out Accepted' });
   } catch (error) {
     console.error('Error in Punch Out:', error);
     res.status(500).json({ error: error.message || 'Unknown error occurred' });
   }
 });
-
 
 // Start the Server
 app.listen(PORT, () => {
