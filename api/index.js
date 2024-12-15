@@ -2,7 +2,6 @@ const express = require('express');
 const { google } = require('googleapis');
 const cors = require('cors');
 const moment = require('moment-timezone');
-const errors = require('./errors');
 require('dotenv').config();
 
 const app = express();
@@ -48,6 +47,23 @@ function calculateElapsedTimeDecimal(milliseconds) {
   return (milliseconds / (1000 * 60 * 60)).toFixed(4);
 }
 
+// Function to find the row for the current date in the month sheet
+async function findDateRow(sheets, monthSheetName, currentDate) {
+  const response = await sheets.spreadsheets.values.get({
+    spreadsheetId: SPREADSHEET_ID,
+    range: `${monthSheetName}!B:B`,
+  });
+  const rows = response.data.values || [];
+
+  for (let i = 0; i < rows.length; i++) {
+    if (rows[i][0] === currentDate) {
+      return i + 1;
+    }
+  }
+  return null;
+}
+
+
 // Ensure headers exist if the last entry in Column A is not the current date
 async function ensureHeaders(sheets, sheetName, currentDate) {
   const response = await sheets.spreadsheets.values.get({
@@ -70,75 +86,6 @@ async function ensureHeaders(sheets, sheetName, currentDate) {
   }
 }
 
-// Function to find the row for the current date in the month sheet
-async function findDateRow(sheets, monthSheetName, currentDate) {
-  const response = await sheets.spreadsheets.values.get({
-    spreadsheetId: SPREADSHEET_ID,
-    range: `${monthSheetName}!B:B`,
-  });
-  const rows = response.data.values || [];
-
-  for (let i = 0; i < rows.length; i++) {
-    if (rows[i][0] === currentDate) {
-      return i + 1;
-    }
-  }
-  return null;
-}
-
-// Punch Out Route
-app.post('/api/punchOut', async (req, res) => {
-  try {
-    const sheets = await getGoogleSheetsService();
-    const currentDate = getCurrentDate();
-    const currentTime = getCurrentTime();
-    const monthName = getCurrentMonthName();
-    const monthSheetName = monthName;
-    const sapSheetName = `${monthName}:SAP`;
-
-    const rowIndex = await findDateRow(sheets, monthSheetName, currentDate);
-
-    if (!rowIndex) {
-      return res.status(400).json({ error: 'No Punch In found for today.' });
-    }
-
-    const punchInResponse = await sheets.spreadsheets.values.get({
-      spreadsheetId: SPREADSHEET_ID,
-      range: `${monthSheetName}!C${rowIndex}`,
-    });
-    const punchInTime = punchInResponse.data.values?.[0]?.[0];
-
-    if (!punchInTime) {
-      return res.status(400).json({ error: 'No Punch In time found for today.' });
-    }
-
-    const punchInDateTime = moment.tz(`${currentDate} ${punchInTime}`, 'MM/DD/YYYY HH:mm:ss', 'America/New_York');
-    const now = moment.tz('America/New_York');
-    const elapsedMilliseconds = now.diff(punchInDateTime);
-    const elapsedFormatted = formatElapsedTime(elapsedMilliseconds);
-    const elapsedDecimal = calculateElapsedTimeDecimal(elapsedMilliseconds);
-
-    await sheets.spreadsheets.values.update({
-      spreadsheetId: SPREADSHEET_ID,
-      range: `${monthSheetName}!E${rowIndex}`,
-      valueInputOption: 'USER_ENTERED',
-      requestBody: { values: [[currentTime]] },
-    });
-
-    await sheets.spreadsheets.values.append({
-      spreadsheetId: SPREADSHEET_ID,
-      range: `${sapSheetName}!A:E`,
-      valueInputOption: 'USER_ENTERED',
-      requestBody: { values: [[currentDate, currentTime, 'Punch Out', elapsedFormatted, elapsedDecimal]] },
-    });
-
-    res.status(200).json({ message: 'Punch Out Accepted' });
-  } catch (error) {
-    console.error('Error in Punch Out:', error);
-    res.status(500).json({ error: error.message || errors.UNKNOWN_ERROR });
-  }
-});
-
 // Punch In Route
 app.post('/api/punchIn', async (req, res) => {
   try {
@@ -146,6 +93,7 @@ app.post('/api/punchIn', async (req, res) => {
     const currentDate = getCurrentDate();
     const currentTime = getCurrentTime();
     const monthName = getCurrentMonthName();
+    const monthSheetName = monthName;
     const sapSheetName = `${monthName}:SAP`;
 
     await ensureHeaders(sheets, sapSheetName, currentDate);
@@ -159,10 +107,79 @@ app.post('/api/punchIn', async (req, res) => {
       },
     });
 
+    await sheets.spreadsheets.values.append({
+      spreadsheetId: SPREADSHEET_ID,
+      range: `${monthSheetName}!C:C`,
+      valueInputOption: 'USER_ENTERED',
+      requestBody: {
+        values: [[currentTime]],
+      },
+    });
+
     res.status(200).json({ message: 'Punch In Accepted' });
   } catch (error) {
     console.error('Error in Punch In:', error);
-    res.status(500).json({ error: error.message || errors.UNKNOWN_ERROR });
+    res.status(500).json({ error: error.message || 'Unknown error occurred' });
+  }
+});
+
+// Punch Out Route
+app.post('/api/punchOut', async (req, res) => {
+  try {
+    const sheets = await getGoogleSheetsService();
+    const currentDate = getCurrentDate();
+    const currentTime = getCurrentTime();
+    const monthName = getCurrentMonthName();
+    const monthSheetName = monthName;
+    const sapSheetName = `${monthName}:SAP`;
+
+    const sapResponse = await sheets.spreadsheets.values.get({
+      spreadsheetId: SPREADSHEET_ID,
+      range: `${sapSheetName}!B:B`,
+    });
+
+    const sapRows = sapResponse.data.values || [];
+    const lastRow = sapRows.length;
+
+    if (lastRow < 2) {
+      return res.status(400).json({ error: 'No Punch In found for today.' });
+    }
+
+    const punchInTime = sapRows[lastRow - 1][1];
+
+    const punchInDateTime = moment.tz(`${currentDate} ${punchInTime}`, 'MM/DD/YYYY HH:mm:ss', 'America/New_York');
+    const now = moment.tz('America/New_York');
+    const elapsedMilliseconds = now.diff(punchInDateTime);
+    const elapsedFormatted = formatElapsedTime(elapsedMilliseconds);
+    const elapsedDecimal = calculateElapsedTimeDecimal(elapsedMilliseconds);
+
+    await sheets.spreadsheets.values.update({
+      spreadsheetId: SPREADSHEET_ID,
+      range: `${sapSheetName}!D${lastRow}:E${lastRow}`,
+      valueInputOption: 'USER_ENTERED',
+      requestBody: { values: [[elapsedFormatted, elapsedDecimal]] },
+    });
+
+    await sheets.spreadsheets.values.append({
+      spreadsheetId: SPREADSHEET_ID,
+      range: `${sapSheetName}!A:E`,
+      valueInputOption: 'USER_ENTERED',
+      requestBody: { values: [[currentDate, currentTime, 'Punch Out', '', '']] },
+    });
+
+    await sheets.spreadsheets.values.append({
+      spreadsheetId: SPREADSHEET_ID,
+      range: `${monthSheetName}!E:E`,
+      valueInputOption: 'USER_ENTERED',
+      requestBody: {
+        values: [[currentTime]],
+      },
+    });
+
+    res.status(200).json({ message: 'Punch Out Accepted' });
+  } catch (error) {
+    console.error('Error in Punch Out:', error);
+    res.status(500).json({ error: error.message || 'Unknown error occurred' });
   }
 });
 
@@ -224,6 +241,7 @@ app.post('/api/sapInput', async (req, res) => {
     res.status(500).json({ error: error.message || errors.UNKNOWN_ERROR });
   }
 });
+
 
 // Start the Server
 app.listen(PORT, () => {
