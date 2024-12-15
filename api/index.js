@@ -23,6 +23,10 @@ async function getGoogleSheetsService() {
 }
 
 // Helper functions
+function delay(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 function getCurrentMonthName() {
   return moment().tz('America/New_York').format('MMMM');
 }
@@ -362,6 +366,8 @@ app.post('/api/editEntry', async (req, res) => {
     });
 
     // 2. Fetch the updated sheet data to recalculate elapsed times and SAP times
+    await delay(1000); // Delay to allow Google Sheets API to process updates
+
     let sapDataResponse = await sheets.spreadsheets.values.get({
       spreadsheetId: SPREADSHEET_ID,
       range: `${sapSheetName}!A:E`,
@@ -400,24 +406,22 @@ app.post('/api/editEntry', async (req, res) => {
     }
 
     // 3. Fetch the updated sheet data again after recalculating elapsed times
-    let sapDataResponse2 = await sheets.spreadsheets.values.get({
+    await delay(1000); // Delay to allow recalculations to complete
+
+    let updatedSapDataResponse = await sheets.spreadsheets.values.get({
       spreadsheetId: SPREADSHEET_ID,
       range: `${sapSheetName}!A:E`,
     });
 
-    let sapData2 = sapDataResponse2.data.values || [];
-    
-    const dateRows2 = sapData
-      .map((row, index) => ({ index: index + 1, row }))
-      .filter(item => item.row[0] === date);
+    let updatedSapData = updatedSapDataResponse.data.values || [];
 
     // 4. Recalculate totals for the current date
-    let lastRowWithDate = dateRows2[dateRows2.length - 1].index;
+    let lastRowWithDate = dateRows[dateRows.length - 1].index;
     let totalsRowIndex = null;
 
     // Find the "Totals" row after the last row with the current date
-    for (let i = lastRowWithDate + 1; i <= sapData2.length; i++) {
-      const row = sapData2[i - 1];
+    for (let i = lastRowWithDate + 1; i <= updatedSapData.length; i++) {
+      const row = updatedSapData[i - 1];
       if (row && row[2] === 'Totals') {
         totalsRowIndex = i;
         break;
@@ -426,24 +430,22 @@ app.post('/api/editEntry', async (req, res) => {
 
     // If a totals row is found, recalculate and update the totals
     if (totalsRowIndex) {
-      let totalElapsedTime2 = 0;
-      let totalSapTime2 = 0;
+      let totalElapsedTime = 0;
+      let totalSapTime = 0;
 
-      dateRows2.forEach(row => {
-        const elapsedTime2 = row.row[3];
-        const sapTime2 = row.row[4];
-        console.log(`elapsedTime2= ${elapsedTime2}`);
-        console.log(`saptime2= ${sapTime2}`);
+      dateRows.forEach(row => {
+        const elapsedTime = row.row[3];
+        const sapTime = row.row[4];
 
-        if (elapsedTime2 && sapTime2) {
-          const [hours, minutes, seconds] = elapsedTime2.split(':').map(Number);
-          totalElapsedTime2 += hours * 3600 + minutes * 60 + seconds;
-          totalSapTime2 += parseFloat(sapTime2);
+        if (elapsedTime && sapTime) {
+          const [hours, minutes, seconds] = elapsedTime.split(':').map(Number);
+          totalElapsedTime += hours * 3600 + minutes * 60 + seconds;
+          totalSapTime += parseFloat(sapTime);
         }
       });
 
-      const totalElapsedFormatted = formatElapsedTime(totalElapsedTime2 * 1000);
-      const totalSapTimeFormatted = totalSapTime2.toFixed(4);
+      const totalElapsedFormatted = formatElapsedTime(totalElapsedTime * 1000);
+      const totalSapTimeFormatted = totalSapTime.toFixed(4);
 
       // Update the totals row with recalculated totals
       await sheets.spreadsheets.values.update({
@@ -460,6 +462,7 @@ app.post('/api/editEntry', async (req, res) => {
     res.status(500).json({ error: error.message || 'Unknown error occurred' });
   }
 });
+
 
 
 // Start the Server
