@@ -165,7 +165,7 @@ async function fetchEntriesByDate() {
         navigate('editEntriesPage');
     } catch (error) {
         console.error('Error fetching entries:', error);
-        updateStatus(`Error: ${error.message}`, "error");
+        updateStatus({ code: 9999, message: "Network error or server is unavailable." }, "error");
     }
 }
 

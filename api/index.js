@@ -334,7 +334,7 @@ app.get('/api/entries/:date', async (req, res) => {
     const dateEntries = allEntries
       .map((row, index) => ({ rowNumber: index + 1, values: row }))
       .filter(row => row.values[0] === selectedDate);
-    res.status(200).json({ entries: dateEntries}, success.ENTRY_UPDATED_SUCCESS );
+    res.status(200).json({ entries: dateEntries});
     res.status(200).json(success.ENTRY_UPDATED_SUCCESS);
   } catch (error) {
     console.error('Error fetching entries:', error);
