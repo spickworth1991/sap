@@ -132,7 +132,38 @@ app.post('/api/punchIn', async (req, res) => {
 
     console.log(`Punch In - Date: ${currentDate}, Time: ${currentTime}`);
 
-    // Append Punch In to SAP sheet
+    // Find the row for the current date in the month sheet
+    const monthSheetName = monthName;
+    let rowIndex = await findDateRow(sheets, monthSheetName, currentDate);
+
+    // If the row doesn't exist, add headers and a new row
+    if (!rowIndex) {
+      rowIndex = 3; // Assuming row 3 is where data starts after headers
+      await sheets.spreadsheets.values.append({
+        spreadsheetId: SPREADSHEET_ID,
+        range: `${monthSheetName}!A:E`,
+        valueInputOption: 'USER_ENTERED',
+        requestBody: { values: [['Date', 'Time', 'Punch In', '', 'Punch Out']] },
+      });
+      await sheets.spreadsheets.values.append({
+        spreadsheetId: SPREADSHEET_ID,
+        range: `${monthSheetName}!B:B`,
+        valueInputOption: 'USER_ENTERED',
+        requestBody: { values: [[currentDate]] },
+      });
+    } else {
+      // Check if Punch In already exists
+      const punchInResponse = await sheets.spreadsheets.values.get({
+        spreadsheetId: SPREADSHEET_ID,
+        range: `${monthSheetName}!C${rowIndex}`,
+      });
+      const punchInValue = punchInResponse.data.values?.[0]?.[0];
+      if (punchInValue) {
+        return res.status(400).json({ error: `Already punched in on ${currentDate}` });
+      }
+    }
+
+    // Append Punch In time to SAP sheet
     await sheets.spreadsheets.values.append({
       spreadsheetId: SPREADSHEET_ID,
       range: `${sapSheetName}!A:E`,
@@ -140,9 +171,7 @@ app.post('/api/punchIn', async (req, res) => {
       requestBody: { values: [[currentDate, currentTime, 'Punch In', '', '']] },
     });
 
-    // Find and update the month sheet with Punch In time in Column C
-    const monthSheetName = monthName;
-    const rowIndex = await findDateRow(sheets, monthSheetName, currentDate);
+    // Update Punch In time in the month sheet (Column C)
     await sheets.spreadsheets.values.update({
       spreadsheetId: SPREADSHEET_ID,
       range: `${monthSheetName}!C${rowIndex}`,
@@ -169,29 +198,39 @@ app.post('/api/punchOut', async (req, res) => {
 
     console.log(`Punch Out - Date: ${currentDate}, Time: ${currentTime}`);
 
-    // Fetch SAP sheet data
-    const response = await sheets.spreadsheets.values.get({
-      spreadsheetId: SPREADSHEET_ID,
-      range: `${sapSheetName}!A:E`,
-    });
-    const rows = response.data.values || [];
+    // Find the row for the current date in the month sheet
+    const monthSheetName = monthName;
+    const rowIndex = await findDateRow(sheets, monthSheetName, currentDate);
 
-    if (rows.length < 2) {
-      throw new Error('No entries available for today.');
+    if (!rowIndex) {
+      return res.status(400).json({ error: 'No Punch In found for today.' });
     }
 
-    let lastRow = rows.length - 1;
-    let lastEntry = rows[lastRow];
-    let lastDate = lastEntry[0];
-    let lastTime = lastEntry[1];
+    // Check if Punch Out already exists
+    const punchOutResponse = await sheets.spreadsheets.values.get({
+      spreadsheetId: SPREADSHEET_ID,
+      range: `${monthSheetName}!E${rowIndex}`,
+    });
+    const punchOutValue = punchOutResponse.data.values?.[0]?.[0];
+    if (punchOutValue) {
+      return res.status(400).json({ error: `Already punched out on ${currentDate}` });
+    }
 
-    if (lastDate !== currentDate) {
-      throw new Error('No Punch In found for today.');
+    // Fetch Punch In time
+    const punchInResponse = await sheets.spreadsheets.values.get({
+      spreadsheetId: SPREADSHEET_ID,
+      range: `${monthSheetName}!C${rowIndex}`,
+    });
+    const punchInTime = punchInResponse.data.values?.[0]?.[0];
+
+    if (!punchInTime) {
+      return res.status(400).json({ error: 'No Punch In time found for today.' });
     }
 
     // Calculate elapsed time
-    const lastDateTime = moment.tz(`${lastDate} ${lastTime}`, 'MM/DD/YYYY HH:mm:ss', 'America/New_York');
-    const elapsedMilliseconds = moment().tz('America/New_York').diff(lastDateTime);
+    const punchInDateTime = moment.tz(`${currentDate} ${punchInTime}`, 'MM/DD/YYYY HH:mm:ss', 'America/New_York');
+    const now = moment.tz('America/New_York');
+    const elapsedMilliseconds = now.diff(punchInDateTime);
     const elapsedFormatted = formatElapsedTime(elapsedMilliseconds);
     const elapsedDecimal = calculateElapsedTimeDecimal(elapsedMilliseconds);
 
@@ -203,9 +242,7 @@ app.post('/api/punchOut', async (req, res) => {
       requestBody: { values: [[currentDate, currentTime, 'Punch Out', elapsedFormatted, elapsedDecimal]] },
     });
 
-    // Find and update the month sheet with Punch Out time in Column E
-    const monthSheetName = monthName;
-    const rowIndex = await findDateRow(sheets, monthSheetName, currentDate);
+    // Update Punch Out time in the month sheet (Column E)
     await sheets.spreadsheets.values.update({
       spreadsheetId: SPREADSHEET_ID,
       range: `${monthSheetName}!E${rowIndex}`,
