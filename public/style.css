@@ -160,7 +160,7 @@
         /* Resize heights of elements within divs */
         .button.nav-button{
             width: 90%;
-            height: 300px; /* Adjust button height */
+            height: 250px; /* Adjust button height */
             padding: 15px;
             font-size: 35px;
         }
@@ -169,7 +169,7 @@
         .button.punch-button {
             width: 90%;
             padding: 15px;
-            height: 400px; /* Set a specific height for punch buttons */
+            height: 300px; /* Set a specific height for punch buttons */
             font-size: 50px;
         }
 
@@ -193,7 +193,7 @@
         /* Make entries full-width */
         .entry {
             width: 90%;
-            flex-direction: column;
+            flex-direction: row;
             text-align: center;
         }
 
@@ -204,8 +204,8 @@
 
         /* Status box full-width */
         #statusBox {
-            width: 90%;
-            font-size: 14px;
+            width: 100%;
+            font-size: 18px;
             padding: 12px;
         }
 
