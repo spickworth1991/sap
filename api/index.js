@@ -432,13 +432,13 @@ app.post('/api/editEntry', async (req, res) => {
       dateRows2.forEach(row => {
         const elapsedTime2 = row.row[3];
         const sapTime2 = row.row[4];
-        console.log(`elapsedTime= ${elapsedTime2}`);
-        console.log(`values= ${sapTime2}`);
+        console.log(`elapsedTime2= ${elapsedTime2}`);
+        console.log(`saptime2= ${sapTime2}`);
 
         if (elapsedTime2 && sapTime2) {
           const [hours, minutes, seconds] = elapsedTime2.split(':').map(Number);
           totalElapsedTime2 += hours * 3600 + minutes * 60 + seconds;
-          totalSapTime2 += parseFloat(sapTime);
+          totalSapTime2 += parseFloat(sapTime2);
         }
       });
 
