@@ -2,6 +2,8 @@ const express = require('express');
 const { google } = require('googleapis');
 const cors = require('cors');
 const moment = require('moment-timezone');
+const errors = require('./errors');
+const success = require('./success');
 require('dotenv').config();
 
 const app = express();
@@ -23,10 +25,6 @@ async function getGoogleSheetsService() {
 }
 
 // Helper functions
-function delay(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 function getCurrentMonthName() {
   return moment().tz('America/New_York').format('MMMM');
 }
@@ -136,10 +134,10 @@ app.post('/api/punchIn', async (req, res) => {
       requestBody: { values: [[currentDate, currentTime, 'Punch In', '', '']] },
     });
 
-    res.status(200).json({ message: 'Punch In Accepted' });
+    res.status(200).json({ message: success.PUNCH_IN_SUCCESS });
   } catch (error) {
     console.error('Error in Punch In:', error);
-    res.status(500).json({ error: error.message || 'Unknown error occurred' });
+    res.status(500).json({ error: error.message || errors.FAIL_PUNCH_IN });
   }
 });
 
@@ -177,7 +175,7 @@ app.post('/api/punchOut', async (req, res) => {
     const punchInTime = punchInResponse.data.values?.[0]?.[0];
 
     if (!punchInTime) {
-      return res.status(400).json({ error: 'No Punch In time found for today.' });
+      return res.status(400).json({ error: errors.NO_PUNCH_IN_FOUND });
     }
 
     // Update the Punch Out time in Column E on the month sheet
@@ -256,10 +254,10 @@ app.post('/api/punchOut', async (req, res) => {
       requestBody: { values: [['', '', 'Totals', totalElapsedFormatted, totalSapTimeFormatted]] },
     });
 
-    res.status(200).json({ message: 'Punch Out Accepted with Totals' });
+    res.status(200).json({ message: success.PUNCH_OUT_SUCCESS });
   } catch (error) {
     console.error('Error in Punch Out:', error);
-    res.status(500).json({ error: error.message || 'Unknown error occurred' });
+    res.status(500).json({ error: error.message || errors.FAIL_PUNCH_OUT });
   }
 });
 
@@ -317,10 +315,10 @@ app.post('/api/sapInput', async (req, res) => {
       requestBody: { values: [[currentDate, currentTime, input, '', '']] },
     });
 
-    res.status(200).json({ message: 'SAP Input Accepted' });
+    res.status(200).json({ message: success.SAP_INPUT_SUCCESS });
   } catch (error) {
     console.error('Error in SAP Input:', error);
-    res.status(500).json({ error: error.message || errors.UNKNOWN_ERROR });
+    res.status(500).json({ error: error.message || errors.SAP_FAIL });
   }
 });
 
@@ -341,10 +339,10 @@ app.get('/api/entries/:date', async (req, res) => {
       .map((row, index) => ({ rowNumber: index + 1, values: row }))
       .filter(row => row.values[0] === selectedDate);
 
-    res.status(200).json({ entries: dateEntries });
+    res.status(200).json({ entries: dateEntries, message: success.ENTRY_UPDATED_SUCCESS });
   } catch (error) {
     console.error('Error fetching entries:', error);
-    res.status(500).json({ error: error.message || 'Unknown error occurred' });
+    res.status(500).json({ error: error.message || errors.FETCH_FAIL });
   }
 });
 
@@ -457,10 +455,10 @@ app.post('/api/editEntry', async (req, res) => {
       });
     }
 
-    res.status(200).json({ message: 'Entry updated and recalculations completed successfully' });
+    res.status(200).json({ message: success.ENTRY_UPDATED_SUCCESS });
   } catch (error) {
     console.error('Error in editing entry:', error);
-    res.status(500).json({ error: error.message || 'Unknown error occurred' });
+    res.status(500).json({ error: error.message || errors.UPDATE_FAILED });
   }
 });
 

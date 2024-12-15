@@ -1,14 +1,4 @@
-console.log("script.js loaded successfully");
-
-function setMobileClass() {
-    if (isMobileDevice() || window.matchMedia("(pointer: coarse)").matches) {
-        document.body.classList.add("mobile");
-    }
-}
-
-function isMobileDevice() {
-    return /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop|Mobile/i.test(navigator.userAgent);
-}
+//console.log("script.js loaded successfully");
 
 // Navigation function
 function showPage(pageId) {
@@ -29,8 +19,12 @@ function navigate(pageId) {
 function updateStatus(message, type) {
     const statusBox = document.getElementById("statusBox");
     if (statusBox) {
+        if (typeof message === 'object' && message.code && message.message) {
+            statusBox.innerText = `Error ${message.code}: ${message.message}`;
+        } else {
+            statusBox.innerText = message;
+        }
         statusBox.className = type;
-        statusBox.innerText = message;
         statusBox.style.display = "block";
 
         const duration = type === "success" ? 3000 : 5000;
@@ -39,6 +33,7 @@ function updateStatus(message, type) {
         }, duration);
     }
 }
+
 
 // SAP Input function
 async function sapInput(button) {
