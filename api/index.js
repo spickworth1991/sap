@@ -374,7 +374,7 @@ app.post('/api/editEntry', async (req, res) => {
       .map((row, index) => ({ index: index + 1, row }))
       .filter(item => item.row[0] === date);
 
-    // 3. Recalculate elapsed times and SAP times for each row
+    // 3. Recalculate elapsed times and SAP times for each row and update the previous row
     for (let i = 1; i < dateRows.length; i++) {
       const currentRow = dateRows[i];
       const previousRow = dateRows[i - 1];
@@ -392,7 +392,7 @@ app.post('/api/editEntry', async (req, res) => {
         // Update the previous row's elapsed time and SAP time
         await sheets.spreadsheets.values.update({
           spreadsheetId: SPREADSHEET_ID,
-          range: `${sapSheetName}!D${currentRow.index}:E${currentRow.index}`,
+          range: `${sapSheetName}!D${previousRow.index}:E${previousRow.index}`,
           valueInputOption: 'USER_ENTERED',
           requestBody: { values: [[elapsedFormatted, elapsedDecimal]] },
         });
@@ -434,6 +434,7 @@ app.post('/api/editEntry', async (req, res) => {
     res.status(500).json({ error: error.message || 'Unknown error occurred' });
   }
 });
+
 
 
 // Start the Server
