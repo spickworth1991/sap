@@ -212,29 +212,4 @@ function displayEntries(entries) {
     }
 }
 
-// Edit Entry function
-async function editEntry(date, row, currentTime) {
-    const newTime = prompt("Enter new time (24-hour format HH:mm:ss):", currentTime);
 
-    if (!newTime) {
-        updateStatus("Edit cancelled. No new time entered.", "info");
-        return;
-    }
-
-    try {
-        const response = await fetch("/api/editEntry", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ date, row, newTime })
-        });
-
-        if (response.ok) {
-            updateStatus("Entry updated successfully!", "success");
-            loadEntries();
-        } else {
-            throw new Error("Failed to update entry");
-        }
-    } catch (error) {
-        updateStatus(`Error: ${error.message}`, "error");
-    }
-}
