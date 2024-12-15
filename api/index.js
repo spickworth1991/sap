@@ -1,7 +1,7 @@
 const express = require('express');
 const { google } = require('googleapis');
 const cors = require('cors');
-const moment = require('moment-timezone'); // Import moment-timezone
+const moment = require('moment-timezone');
 require('dotenv').config();
 
 const app = express();
@@ -14,27 +14,19 @@ const SPREADSHEET_ID = process.env.GOOGLE_SHEET_ID;
 
 // Authenticate with Google Sheets API
 async function getGoogleSheetsService() {
-  try {
-    const credentials = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY);
-    console.log('Google Sheets credentials loaded:', credentials.client_email);
-
-    const auth = new google.auth.GoogleAuth({
-      credentials,
-      scopes: ['https://www.googleapis.com/auth/spreadsheets'],
-    });
-    return google.sheets({ version: 'v4', auth });
-  } catch (error) {
-    console.error('Error during Google Sheets authentication:', error);
-    throw error;
-  }
+  const credentials = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY);
+  const auth = new google.auth.GoogleAuth({
+    credentials,
+    scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+  });
+  return google.sheets({ version: 'v4', auth });
 }
 
-// Helper function to get the current month name
+// Helper functions
 function getCurrentMonthName() {
   return moment().tz('America/New_York').format('MMMM');
 }
 
-// Helper function to format the current date as MM/DD/YYYY
 function getCurrentDate() {
   return moment().tz('America/New_York').format('MM/DD/YYYY');
 }
@@ -43,7 +35,6 @@ function getCurrentTime() {
   return moment().tz('America/New_York').format('HH:mm:ss');
 }
 
-// Helper to format elapsed time
 function formatElapsedTime(milliseconds) {
   const totalSeconds = Math.floor(milliseconds / 1000);
   const hours = Math.floor(totalSeconds / 3600);
@@ -52,74 +43,24 @@ function formatElapsedTime(milliseconds) {
   return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 }
 
-// Helper to calculate elapsed time in decimal format
 function calculateElapsedTimeDecimal(milliseconds) {
   return (milliseconds / (1000 * 60 * 60)).toFixed(4);
 }
 
-// Route to handle SAP Input
-app.post('/api/sapInput', async (req, res) => {
-  try {
-    console.log('Received request for SAP Input');
-    const { input } = req.body;
-
-    if (!input) {
-      return res.status(400).json({ error: 'No input provided for SAP entry.' });
-    }
-
-    const sheets = await getGoogleSheetsService();
-    const now = moment().tz('America/New_York');
-    const currentDate = now.format('MM/DD/YYYY');
-    const currentTime = now.format('HH:mm:ss');
-    const monthName = getCurrentMonthName();
-
-    const sapSheetName = `${monthName}:SAP`;
-    console.log('SAP Sheet Name:', sapSheetName);
-
-    // Fetch the SAP sheet
-    const response = await sheets.spreadsheets.get({
-      spreadsheetId: SPREADSHEET_ID,
-      ranges: [sapSheetName],
-    });
-
-    const sheet = response.data.sheets.find(s => s.properties.title === sapSheetName);
-
-    if (!sheet) {
-      return res.status(404).json({ error: `Sheet ${sapSheetName} not found.` });
-    }
-
-    // Append the SAP input
-    await sheets.spreadsheets.values.append({
-      spreadsheetId: SPREADSHEET_ID,
-      range: `${sapSheetName}!A:E`,
-      valueInputOption: 'USER_ENTERED',
-      requestBody: {
-        values: [[currentDate, currentTime, input, '', '']],
-      },
-    });
-
-    console.log('SAP Input recorded successfully');
-    res.status(200).json({ message: 'SAP Input Accepted' });
-  } catch (error) {
-    console.error('Error in SAP Input:', error);
-    res.status(500).json({ error: error.message || 'Unknown error occurred' });
-  }
-});
-
-// Ensure headers exist in the month sheet
-async function ensureHeaders(sheets, monthSheetName) {
+// Ensure headers exist in the specified sheet
+async function ensureHeaders(sheets, sheetName) {
   const response = await sheets.spreadsheets.values.get({
     spreadsheetId: SPREADSHEET_ID,
-    range: `${monthSheetName}!A1:E1`,
+    range: `${sheetName}!A1:E1`,
   });
 
   if (!response.data.values || response.data.values.length === 0) {
     await sheets.spreadsheets.values.update({
       spreadsheetId: SPREADSHEET_ID,
-      range: `${monthSheetName}!A1:E1`,
+      range: `${sheetName}!A1:E1`,
       valueInputOption: 'USER_ENTERED',
       requestBody: {
-        values: [['Date', 'Time', 'Punch In', '', 'Punch Out']],
+        values: [['Date', 'Time', 'Punch In', 'Elapsed Time', 'SAP Time']],
       },
     });
   }
@@ -152,6 +93,8 @@ app.post('/api/punchIn', async (req, res) => {
     const sapSheetName = `${monthName}:SAP`;
 
     await ensureHeaders(sheets, monthSheetName);
+    await ensureHeaders(sheets, sapSheetName);
+
     let rowIndex = await findDateRow(sheets, monthSheetName, currentDate);
 
     if (!rowIndex) {
