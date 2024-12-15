@@ -31,17 +31,30 @@ async function getGoogleSheetsService() {
 
 // Helper function to get the current month name
 function getCurrentMonthName() {
-  const monthNames = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'
-  ];
-  const now = moment().tz('America/New_York'); // Set timezone to Eastern Time
-  return monthNames[now.month()]; // Returns current month name
+  return moment().tz('America/New_York').format('MMMM');
 }
 
 // Helper function to format the current date as MM/DD/YYYY
 function getCurrentDate() {
   return moment().tz('America/New_York').format('MM/DD/YYYY');
+}
+
+function getCurrentTime() {
+  return moment().tz('America/New_York').format('HH:mm:ss');
+}
+
+// Helper to format elapsed time
+function formatElapsedTime(milliseconds) {
+  const totalSeconds = Math.floor(milliseconds / 1000);
+  const hours = Math.floor(totalSeconds / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+  return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+}
+
+// Helper to calculate elapsed time in decimal format
+function calculateElapsedTimeDecimal(milliseconds) {
+  return (milliseconds / (1000 * 60 * 60)).toFixed(4);
 }
 
 // Route to handle SAP Input
@@ -96,55 +109,52 @@ app.post('/api/sapInput', async (req, res) => {
 // Punch In Route
 app.post('/api/punchIn', async (req, res) => {
   try {
-    console.log('Received request for Punch In');
-
     const sheets = await getGoogleSheetsService();
-    const now = moment().tz('America/New_York').format('hh:mm:ss A');
+    const now = moment().tz('America/New_York');
     const currentDate = getCurrentDate();
+    const currentTime = getCurrentTime();
     const monthName = getCurrentMonthName();
+    const sapSheetName = `${monthName}:SAP`;
 
-    const range = `'${monthName}'!B:B`;
+    console.log(`Punch In - Date: ${currentDate}, Time: ${currentTime}, Sheet: ${sapSheetName}`);
 
-    console.log('SPREADSHEET_ID:', SPREADSHEET_ID);
-    console.log('Range:', range);
-    console.log('Current Date:', currentDate);
-    console.log('Current Time:', now);
-
-    // Fetch all values in Column B
+    // Fetch existing sheet data
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId: SPREADSHEET_ID,
-      range: range,
+      range: `${sapSheetName}!A:E`,
     });
-
     const rows = response.data.values || [];
-    let rowIndex = -1;
 
-    // Find the row with the current date in Column B
-    for (let i = 0; i < rows.length; i++) {
-      if (rows[i][0] === currentDate) {
-        rowIndex = i + 1; // Google Sheets is 1-indexed
-        break;
-      }
+    let lastRow = rows.length;
+    let lastDate = lastRow > 0 ? rows[lastRow - 1][0] : null;
+
+    // Add headers if the sheet is empty or the date has changed
+    if (!lastRow || lastDate !== currentDate) {
+      await sheets.spreadsheets.values.append({
+        spreadsheetId: SPREADSHEET_ID,
+        range: `${sapSheetName}!A:E`,
+        valueInputOption: 'USER_ENTERED',
+        requestBody: {
+          values: [
+            ['Date', 'Time', 'Project/Info', 'Elapsed Time', 'SAP Time'], // Headers
+            [currentDate, currentTime, 'Punch In', '', ''], // First entry
+          ],
+        },
+      });
+      console.log('Headers added and Punch In recorded.');
+    } else {
+      // Add Punch In to the existing row
+      await sheets.spreadsheets.values.append({
+        spreadsheetId: SPREADSHEET_ID,
+        range: `${sapSheetName}!A:E`,
+        valueInputOption: 'USER_ENTERED',
+        requestBody: {
+          values: [[currentDate, currentTime, 'Punch In', '', '']],
+        },
+      });
+      console.log('Punch In recorded.');
     }
 
-    if (rowIndex === -1) {
-      return res.status(404).json({ error: `Date ${currentDate} not found in Column B` });
-    }
-
-    const updateRange = `'${monthName}'!C${rowIndex}`;
-    console.log('Update Range for Punch In:', updateRange);
-
-    // Update Column C with the current time
-    await sheets.spreadsheets.values.update({
-      spreadsheetId: SPREADSHEET_ID,
-      range: updateRange,
-      valueInputOption: 'USER_ENTERED',
-      requestBody: {
-        values: [[now]],
-      },
-    });
-
-    console.log('Punch In recorded successfully');
     res.status(200).json({ message: 'Punch In Accepted' });
   } catch (error) {
     console.error('Error in Punch In:', error);
@@ -155,55 +165,54 @@ app.post('/api/punchIn', async (req, res) => {
 // Punch Out Route
 app.post('/api/punchOut', async (req, res) => {
   try {
-    console.log('Received request for Punch Out');
-
     const sheets = await getGoogleSheetsService();
-    const now = moment().tz('America/New_York').format('hh:mm:ss A');
+    const now = moment().tz('America/New_York');
     const currentDate = getCurrentDate();
+    const currentTime = getCurrentTime();
     const monthName = getCurrentMonthName();
+    const sapSheetName = `${monthName}:SAP`;
 
-    const range = `'${monthName}'!B:B`;
+    console.log(`Punch Out - Date: ${currentDate}, Time: ${currentTime}, Sheet: ${sapSheetName}`);
 
-    console.log('SPREADSHEET_ID:', SPREADSHEET_ID);
-    console.log('Range:', range);
-    console.log('Current Date:', currentDate);
-    console.log('Current Time:', now);
-
-    // Fetch all values in Column B
+    // Fetch existing sheet data
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId: SPREADSHEET_ID,
-      range: range,
+      range: `${sapSheetName}!A:E`,
     });
-
     const rows = response.data.values || [];
-    let rowIndex = -1;
 
-    // Find the row with the current date in Column B
-    for (let i = 0; i < rows.length; i++) {
-      if (rows[i][0] === currentDate) {
-        rowIndex = i + 1; // Google Sheets is 1-indexed
-        break;
-      }
+    if (rows.length < 2) {
+      throw new Error('No entries available for today.');
     }
 
-    if (rowIndex === -1) {
-      return res.status(404).json({ error: `Date ${currentDate} not found in Column B` });
+    let lastRow = rows.length - 1;
+    let lastEntry = rows[lastRow];
+    let lastDate = lastEntry[0];
+    let lastTime = lastEntry[1];
+
+    if (lastDate !== currentDate) {
+      throw new Error('No Punch In found for today.');
     }
 
-    const updateRange = `'${monthName}'!E${rowIndex}`;
-    console.log('Update Range for Punch Out:', updateRange);
+    // Calculate elapsed time
+    const lastDateTime = moment.tz(`${lastDate} ${lastTime}`, 'MM/DD/YYYY HH:mm:ss', 'America/New_York');
+    const elapsedMilliseconds = now.diff(lastDateTime);
+    const elapsedFormatted = formatElapsedTime(elapsedMilliseconds);
+    const elapsedDecimal = calculateElapsedTimeDecimal(elapsedMilliseconds);
 
-    // Update Column E with the current time
-    await sheets.spreadsheets.values.update({
+    // Append Punch Out entry
+    await sheets.spreadsheets.values.append({
       spreadsheetId: SPREADSHEET_ID,
-      range: updateRange,
+      range: `${sapSheetName}!A:E`,
       valueInputOption: 'USER_ENTERED',
       requestBody: {
-        values: [[now]],
+        values: [
+          [currentDate, currentTime, 'Punch Out', elapsedFormatted, elapsedDecimal],
+        ],
       },
     });
 
-    console.log('Punch Out recorded successfully');
+    console.log('Punch Out recorded with elapsed time.');
     res.status(200).json({ message: 'Punch Out Accepted' });
   } catch (error) {
     console.error('Error in Punch Out:', error);
