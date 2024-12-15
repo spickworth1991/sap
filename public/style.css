@@ -49,11 +49,18 @@
 
     /* Status Box */
     #statusBox {
+        position: fixed;          /* Fix it at the top of the screen */
+        top: 0;                   /* Align it to the top edge */
+        left: 0;
+        right: 0;                 /* Stretch across the entire width */
         padding: 10px;
-        margin-top: 10px;
-        border-radius: 5px;
+        margin: 0;
+        text-align: center;
+        z-index: 1000;            /* Ensure it stays above other elements */
+        border-bottom: 2px solid #ccc;
     }
 
+    /* Different styles for status types */
     #statusBox.info {
         background-color: #D9EDF7;
         color: #31708F;
