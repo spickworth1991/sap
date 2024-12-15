@@ -104,7 +104,7 @@ app.post('/api/punchIn', async (req, res) => {
     let rowIndex = await findDateRow(sheets, monthSheetName, currentDate);
 
     if (!rowIndex) {
-      return res.status(400).json({ error: `No entry found for ${currentDate} in the month sheet.` });
+      return res.status(400).json(errors.NO_ENTRY_FOUND);
     }
 
     // Check if Punch In time already exists in Column C
@@ -113,7 +113,7 @@ app.post('/api/punchIn', async (req, res) => {
       range: `${monthSheetName}!C${rowIndex}`,
     });
     if (punchInResponse.data.values?.[0]?.[0]) {
-      return res.status(400).json({ error: `Already punched in on ${currentDate}` });
+      return res.status(400).json(errors.PUNCH_IN_EXISTS);
     }
 
     // Update the Punch In time in Column C on the month sheet
@@ -153,7 +153,7 @@ app.post('/api/punchOut', async (req, res) => {
     let rowIndex = await findDateRow(sheets, monthSheetName, currentDate);
 
     if (!rowIndex) {
-      return res.status(400).json({ error: `No entry found for ${currentDate} in the month sheet.` });
+      return res.status(400).json(errors.NO_ENTRY_FOUND);
     }
 
     // Check if Punch Out time already exists in Column E
@@ -162,7 +162,7 @@ app.post('/api/punchOut', async (req, res) => {
       range: `${monthSheetName}!E${rowIndex}`,
     });
     if (punchOutResponse.data.values?.[0]?.[0]) {
-      return res.status(400).json({ error: `Already punched out on ${currentDate}` });
+      return res.status(400).json(errors.PUNCH_OUT_EXISTS);
     }
 
     // Check if Punch In time exists in Column C
