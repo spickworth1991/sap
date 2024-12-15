@@ -320,6 +320,75 @@ app.post('/api/sapInput', async (req, res) => {
   }
 });
 
+// Route to get entries for a specific date
+app.get('/api/entries/:date', async (req, res) => {
+  try {
+    const sheets = await getGoogleSheetsService();
+    const selectedDate = req.params.date; // Date in MM/DD/YYYY format
+    const monthName = moment(selectedDate, 'MM/DD/YYYY').tz('America/New_York').format('MMMM');
+    const sapSheetName = `${monthName}:SAP`;
+
+    const response = await sheets.spreadsheets.values.get({
+      spreadsheetId: SPREADSHEET_ID,
+      range: `${sapSheetName}!A:E`,
+    });
+
+    const allEntries = response.data.values || [];
+    const dateEntries = allEntries.filter(row => row[0] === selectedDate);
+
+    res.status(200).json({ entries: dateEntries });
+  } catch (error) {
+    console.error('Error fetching entries:', error);
+    res.status(500).json({ error: error.message || 'Unknown error occurred' });
+  }
+});
+
+// Route to edit an entry
+app.post('/api/editEntry', async (req, res) => {
+  try {
+    const { date, rowIndex, time, projectActivity } = req.body;
+    const sheets = await getGoogleSheetsService();
+    const monthName = moment(date, 'MM/DD/YYYY').tz('America/New_York').format('MMMM');
+    const sapSheetName = `${monthName}:SAP`;
+
+    // Update the specified row with new data
+    await sheets.spreadsheets.values.update({
+      spreadsheetId: SPREADSHEET_ID,
+      range: `${sapSheetName}!B${rowIndex}:C${rowIndex}`,
+      valueInputOption: 'USER_ENTERED',
+      requestBody: { values: [[time, projectActivity]] },
+    });
+
+    // Fetch the previous row to recalculate elapsed time and SAP time
+    const previousRowIndex = rowIndex - 1;
+    const previousTimeResponse = await sheets.spreadsheets.values.get({
+      spreadsheetId: SPREADSHEET_ID,
+      range: `${sapSheetName}!B${previousRowIndex}`,
+    });
+    const previousTime = previousTimeResponse.data.values?.[0]?.[0];
+
+    if (previousTime) {
+      const previousDateTime = moment.tz(`${date} ${previousTime}`, 'MM/DD/YYYY HH:mm:ss', 'America/New_York');
+      const newDateTime = moment.tz(`${date} ${time}`, 'MM/DD/YYYY HH:mm:ss', 'America/New_York');
+      const elapsedMilliseconds = newDateTime.diff(previousDateTime);
+      const elapsedFormatted = formatElapsedTime(elapsedMilliseconds);
+      const elapsedDecimal = calculateElapsedTimeDecimal(elapsedMilliseconds);
+
+      // Update the previous row's elapsed time and SAP time
+      await sheets.spreadsheets.values.update({
+        spreadsheetId: SPREADSHEET_ID,
+        range: `${sapSheetName}!D${previousRowIndex}:E${previousRowIndex}`,
+        valueInputOption: 'USER_ENTERED',
+        requestBody: { values: [[elapsedFormatted, elapsedDecimal]] },
+      });
+    }
+
+    res.status(200).json({ message: 'Entry updated successfully' });
+  } catch (error) {
+    console.error('Error in editing entry:', error);
+    res.status(500).json({ error: error.message || 'Unknown error occurred' });
+  }
+});
 
 // Start the Server
 app.listen(PORT, () => {
