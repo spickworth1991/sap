@@ -88,7 +88,7 @@ async function punchIn(button) {
         }
     } catch (error) {
         console.error('Error in Punch In:', error);
-        updateStatus({ code: 9999, message: error.message || "An unexpected error occurred." }, "error");
+        updateStatus({ code: 9999, message: "Network error or server is unavailable." }, "error");
     } finally {
         button.style.backgroundColor = "";
     }
@@ -109,7 +109,7 @@ async function punchOut(button) {
         }
     } catch (error) {
         console.error('Error in Punch Out:', error);
-        updateStatus({ code: 9999, message: error.message || "An unexpected error occurred." }, "error");
+        updateStatus({ code: 9999, message: "Network error or server is unavailable." }, "error");
     } finally {
         button.style.backgroundColor = "";
     }
