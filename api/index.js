@@ -399,7 +399,7 @@ app.post('/api/editEntry', async (req, res) => {
       }
     }
 
-    // 4. Recalculate totals for the current date
+    // 4. Recalculate totals for the current date after all edits and recalculations are done
     let lastRowWithDate = dateRows[dateRows.length - 1].index;
     let totalsRowIndex = null;
 
@@ -412,7 +412,7 @@ app.post('/api/editEntry', async (req, res) => {
       }
     }
 
-    // If a totals row is found, recalculate the totals
+    // If a totals row is found, recalculate and update the totals
     if (totalsRowIndex) {
       let totalElapsedTime = 0;
       let totalSapTime = 0;
