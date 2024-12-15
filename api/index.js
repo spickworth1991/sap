@@ -353,7 +353,7 @@ app.post('/api/editEntry', async (req, res) => {
     const monthName = moment(date, 'MM/DD/YYYY').tz('America/New_York').format('MMMM');
     const sapSheetName = `${monthName}:SAP`;
 
-    // Update the specified row with the new time and project/activity
+    // 1. Update the specified row with the new time and project/activity
     await sheets.spreadsheets.values.update({
       spreadsheetId: SPREADSHEET_ID,
       range: `${sapSheetName}!B${rowIndex}:C${rowIndex}`,
@@ -361,34 +361,74 @@ app.post('/api/editEntry', async (req, res) => {
       requestBody: { values: [[time, projectActivity]] },
     });
 
-    // Fetch the previous row to recalculate elapsed time and SAP time
-    const previousRowIndex = rowIndex - 1;
+    // 2. Fetch all rows for the current date to recalculate elapsed times and SAP times
+    const sapDataResponse = await sheets.spreadsheets.values.get({
+      spreadsheetId: SPREADSHEET_ID,
+      range: `${sapSheetName}!A:E`,
+    });
 
-    if (previousRowIndex > 1) {
-      const previousTimeResponse = await sheets.spreadsheets.values.get({
-        spreadsheetId: SPREADSHEET_ID,
-        range: `${sapSheetName}!B${previousRowIndex}`,
-      });
-      const previousTime = previousTimeResponse.data.values?.[0]?.[0];
+    const sapData = sapDataResponse.data.values || [];
 
-      if (previousTime) {
+    // Find all rows with the same date
+    const dateRows = sapData
+      .map((row, index) => ({ index: index + 1, row }))
+      .filter(item => item.row[0] === date);
+
+    // 3. Recalculate elapsed times and SAP times for each row
+    for (let i = 1; i < dateRows.length; i++) {
+      const currentRow = dateRows[i];
+      const previousRow = dateRows[i - 1];
+
+      const previousTime = previousRow.row[1];
+      const currentTime = currentRow.row[1];
+
+      if (previousTime && currentTime) {
         const previousDateTime = moment.tz(`${date} ${previousTime}`, 'MM/DD/YYYY HH:mm:ss', 'America/New_York');
-        const newDateTime = moment.tz(`${date} ${time}`, 'MM/DD/YYYY HH:mm:ss', 'America/New_York');
-        const elapsedMilliseconds = newDateTime.diff(previousDateTime);
+        const currentDateTime = moment.tz(`${date} ${currentTime}`, 'MM/DD/YYYY HH:mm:ss', 'America/New_York');
+        const elapsedMilliseconds = currentDateTime.diff(previousDateTime);
         const elapsedFormatted = formatElapsedTime(elapsedMilliseconds);
         const elapsedDecimal = calculateElapsedTimeDecimal(elapsedMilliseconds);
 
-        // Update the current row with the recalculated elapsed time and SAP time
+        // Update the previous row's elapsed time and SAP time
         await sheets.spreadsheets.values.update({
           spreadsheetId: SPREADSHEET_ID,
-          range: `${sapSheetName}!D${rowIndex}:E${rowIndex}`,
+          range: `${sapSheetName}!D${currentRow.index}:E${currentRow.index}`,
           valueInputOption: 'USER_ENTERED',
           requestBody: { values: [[elapsedFormatted, elapsedDecimal]] },
         });
       }
     }
 
-    res.status(200).json({ message: 'Entry updated successfully' });
+    // 4. Check if there's a punch-out entry and update the totals
+    const totalsRow = dateRows.find(row => row.row[2] === 'Totals');
+    if (totalsRow) {
+      let totalElapsedTime = 0;
+      let totalSapTime = 0;
+
+      dateRows.forEach(row => {
+        const elapsedTime = row.row[3];
+        const sapTime = row.row[4];
+
+        if (elapsedTime && sapTime) {
+          const [hours, minutes, seconds] = elapsedTime.split(':').map(Number);
+          totalElapsedTime += hours * 3600 + minutes * 60 + seconds;
+          totalSapTime += parseFloat(sapTime);
+        }
+      });
+
+      const totalElapsedFormatted = formatElapsedTime(totalElapsedTime * 1000);
+      const totalSapTimeFormatted = totalSapTime.toFixed(4);
+
+      // Update the totals row
+      await sheets.spreadsheets.values.update({
+        spreadsheetId: SPREADSHEET_ID,
+        range: `${sapSheetName}!D${totalsRow.index}:E${totalsRow.index}`,
+        valueInputOption: 'USER_ENTERED',
+        requestBody: { values: [[totalElapsedFormatted, totalSapTimeFormatted]] },
+      });
+    }
+
+    res.status(200).json({ message: 'Entry updated and recalculations completed successfully' });
   } catch (error) {
     console.error('Error in editing entry:', error);
     res.status(500).json({ error: error.message || 'Unknown error occurred' });
