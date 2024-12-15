@@ -351,7 +351,7 @@ app.post('/api/editEntry', async (req, res) => {
     const monthName = moment(date, 'MM/DD/YYYY').tz('America/New_York').format('MMMM');
     const sapSheetName = `${monthName}:SAP`;
 
-    // Update the specified row with new data
+    // Update the specified row with the new time and project/activity
     await sheets.spreadsheets.values.update({
       spreadsheetId: SPREADSHEET_ID,
       range: `${sapSheetName}!B${rowIndex}:C${rowIndex}`,
@@ -361,26 +361,29 @@ app.post('/api/editEntry', async (req, res) => {
 
     // Fetch the previous row to recalculate elapsed time and SAP time
     const previousRowIndex = rowIndex - 1;
-    const previousTimeResponse = await sheets.spreadsheets.values.get({
-      spreadsheetId: SPREADSHEET_ID,
-      range: `${sapSheetName}!B${previousRowIndex}`,
-    });
-    const previousTime = previousTimeResponse.data.values?.[0]?.[0];
 
-    if (previousTime) {
-      const previousDateTime = moment.tz(`${date} ${previousTime}`, 'MM/DD/YYYY HH:mm:ss', 'America/New_York');
-      const newDateTime = moment.tz(`${date} ${time}`, 'MM/DD/YYYY HH:mm:ss', 'America/New_York');
-      const elapsedMilliseconds = newDateTime.diff(previousDateTime);
-      const elapsedFormatted = formatElapsedTime(elapsedMilliseconds);
-      const elapsedDecimal = calculateElapsedTimeDecimal(elapsedMilliseconds);
-
-      // Update the previous row's elapsed time and SAP time
-      await sheets.spreadsheets.values.update({
+    if (previousRowIndex > 1) {
+      const previousTimeResponse = await sheets.spreadsheets.values.get({
         spreadsheetId: SPREADSHEET_ID,
-        range: `${sapSheetName}!D${previousRowIndex}:E${previousRowIndex}`,
-        valueInputOption: 'USER_ENTERED',
-        requestBody: { values: [[elapsedFormatted, elapsedDecimal]] },
+        range: `${sapSheetName}!B${previousRowIndex}`,
       });
+      const previousTime = previousTimeResponse.data.values?.[0]?.[0];
+
+      if (previousTime) {
+        const previousDateTime = moment.tz(`${date} ${previousTime}`, 'MM/DD/YYYY HH:mm:ss', 'America/New_York');
+        const newDateTime = moment.tz(`${date} ${time}`, 'MM/DD/YYYY HH:mm:ss', 'America/New_York');
+        const elapsedMilliseconds = newDateTime.diff(previousDateTime);
+        const elapsedFormatted = formatElapsedTime(elapsedMilliseconds);
+        const elapsedDecimal = calculateElapsedTimeDecimal(elapsedMilliseconds);
+
+        // Update the current row with the recalculated elapsed time and SAP time
+        await sheets.spreadsheets.values.update({
+          spreadsheetId: SPREADSHEET_ID,
+          range: `${sapSheetName}!D${rowIndex}:E${rowIndex}`,
+          valueInputOption: 'USER_ENTERED',
+          requestBody: { values: [[elapsedFormatted, elapsedDecimal]] },
+        });
+      }
     }
 
     res.status(200).json({ message: 'Entry updated successfully' });
@@ -389,6 +392,7 @@ app.post('/api/editEntry', async (req, res) => {
     res.status(500).json({ error: error.message || 'Unknown error occurred' });
   }
 });
+
 
 // Start the Server
 app.listen(PORT, () => {
