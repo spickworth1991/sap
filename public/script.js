@@ -113,31 +113,50 @@ async function punchOut(button) {
     }
 }
 
- async function fetchEntriesByDate() {
-    const selectedDate = document.getElementById('dateInput').value;
-    const response = await fetch(`/api/entries/${selectedDate}`);
-    const data = await response.json();
-
-    const entriesContainer = document.getElementById('entriesContainer');
-    entriesContainer.innerHTML = ''; // Clear previous entries
-
-    if (data.entries.length === 0) {
-      entriesContainer.innerHTML = '<p>No entries found for this date.</p>';
-      return;
+async function fetchEntriesByDate() {
+    const dateInput = document.getElementById('datePicker').value;
+    if (!dateInput) {
+        updateStatus("Please select a date.", "error");
+        return;
     }
 
-    data.entries.forEach((entry, index) => {
-      const entryDiv = document.createElement('div');
-      entryDiv.innerHTML = `
-        <div>
-          <span>${entry.join(' | ')}</span>
-          <button onclick="editEntry('${selectedDate}', ${index + 2})">Edit</button>
-        </div>
-      `;
-      entriesContainer.appendChild(entryDiv);
-    });
-  }
+    // Convert date from YYYY-MM-DD to MM/DD/YYYY
+    const [year, month, day] = dateInput.split('-');
+    const formattedDate = `${month}/${day}/${year}`;
+    console.log("Formatted date:", formattedDate); // Debugging line
 
+    try {
+        const response = await fetch(`/api/entries/${formattedDate}`);
+        console.log("Fetch response:", response); // Debugging line
+
+        const data = await response.json();
+        console.log("Fetched data:", data); // Debugging line
+
+        const entriesContainer = document.getElementById('entriesContainer');
+        entriesContainer.innerHTML = ''; // Clear previous entries
+
+        if (!data.entries || data.entries.length === 0) {
+            entriesContainer.innerHTML = '<p>No entries found for this date.</p>';
+            return;
+        }
+
+        data.entries.forEach((entry, index) => {
+            const entryDiv = document.createElement('div');
+            entryDiv.innerHTML = `
+                <div>
+                    <span>${entry.join(' | ')}</span>
+                    <button onclick="editEntry('${formattedDate}', ${index + 2})">Edit</button>
+                </div>
+            `;
+            entriesContainer.appendChild(entryDiv);
+        });
+
+        navigate('editEntriesPage');
+    } catch (error) {
+        console.error('Error fetching entries:', error);
+        updateStatus(`Error: ${error.message}`, "error");
+    }
+}
   async function editEntry(date, rowIndex) {
     const newTime = prompt('Enter new time (HH:mm:ss):');
     const newProjectActivity = prompt('Enter new project/activity:');
