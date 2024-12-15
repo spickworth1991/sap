@@ -362,19 +362,19 @@ app.post('/api/editEntry', async (req, res) => {
     });
 
     // 2. Fetch the updated sheet data to recalculate elapsed times and SAP times
-    const sapDataResponse = await sheets.spreadsheets.values.get({
+    let sapDataResponse = await sheets.spreadsheets.values.get({
       spreadsheetId: SPREADSHEET_ID,
       range: `${sapSheetName}!A:E`,
     });
 
-    const sapData = sapDataResponse.data.values || [];
+    let sapData = sapDataResponse.data.values || [];
 
     // Find all rows with the same date
     const dateRows = sapData
       .map((row, index) => ({ index: index + 1, row }))
       .filter(item => item.row[0] === date);
 
-    // 3. Recalculate elapsed times and SAP times for each row and update the previous row
+    // Recalculate elapsed times and SAP times for each row and update the previous row
     for (let i = 1; i < dateRows.length; i++) {
       const currentRow = dateRows[i];
       const previousRow = dateRows[i - 1];
@@ -399,7 +399,15 @@ app.post('/api/editEntry', async (req, res) => {
       }
     }
 
-    // 4. Recalculate totals for the current date after all edits and recalculations are done
+    // 3. Fetch the updated sheet data again after recalculating elapsed times
+    sapDataResponse = await sheets.spreadsheets.values.get({
+      spreadsheetId: SPREADSHEET_ID,
+      range: `${sapSheetName}!A:E`,
+    });
+
+    sapData = sapDataResponse.data.values || [];
+
+    // 4. Recalculate totals for the current date
     let lastRowWithDate = dateRows[dateRows.length - 1].index;
     let totalsRowIndex = null;
 
@@ -446,7 +454,6 @@ app.post('/api/editEntry', async (req, res) => {
     res.status(500).json({ error: error.message || 'Unknown error occurred' });
   }
 });
-
 
 
 // Start the Server
