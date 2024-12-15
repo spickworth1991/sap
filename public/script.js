@@ -28,14 +28,14 @@ function updateStatus(message, type) {
         }
         
         statusBox.className = type;
-        statusBox.style.display = "block";
+        statusBox.classList.add("show");
 
-        const duration = type === "success" ? 3000 : 5000;
         setTimeout(() => {
-            statusBox.style.display = "none";
-        }, duration);
+            statusBox.classList.remove("show");
+        }, type === "success" ? 3000 : 5000);
     }
 }
+
 
 
 // SAP Input function
