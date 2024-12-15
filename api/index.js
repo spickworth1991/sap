@@ -44,6 +44,55 @@ function getCurrentDate() {
   return moment().tz('America/New_York').format('MM/DD/YYYY');
 }
 
+// Route to handle SAP Input
+app.post('/api/sapInput', async (req, res) => {
+  try {
+    console.log('Received request for SAP Input');
+    const { input } = req.body;
+
+    if (!input) {
+      return res.status(400).json({ error: 'No input provided for SAP entry.' });
+    }
+
+    const sheets = await getGoogleSheetsService();
+    const now = moment().tz('America/New_York');
+    const currentDate = now.format('MM/DD/YYYY');
+    const currentTime = now.format('HH:mm:ss');
+    const monthName = getCurrentMonthName();
+
+    const sapSheetName = `${monthName}:SAP`;
+    console.log('SAP Sheet Name:', sapSheetName);
+
+    // Fetch the SAP sheet
+    const response = await sheets.spreadsheets.get({
+      spreadsheetId: SPREADSHEET_ID,
+      ranges: [sapSheetName],
+    });
+
+    const sheet = response.data.sheets.find(s => s.properties.title === sapSheetName);
+
+    if (!sheet) {
+      return res.status(404).json({ error: `Sheet ${sapSheetName} not found.` });
+    }
+
+    // Append the SAP input
+    await sheets.spreadsheets.values.append({
+      spreadsheetId: SPREADSHEET_ID,
+      range: `${sapSheetName}!A:E`,
+      valueInputOption: 'USER_ENTERED',
+      requestBody: {
+        values: [[currentDate, currentTime, input, '', '']],
+      },
+    });
+
+    console.log('SAP Input recorded successfully');
+    res.status(200).json({ message: 'SAP Input Accepted' });
+  } catch (error) {
+    console.error('Error in SAP Input:', error);
+    res.status(500).json({ error: error.message || 'Unknown error occurred' });
+  }
+});
+
 // Punch In Route
 app.post('/api/punchIn', async (req, res) => {
   try {
