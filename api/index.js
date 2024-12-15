@@ -184,20 +184,57 @@ app.post('/api/punchOut', async (req, res) => {
       requestBody: { values: [[currentTime]] },
     });
 
+    // Calculate elapsed time and SAP time
+    const punchInDateTime = moment.tz(`${currentDate} ${punchInTime}`, 'MM/DD/YYYY HH:mm:ss', 'America/New_York');
+    const now = moment.tz('America/New_York');
+    const elapsedMilliseconds = now.diff(punchInDateTime);
+    const elapsedFormatted = formatElapsedTime(elapsedMilliseconds);
+    const elapsedDecimal = calculateElapsedTimeDecimal(elapsedMilliseconds);
+
     // Add Punch Out entry to the SAP sheet
     await sheets.spreadsheets.values.append({
       spreadsheetId: SPREADSHEET_ID,
       range: `${sapSheetName}!A:E`,
       valueInputOption: 'USER_ENTERED',
-      requestBody: { values: [[currentDate, currentTime, 'Punch Out', '', '']] },
+      requestBody: { values: [[currentDate, currentTime, 'Punch Out', elapsedFormatted, elapsedDecimal]] },
     });
 
-    res.status(200).json({ message: 'Punch Out Accepted' });
+    // Calculate totals for the current date
+    const sapDataResponse = await sheets.spreadsheets.values.get({
+      spreadsheetId: SPREADSHEET_ID,
+      range: `${sapSheetName}!A:E`,
+    });
+
+    const sapData = sapDataResponse.data.values || [];
+    let totalElapsedTime = 0;
+    let totalSapTime = 0;
+
+    for (const row of sapData) {
+      if (row[0] === currentDate && row[3] && row[4]) {
+        const [hours, minutes, seconds] = row[3].split(':').map(Number);
+        totalElapsedTime += hours * 3600 + minutes * 60 + seconds;
+        totalSapTime += parseFloat(row[4]);
+      }
+    }
+
+    const totalElapsedFormatted = formatElapsedTime(totalElapsedTime * 1000);
+    const totalSapTimeFormatted = totalSapTime.toFixed(4);
+
+    // Append Totals row to the SAP sheet
+    await sheets.spreadsheets.values.append({
+      spreadsheetId: SPREADSHEET_ID,
+      range: `${sapSheetName}!A:E`,
+      valueInputOption: 'USER_ENTERED',
+      requestBody: { values: [['', '', 'Totals', totalElapsedFormatted, totalSapTimeFormatted]] },
+    });
+
+    res.status(200).json({ message: 'Punch Out Accepted with Totals' });
   } catch (error) {
     console.error('Error in Punch Out:', error);
     res.status(500).json({ error: error.message || 'Unknown error occurred' });
   }
 });
+
 
 // SAP Input Route with Calculations
 app.post('/api/sapInput', async (req, res) => {
