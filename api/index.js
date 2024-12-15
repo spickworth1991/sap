@@ -14,22 +14,15 @@ const SPREADSHEET_ID = process.env.GOOGLE_SHEET_ID;
 
 // Authenticate with Google Sheets API
 async function getGoogleSheetsService() {
-  try {
-    const credentials = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY);
-    console.log('Google Sheets credentials loaded:', credentials.client_email);
-
-    const auth = new google.auth.GoogleAuth({
-      credentials,
-      scopes: ['https://www.googleapis.com/auth/spreadsheets'],
-    });
-    return google.sheets({ version: 'v4', auth });
-  } catch (error) {
-    console.error('Error during Google Sheets authentication:', error);
-    throw error;
-  }
+  const credentials = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY);
+  const auth = new google.auth.GoogleAuth({
+    credentials,
+    scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+  });
+  return google.sheets({ version: 'v4', auth });
 }
 
-// Helper functions for date and time
+// Helper functions
 function getCurrentMonthName() {
   return moment().tz('America/New_York').format('MMMM');
 }
@@ -54,38 +47,30 @@ function calculateElapsedTimeDecimal(milliseconds) {
   return (milliseconds / (1000 * 60 * 60)).toFixed(4);
 }
 
-// Ensure headers exist if the last entry in Column A is not the current date
-async function ensureHeaders(sheets, sheetName, currentDate) {
-  try {
-    const response = await sheets.spreadsheets.values.get({
+// Ensure headers exist in the specified sheet
+async function ensureHeaders(sheets, sheetName) {
+  const response = await sheets.spreadsheets.values.get({
+    spreadsheetId: SPREADSHEET_ID,
+    range: `${sheetName}!A1:E1`,
+  });
+
+  if (!response.data.values || response.data.values.length === 0) {
+    await sheets.spreadsheets.values.update({
       spreadsheetId: SPREADSHEET_ID,
-      range: `${sheetName}!A:A`,
+      range: `${sheetName}!A1:E1`,
+      valueInputOption: 'USER_ENTERED',
+      requestBody: {
+        values: [['Date', 'Time', 'Punch In', 'Elapsed Time', 'SAP Time']],
+      },
     });
-
-    const rows = response.data.values || [];
-    const lastEntry = rows.length > 0 ? rows[rows.length - 1][0] : null;
-
-    if (lastEntry !== currentDate) {
-      await sheets.spreadsheets.values.append({
-        spreadsheetId: SPREADSHEET_ID,
-        range: `${sheetName}!A:E`,
-        valueInputOption: 'USER_ENTERED',
-        requestBody: {
-          values: [['Date', 'Time', 'Punch In', '', 'Punch Out']],
-        },
-      });
-    }
-  } catch (error) {
-    console.error('Error in ensureHeaders:', error);
-    throw error;
   }
 }
 
 // Function to find the row for the current date in the month sheet
-async function findDateRow(sheets, sheetName, currentDate) {
+async function findDateRow(sheets, monthSheetName, currentDate) {
   const response = await sheets.spreadsheets.values.get({
     spreadsheetId: SPREADSHEET_ID,
-    range: `${sheetName}!B:B`,
+    range: `${monthSheetName}!B:B`,
   });
   const rows = response.data.values || [];
 
@@ -107,7 +92,9 @@ app.post('/api/punchIn', async (req, res) => {
     const monthSheetName = monthName;
     const sapSheetName = `${monthName}:SAP`;
 
-    await ensureHeaders(sheets, monthSheetName, currentDate);
+    await ensureHeaders(sheets, monthSheetName);
+    await ensureHeaders(sheets, sapSheetName);
+
     let rowIndex = await findDateRow(sheets, monthSheetName, currentDate);
 
     if (!rowIndex) {
