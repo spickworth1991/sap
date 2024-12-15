@@ -141,7 +141,6 @@ app.post('/api/punchIn', async (req, res) => {
           ],
         },
       });
-      console.log('Headers added and Punch In recorded.');
     } else {
       // Add Punch In to the existing row
       await sheets.spreadsheets.values.append({
@@ -152,9 +151,20 @@ app.post('/api/punchIn', async (req, res) => {
           values: [[currentDate, currentTime, 'Punch In', '', '']],
         },
       });
-      console.log('Punch In recorded.');
     }
 
+    // Update the month sheet with Punch In time in Column C
+    const monthSheetName = monthName;
+    await sheets.spreadsheets.values.append({
+      spreadsheetId: SPREADSHEET_ID,
+      range: `${monthSheetName}!C:C`,
+      valueInputOption: 'USER_ENTERED',
+      requestBody: {
+        values: [[currentTime]],
+      },
+    });
+
+    console.log('Punch In recorded successfully');
     res.status(200).json({ message: 'Punch In Accepted' });
   } catch (error) {
     console.error('Error in Punch In:', error);
@@ -212,13 +222,25 @@ app.post('/api/punchOut', async (req, res) => {
       },
     });
 
-    console.log('Punch Out recorded with elapsed time.');
+    // Update the month sheet with Punch Out time in Column E
+    const monthSheetName = monthName;
+    await sheets.spreadsheets.values.append({
+      spreadsheetId: SPREADSHEET_ID,
+      range: `${monthSheetName}!E:E`,
+      valueInputOption: 'USER_ENTERED',
+      requestBody: {
+        values: [[currentTime]],
+      },
+    });
+
+    console.log('Punch Out recorded successfully with elapsed time');
     res.status(200).json({ message: 'Punch Out Accepted' });
   } catch (error) {
     console.error('Error in Punch Out:', error);
     res.status(500).json({ error: error.message || 'Unknown error occurred' });
   }
 });
+
 
 // Start the Server
 app.listen(PORT, () => {
