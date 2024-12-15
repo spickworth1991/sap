@@ -399,9 +399,21 @@ app.post('/api/editEntry', async (req, res) => {
       }
     }
 
-    // 4. Check if there's a punch-out entry and update the totals
-    const totalsRow = dateRows.find(row => row.row[2] === 'Totals');
-    if (totalsRow) {
+    // 4. Check for "Punch Out" in Column C and recalculate totals
+    let lastRowWithDate = dateRows[dateRows.length - 1].index;
+    let totalsRowIndex = null;
+
+    // Identify the totals row (it should be after the last entry with the current date)
+    for (let i = lastRowWithDate + 1; i <= sapData.length; i++) {
+      const row = sapData[i - 1];
+      if (row && row[2] === 'Totals') {
+        totalsRowIndex = i;
+        break;
+      }
+    }
+
+    // If a totals row is found, recalculate the totals
+    if (totalsRowIndex) {
       let totalElapsedTime = 0;
       let totalSapTime = 0;
 
@@ -419,10 +431,10 @@ app.post('/api/editEntry', async (req, res) => {
       const totalElapsedFormatted = formatElapsedTime(totalElapsedTime * 1000);
       const totalSapTimeFormatted = totalSapTime.toFixed(4);
 
-      // Update the totals row
+      // Update the totals row with recalculated totals
       await sheets.spreadsheets.values.update({
         spreadsheetId: SPREADSHEET_ID,
-        range: `${sapSheetName}!D${totalsRow.index}:E${totalsRow.index}`,
+        range: `${sapSheetName}!D${totalsRowIndex}:E${totalsRowIndex}`,
         valueInputOption: 'USER_ENTERED',
         requestBody: { values: [[totalElapsedFormatted, totalSapTimeFormatted]] },
       });
@@ -434,6 +446,7 @@ app.post('/api/editEntry', async (req, res) => {
     res.status(500).json({ error: error.message || 'Unknown error occurred' });
   }
 });
+
 
 
 
