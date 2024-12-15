@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Management</title>
+    <link rel="stylesheet" href="style.css"> <!-- Make sure this path is correct -->
+</head>
+<body onload="showPage('homePage')">
+    <div id="homePage" class="center">
+        <h1>Home</h1>
+        <div>
+          <button class="button nav-button" onclick="navigate('clockPage')">Clock In/Out</button>
+          <button class="button nav-button" onclick="navigate('sapPage')">SAP Input</button>
+          <button class="button nav-button" onclick="navigate('dateSelectionPage')">Date Selection</button>
+        </div>
+    </div>
+
+    <div id="clockPage" class="center" style="display: none;">
+        <h1>Clock In/Out</h1>
+        <div>
+            <button class="button punch-button" id="punchInButton" onclick="punchIn(this)">Punch In</button>
+            <button class="button punch-button" id="punchOutButton" onclick="punchOut(this)">Punch Out</button>
+        </div>
+        <button class="button nav-button" onclick="navigate('homePage')">Back to Home</button>
+    </div>
+
+    <div id="statusBox" class="info" style="display: none;"></div>
+
+    <div id="sapPage" class="center" style="display: none;">
+        <h1>SAP Input</h1>
+        <div>
+          <textarea id="inputBox" placeholder="Enter Project Number or SAP Info..." rows="5" style="width: 50%;" wrap="soft"></textarea>
+        </div>
+        <div>
+          <button class="button nav-button" onclick="sapInput(this)">Submit</button>
+          <button class="button nav-button" onclick="navigate('homePage')">Back to Home</button>
+        </div>
+    </div>
+
+    <div id="dateSelectionPage" class="center" style="display: none;">
+        <h1>Date Selection</h1>
+        <div>
+          <input type="date" id="datePicker">
+        </div>
+        <div>
+          <button class="button nav-button" onclick="loadEntries()">Select Date</button>
+          <button class="button nav-button" onclick="navigate('homePage')">Back to Home</button>
+        </div>
+    </div>
+
+    <div id="editEntriesPage" class="center" style="display: none;">
+        <h1>Edit Entries</h1>
+        <div id="entriesContainer"></div>
+        <button class="button nav-button" onclick="navigate('dateSelectionPage')">Back to Date Selection</button>
+    </div>
+
+    <script src="script.js"></script> <!-- Ensure this path is correct -->
+</body>
+</html>
