@@ -38,25 +38,62 @@ function getCurrentMonthName() {
   return monthNames[now.getMonth()]; // Returns current month name
 }
 
+// Helper function to format the current date as MM/DD/YYYY
+function getCurrentDate() {
+  const now = new Date();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  const year = now.getFullYear();
+  return `${month}/${day}/${year}`;
+}
+
 // Punch In Route
 app.post('/api/punchIn', async (req, res) => {
   try {
     console.log('Received request for Punch In');
 
     const sheets = await getGoogleSheetsService();
-    const now = new Date().toLocaleString();
+    const now = new Date().toLocaleTimeString();
+    const currentDate = getCurrentDate();
     const monthName = getCurrentMonthName();
+    const range = `'${monthName}'!B:B`;
 
-    const range = `'${monthName}'!A1`;
     console.log('SPREADSHEET_ID:', SPREADSHEET_ID);
     console.log('Range:', range);
+    console.log('Current Date:', currentDate);
+    console.log('Current Time:', now);
 
-    await sheets.spreadsheets.values.append({
+    // Fetch all values in Column B
+    const response = await sheets.spreadsheets.values.get({
       spreadsheetId: SPREADSHEET_ID,
       range: range,
+    });
+
+    const rows = response.data.values || [];
+    let rowIndex = -1;
+
+    // Find the row with the current date in Column B
+    for (let i = 0; i < rows.length; i++) {
+      if (rows[i][0] === currentDate) {
+        rowIndex = i + 1; // Google Sheets is 1-indexed
+        break;
+      }
+    }
+
+    if (rowIndex === -1) {
+      return res.status(404).json({ error: `Date ${currentDate} not found in Column B` });
+    }
+
+    const updateRange = `'${monthName}'!C${rowIndex}`;
+    console.log('Update Range for Punch In:', updateRange);
+
+    // Update Column C with the current time
+    await sheets.spreadsheets.values.update({
+      spreadsheetId: SPREADSHEET_ID,
+      range: updateRange,
       valueInputOption: 'USER_ENTERED',
       requestBody: {
-        values: [['Punch In', now]],
+        values: [[now]],
       },
     });
 
@@ -74,19 +111,47 @@ app.post('/api/punchOut', async (req, res) => {
     console.log('Received request for Punch Out');
 
     const sheets = await getGoogleSheetsService();
-    const now = new Date().toLocaleString();
+    const now = new Date().toLocaleTimeString();
+    const currentDate = getCurrentDate();
     const monthName = getCurrentMonthName();
+    const range = `'${monthName}'!B:B`;
 
-    const range = `'${monthName}'!A1`;
     console.log('SPREADSHEET_ID:', SPREADSHEET_ID);
     console.log('Range:', range);
+    console.log('Current Date:', currentDate);
+    console.log('Current Time:', now);
 
-    await sheets.spreadsheets.values.append({
+    // Fetch all values in Column B
+    const response = await sheets.spreadsheets.values.get({
       spreadsheetId: SPREADSHEET_ID,
       range: range,
+    });
+
+    const rows = response.data.values || [];
+    let rowIndex = -1;
+
+    // Find the row with the current date in Column B
+    for (let i = 0; i < rows.length; i++) {
+      if (rows[i][0] === currentDate) {
+        rowIndex = i + 1; // Google Sheets is 1-indexed
+        break;
+      }
+    }
+
+    if (rowIndex === -1) {
+      return res.status(404).json({ error: `Date ${currentDate} not found in Column B` });
+    }
+
+    const updateRange = `'${monthName}'!E${rowIndex}`;
+    console.log('Update Range for Punch Out:', updateRange);
+
+    // Update Column E with the current time
+    await sheets.spreadsheets.values.update({
+      spreadsheetId: SPREADSHEET_ID,
+      range: updateRange,
       valueInputOption: 'USER_ENTERED',
       requestBody: {
-        values: [['Punch Out', now]],
+        values: [[now]],
       },
     });
 
@@ -94,37 +159,6 @@ app.post('/api/punchOut', async (req, res) => {
     res.status(200).json({ message: 'Punch Out Accepted' });
   } catch (error) {
     console.error('Error in Punch Out:', error);
-    res.status(500).json({ error: error.message || 'Unknown error occurred' });
-  }
-});
-
-// SAP Input Route (if it was missing)
-app.post('/api/sapInput', async (req, res) => {
-  try {
-    console.log('Received request for SAP Input');
-
-    const { input } = req.body;
-    const sheets = await getGoogleSheetsService();
-    const now = new Date().toLocaleString();
-    const monthName = getCurrentMonthName();
-
-    const range = `'${monthName}'!B1`; // Assuming SAP input goes to column B
-    console.log('SPREADSHEET_ID:', SPREADSHEET_ID);
-    console.log('Range:', range);
-
-    await sheets.spreadsheets.values.append({
-      spreadsheetId: SPREADSHEET_ID,
-      range: range,
-      valueInputOption: 'USER_ENTERED',
-      requestBody: {
-        values: [['SAP Input', input, now]],
-      },
-    });
-
-    console.log('SAP Input recorded successfully');
-    res.status(200).json({ message: 'SAP Input Accepted' });
-  } catch (error) {
-    console.error('Error in SAP Input:', error);
     res.status(500).json({ error: error.message || 'Unknown error occurred' });
   }
 });
