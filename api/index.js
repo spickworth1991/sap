@@ -399,7 +399,7 @@ app.post('/api/editEntry', async (req, res) => {
       }
     }
 
-    // 4. Find the "Totals" row (after the last row with the current date)
+    // 4. Always recalculate totals for the current date
     let lastRowWithDate = dateRows[dateRows.length - 1].index;
     let totalsRowIndex = null;
 
