@@ -20,7 +20,7 @@ function updateStatus(message, type) {
     const statusBox = document.getElementById("statusBox");
     if (statusBox) {
         if (typeof message === 'object' && message.code && message.message) {
-            statusBox.innerText = `Error ${message.code}: ${message.message}`;
+            statusBox.innerText = `${type === 'error' ? 'Error' : 'Success'} ${message.code}: ${message.message}`;
         } else {
             statusBox.innerText = message;
         }
@@ -76,19 +76,19 @@ async function punchIn(button) {
 
     try {
         const response = await fetch("/api/punchIn", { method: "POST" });
+        const result = await response.json();
 
         if (response.ok) {
-            updateStatus("Punched in successfully!", "success");
+            updateStatus(result, "success");
         } else {
-            throw new Error("Failed to punch in");
+            updateStatus(result, "error");
         }
     } catch (error) {
-        updateStatus(`Error: ${error.message}`, "error");
+        updateStatus({ code: 9999, message: error.message }, "error");
     } finally {
         button.style.backgroundColor = "";
     }
 }
-
 // Punch Out function
 async function punchOut(button) {
     button.style.backgroundColor = "#555";
@@ -97,12 +97,12 @@ async function punchOut(button) {
         const response = await fetch("/api/punchOut", { method: "POST" });
 
         if (response.ok) {
-            updateStatus("Punched out successfully!", "success");
+            updateStatus(result, "success");;
         } else {
-            throw new Error("Failed to punch out");
+            updateStatus(result, "error");
         }
     } catch (error) {
-        updateStatus(`Error: ${error.message}`, "error");
+        updateStatus({ code: 9999, message: error.message }, "error");
     } finally {
         button.style.backgroundColor = "";
     }

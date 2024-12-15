@@ -134,10 +134,10 @@ app.post('/api/punchIn', async (req, res) => {
       requestBody: { values: [[currentDate, currentTime, 'Punch In', '', '']] },
     });
 
-    res.status(200).json({ message: success.PUNCH_IN_SUCCESS });
+    res.status(200).json(success.PUNCH_IN_SUCCESS );
   } catch (error) {
     console.error('Error in Punch In:', error);
-    res.status(500).json({ error: error.message || errors.FAIL_PUNCH_IN });
+    res.status(500).json(errors.FAIL_PUNCH_IN);
   }
 });
 
@@ -175,7 +175,7 @@ app.post('/api/punchOut', async (req, res) => {
     const punchInTime = punchInResponse.data.values?.[0]?.[0];
 
     if (!punchInTime) {
-      return res.status(400).json({ error: errors.NO_PUNCH_IN_FOUND });
+      return res.status(400).json(errors.NO_PUNCH_IN_FOUND);
     }
 
     // Update the Punch Out time in Column E on the month sheet
@@ -254,10 +254,10 @@ app.post('/api/punchOut', async (req, res) => {
       requestBody: { values: [['', '', 'Totals', totalElapsedFormatted, totalSapTimeFormatted]] },
     });
 
-    res.status(200).json({ message: success.PUNCH_OUT_SUCCESS });
+    res.status(200).json(success.PUNCH_OUT_SUCCESS);
   } catch (error) {
     console.error('Error in Punch Out:', error);
-    res.status(500).json({ error: error.message || errors.FAIL_PUNCH_OUT });
+    res.status(500).json(errors.FAIL_PUNCH_OUT );
   }
 });
 
@@ -268,7 +268,7 @@ app.post('/api/sapInput', async (req, res) => {
   try {
     const { input } = req.body;
     if (!input) {
-      return res.status(400).json({ error: errors.NO_INPUT_PROVIDED });
+      return res.status(400).json(errors.NO_INPUT_PROVIDED );
     }
 
     const sheets = await getGoogleSheetsService();
@@ -315,10 +315,10 @@ app.post('/api/sapInput', async (req, res) => {
       requestBody: { values: [[currentDate, currentTime, input, '', '']] },
     });
 
-    res.status(200).json({ message: success.SAP_INPUT_SUCCESS });
+    res.status(200).json(success.SAP_INPUT_SUCCESS);
   } catch (error) {
     console.error('Error in SAP Input:', error);
-    res.status(500).json({ error: error.message || errors.SAP_FAIL });
+    res.status(500).json(errors.SAP_FAIL);
   }
 });
 
@@ -339,10 +339,10 @@ app.get('/api/entries/:date', async (req, res) => {
       .map((row, index) => ({ rowNumber: index + 1, values: row }))
       .filter(row => row.values[0] === selectedDate);
 
-    res.status(200).json({ entries: dateEntries, message: success.ENTRY_UPDATED_SUCCESS });
+    res.status(200).json({ entries: dateEntries}, success.ENTRY_UPDATED_SUCCESS );
   } catch (error) {
     console.error('Error fetching entries:', error);
-    res.status(500).json({ error: error.message || errors.FETCH_FAIL });
+    res.status(500).json(errors.FETCH_FAIL );
   }
 });
 
@@ -455,10 +455,10 @@ app.post('/api/editEntry', async (req, res) => {
       });
     }
 
-    res.status(200).json({ message: success.ENTRY_UPDATED_SUCCESS });
+    res.status(200).json(success.ENTRY_UPDATED_SUCCESS);
   } catch (error) {
     console.error('Error in editing entry:', error);
-    res.status(500).json({ error: error.message || errors.UPDATE_FAILED });
+    res.status(500).json(errors.UPDATE_FAILED);
   }
 });
 
