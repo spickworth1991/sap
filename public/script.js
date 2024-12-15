@@ -123,14 +123,27 @@ async function fetchEntriesByDate() {
     // Convert date from YYYY-MM-DD to MM/DD/YYYY
     const [year, month, day] = dateInput.split('-');
     const formattedDate = `${month}/${day}/${year}`;
-    console.log("Formatted date:", formattedDate); // Debugging line
+    console.log("Formatted date:", formattedDate);
 
     try {
         const response = await fetch(`/api/entries/${formattedDate}`);
-        console.log("Fetch response:", response); // Debugging line
+        console.log("Fetch response:", response);
 
-        const data = await response.json();
-        console.log("Fetched data:", data); // Debugging line
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Server Error: ${response.status} - ${errorText}`);
+        }
+
+        let data;
+        try {
+            data = await response.json();
+        } catch (jsonError) {
+            const errorText = await response.text();
+            console.error('Invalid JSON response:', errorText);
+            throw new Error('Invalid JSON received from the server');
+        }
+
+        console.log("Fetched data:", data);
 
         const entriesContainer = document.getElementById('entriesContainer');
         entriesContainer.innerHTML = ''; // Clear previous entries
@@ -157,6 +170,7 @@ async function fetchEntriesByDate() {
         updateStatus(`Error: ${error.message}`, "error");
     }
 }
+
   async function editEntry(date, rowIndex) {
     const newTime = prompt('Enter new time (HH:mm:ss):');
     const newProjectActivity = prompt('Enter new project/activity:');
