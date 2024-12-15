@@ -14,15 +14,22 @@ const SPREADSHEET_ID = process.env.GOOGLE_SHEET_ID;
 
 // Authenticate with Google Sheets API
 async function getGoogleSheetsService() {
-  const credentials = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY);
-  const auth = new google.auth.GoogleAuth({
-    credentials,
-    scopes: ['https://www.googleapis.com/auth/spreadsheets'],
-  });
-  return google.sheets({ version: 'v4', auth });
+  try {
+    const credentials = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY);
+    console.log('Google Sheets credentials loaded:', credentials.client_email);
+
+    const auth = new google.auth.GoogleAuth({
+      credentials,
+      scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+    });
+    return google.sheets({ version: 'v4', auth });
+  } catch (error) {
+    console.error('Error during Google Sheets authentication:', error);
+    throw error;
+  }
 }
 
-// Helper functions
+// Helper functions for date and time
 function getCurrentMonthName() {
   return moment().tz('America/New_York').format('MMMM');
 }
@@ -47,30 +54,38 @@ function calculateElapsedTimeDecimal(milliseconds) {
   return (milliseconds / (1000 * 60 * 60)).toFixed(4);
 }
 
-// Ensure headers exist in the specified sheet
-async function ensureHeaders(sheets, sheetName) {
-  const response = await sheets.spreadsheets.values.get({
-    spreadsheetId: SPREADSHEET_ID,
-    range: `${sheetName}!A1:E1`,
-  });
-
-  if (!response.data.values || response.data.values.length === 0) {
-    await sheets.spreadsheets.values.update({
+// Ensure headers exist if the last entry in Column A is not the current date
+async function ensureHeaders(sheets, sheetName, currentDate) {
+  try {
+    const response = await sheets.spreadsheets.values.get({
       spreadsheetId: SPREADSHEET_ID,
-      range: `${sheetName}!A1:E1`,
-      valueInputOption: 'USER_ENTERED',
-      requestBody: {
-        values: [['Date', 'Time', 'Punch In', 'Elapsed Time', 'SAP Time']],
-      },
+      range: `${sheetName}!A:A`,
     });
+
+    const rows = response.data.values || [];
+    const lastEntry = rows.length > 0 ? rows[rows.length - 1][0] : null;
+
+    if (lastEntry !== currentDate) {
+      await sheets.spreadsheets.values.append({
+        spreadsheetId: SPREADSHEET_ID,
+        range: `${sheetName}!A:E`,
+        valueInputOption: 'USER_ENTERED',
+        requestBody: {
+          values: [['Date', 'Time', 'Punch In', '', 'Punch Out']],
+        },
+      });
+    }
+  } catch (error) {
+    console.error('Error in ensureHeaders:', error);
+    throw error;
   }
 }
 
 // Function to find the row for the current date in the month sheet
-async function findDateRow(sheets, monthSheetName, currentDate) {
+async function findDateRow(sheets, sheetName, currentDate) {
   const response = await sheets.spreadsheets.values.get({
     spreadsheetId: SPREADSHEET_ID,
-    range: `${monthSheetName}!B:B`,
+    range: `${sheetName}!B:B`,
   });
   const rows = response.data.values || [];
 
@@ -92,9 +107,7 @@ app.post('/api/punchIn', async (req, res) => {
     const monthSheetName = monthName;
     const sapSheetName = `${monthName}:SAP`;
 
-    await ensureHeaders(sheets, monthSheetName);
-    await ensureHeaders(sheets, sapSheetName);
-
+    await ensureHeaders(sheets, monthSheetName, currentDate);
     let rowIndex = await findDateRow(sheets, monthSheetName, currentDate);
 
     if (!rowIndex) {
@@ -189,6 +202,40 @@ app.post('/api/punchOut', async (req, res) => {
     res.status(200).json({ message: 'Punch Out Accepted' });
   } catch (error) {
     console.error('Error in Punch Out:', error);
+    res.status(500).json({ error: error.message || 'Unknown error occurred' });
+  }
+});
+
+// SAP Input Route
+app.post('/api/sapInput', async (req, res) => {
+  try {
+    console.log('Received request for SAP Input');
+    const { input } = req.body;
+
+    if (!input) {
+      return res.status(400).json({ error: 'No input provided for SAP entry.' });
+    }
+
+    const sheets = await getGoogleSheetsService();
+    const currentDate = getCurrentDate();
+    const currentTime = getCurrentTime();
+    const monthName = getCurrentMonthName();
+    const sapSheetName = `${monthName}:SAP`;
+
+    await ensureHeaders(sheets, sapSheetName, currentDate);
+
+    await sheets.spreadsheets.values.append({
+      spreadsheetId: SPREADSHEET_ID,
+      range: `${sapSheetName}!A:E`,
+      valueInputOption: 'USER_ENTERED',
+      requestBody: {
+        values: [[currentDate, currentTime, input, '', '']],
+      },
+    });
+
+    res.status(200).json({ message: 'SAP Input Accepted' });
+  } catch (error) {
+    console.error('Error in SAP Input:', error);
     res.status(500).json({ error: error.message || 'Unknown error occurred' });
   }
 });
