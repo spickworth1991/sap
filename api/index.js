@@ -400,20 +400,20 @@ app.post('/api/editEntry', async (req, res) => {
     }
 
     // 3. Fetch the updated sheet data again after recalculating elapsed times
-    let sapDataResponse2 = await sheets.spreadsheets.values.get({
+    sapDataResponse = await sheets.spreadsheets.values.get({
       spreadsheetId: SPREADSHEET_ID,
       range: `${sapSheetName}!A:E`,
     });
 
-    let sapData2 = sapDataResponse2.data.values || [];
+    sapData = sapDataResponse.data.values || [];
 
     // 4. Recalculate totals for the current date
     let lastRowWithDate = dateRows[dateRows.length - 1].index;
     let totalsRowIndex = null;
 
     // Find the "Totals" row after the last row with the current date
-    for (let i = lastRowWithDate + 1; i <= sapData2.length; i++) {
-      const row = sapData2[i - 1];
+    for (let i = lastRowWithDate + 1; i <= sapData.length; i++) {
+      const row = sapData[i - 1];
       if (row && row[2] === 'Totals') {
         totalsRowIndex = i;
         break;
@@ -422,29 +422,29 @@ app.post('/api/editEntry', async (req, res) => {
 
     // If a totals row is found, recalculate and update the totals
     if (totalsRowIndex) {
-      let totalElapsedTime2 = 0;
-      let totalSapTime2 = 0;
+      let totalElapsedTime = 0;
+      let totalSapTime = 0;
 
       dateRows.forEach(row => {
-        const elapsedTime2 = row.row[3];
-        const sapTime2 = row.row[4];
+        const elapsedTime = row.row[3];
+        const sapTime = row.row[4];
 
-        if (elapsedTime2 && sapTime2) {
-          const [hours, minutes, seconds] = elapsedTime2.split(':').map(Number);
-          totalElapsedTime2 += hours * 3600 + minutes * 60 + seconds;
-          totalSapTime2 += parseFloat(sapTime2);
+        if (elapsedTime && sapTime) {
+          const [hours, minutes, seconds] = elapsedTime.split(':').map(Number);
+          totalElapsedTime += hours * 3600 + minutes * 60 + seconds;
+          totalSapTime += parseFloat(sapTime);
         }
       });
 
-      const totalElapsedFormatted2 = formatElapsedTime(totalElapsedTime2 * 1000);
-      const totalSapTimeFormatted2 = totalSapTime2.toFixed(4);
+      const totalElapsedFormatted = formatElapsedTime(totalElapsedTime * 1000);
+      const totalSapTimeFormatted = totalSapTime.toFixed(4);
 
       // Update the totals row with recalculated totals
       await sheets.spreadsheets.values.update({
         spreadsheetId: SPREADSHEET_ID,
         range: `${sapSheetName}!D${totalsRowIndex}:E${totalsRowIndex}`,
         valueInputOption: 'USER_ENTERED',
-        requestBody: { values: [[totalElapsedFormatted2, totalSapTimeFormatted2]] },
+        requestBody: { values: [[totalElapsedFormatted, totalSapTimeFormatted]] },
       });
     }
 
