@@ -56,7 +56,7 @@ async function ensureHeaders(sheets, sheetName, currentDate) {
   });
 
   const rows = response.data.values || [];
-  const lastEntry = rows[rows.length - 1]?.[0];
+  const lastEntry = rows.length > 0 ? rows[rows.length - 1][0] : null;
 
   if (lastEntry !== currentDate) {
     await sheets.spreadsheets.values.append({
@@ -69,6 +69,7 @@ async function ensureHeaders(sheets, sheetName, currentDate) {
     });
   }
 }
+
 
 // Find the row for the current date in the month sheet
 async function findDateRow(sheets, monthSheetName, currentDate) {
@@ -95,6 +96,9 @@ app.post('/api/punchIn', async (req, res) => {
     const monthName = getCurrentMonthName();
     const monthSheetName = monthName;
     const sapSheetName = `${monthName}:SAP`;
+
+    // Ensure headers are present in the SAP sheet
+    await ensureHeaders(sheets, sapSheetName, currentDate);
 
     // Find the row with the current date on the month sheet
     let rowIndex = await findDateRow(sheets, monthSheetName, currentDate);
