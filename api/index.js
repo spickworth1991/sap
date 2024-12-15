@@ -400,12 +400,12 @@ app.post('/api/editEntry', async (req, res) => {
     }
 
     // 3. Fetch the updated sheet data again after recalculating elapsed times
-    sapDataResponse = await sheets.spreadsheets.values.get({
+    let sapDataResponse2 = await sheets.spreadsheets.values.get({
       spreadsheetId: SPREADSHEET_ID,
       range: `${sapSheetName}!A:E`,
     });
 
-    sapData = sapDataResponse.data.values || [];
+    let sapData2 = sapDataResponse2.data.values || [];
 
     // 4. Recalculate totals for the current date
     let lastRowWithDate = dateRows[dateRows.length - 1].index;
@@ -413,7 +413,7 @@ app.post('/api/editEntry', async (req, res) => {
 
     // Find the "Totals" row after the last row with the current date
     for (let i = lastRowWithDate + 1; i <= sapData.length; i++) {
-      const row = sapData[i - 1];
+      const row = sapData2[i - 1];
       if (row && row[2] === 'Totals') {
         totalsRowIndex = i;
         break;
