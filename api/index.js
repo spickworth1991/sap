@@ -49,7 +49,6 @@ function calculateElapsedTimeDecimal(milliseconds) {
   return (milliseconds / (1000 * 60 * 60)).toFixed(4);
 }
 
-
 // Ensure headers exist if the last entry in Column A is not the current date
 async function ensureHeaders(sheets, sheetName, currentDate) {
   const response = await sheets.spreadsheets.values.get({
@@ -71,7 +70,6 @@ async function ensureHeaders(sheets, sheetName, currentDate) {
     });
   }
 }
-
 
 // Find the row for the current date in the month sheet
 async function findDateRow(sheets, monthSheetName, currentDate) {
@@ -260,8 +258,6 @@ app.post('/api/punchOut', async (req, res) => {
     res.status(500).json(errors.FAIL_PUNCH_OUT );
   }
 });
-
-
 
 // SAP Input Route with Calculations
 app.post('/api/sapInput', async (req, res) => {

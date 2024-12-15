@@ -21,9 +21,12 @@ function updateStatus(message, type) {
     if (statusBox) {
         if (typeof message === 'object' && message.code && message.message) {
             statusBox.innerText = `${type === 'error' ? 'Error' : 'Success'} ${message.code}: ${message.message}`;
-        } else {
+        } else if (typeof message === 'string') {
             statusBox.innerText = message;
+        } else {
+            statusBox.innerText = type === 'error' ? 'An unknown error occurred.' : 'Operation successful.';
         }
+        
         statusBox.className = type;
         statusBox.style.display = "block";
 
@@ -84,11 +87,34 @@ async function punchIn(button) {
             updateStatus(result, "error");
         }
     } catch (error) {
-        updateStatus({ code: 9999, message: error.message }, "error");
+        console.error('Error in Punch In:', error);
+        updateStatus({ code: 9999, message: error.message || "An unexpected error occurred." }, "error");
     } finally {
         button.style.backgroundColor = "";
     }
 }
+
+// Punch Out function
+async function punchOut(button) {
+    button.style.backgroundColor = "#555";
+
+    try {
+        const response = await fetch("/api/punchOut", { method: "POST" });
+        const result = await response.json();
+
+        if (response.ok) {
+            updateStatus(result, "success");
+        } else {
+            updateStatus(result, "error");
+        }
+    } catch (error) {
+        console.error('Error in Punch Out:', error);
+        updateStatus({ code: 9999, message: error.message || "An unexpected error occurred." }, "error");
+    } finally {
+        button.style.backgroundColor = "";
+    }
+}
+
 // Punch Out function
 async function punchOut(button) {
     button.style.backgroundColor = "#555";
@@ -102,7 +128,7 @@ async function punchOut(button) {
             updateStatus(result, "error");
         }
     } catch (error) {
-        updateStatus({ code: 9999, message: error.message }, "error");
+        updateStatus({ code: 9999, message: error.message || "An unexpected error occurred." }, "error");
     } finally {
         button.style.backgroundColor = "";
     }
