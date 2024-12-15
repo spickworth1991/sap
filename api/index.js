@@ -406,6 +406,7 @@ app.post('/api/editEntry', async (req, res) => {
     });
 
     sapData = sapDataResponse.data.values || [];
+    console.log(`values= ${sapData}`);
 
     // 4. Recalculate totals for the current date
     let lastRowWithDate = dateRows[dateRows.length - 1].index;
