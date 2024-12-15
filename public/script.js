@@ -147,12 +147,13 @@ async function fetchEntriesByDate() {
             return;
         }
 
-        data.entries.forEach((entry, index) => {
+        data.entries.forEach((entry) => {
+            const { rowNumber, values } = entry;
             const entryDiv = document.createElement('div');
             entryDiv.innerHTML = `
                 <div>
-                    <span>${entry.join(' | ')}</span>
-                    <button onclick="editEntry('${formattedDate}', ${index + 2})">Edit</button>
+                    <span>${values.join(' | ')}</span>
+                    <button onclick="editEntry('${formattedDate}', ${rowNumber})">Edit</button>
                 </div>
             `;
             entriesContainer.appendChild(entryDiv);
@@ -165,33 +166,35 @@ async function fetchEntriesByDate() {
     }
 }
 
+
 async function editEntry(date, rowIndex) {
     const newTime = prompt('Enter new time (HH:mm:ss):');
     const newProjectActivity = prompt('Enter new project/activity:');
-  
+
     if (!newTime || !newProjectActivity) {
-      alert('Both time and project/activity are required.');
-      return;
+        alert('Both time and project/activity are required.');
+        return;
     }
-  
+
     try {
-      const response = await fetch('/api/editEntry', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ date, rowIndex, time: newTime, projectActivity: newProjectActivity }),
-      });
-  
-      const result = await response.json();
-  
-      if (response.ok) {
-        alert(result.message);
-        fetchEntriesByDate(); // Refresh entries after update
-      } else {
-        alert(`Error: ${result.error}`);
-      }
+        const response = await fetch('/api/editEntry', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ date, rowIndex, time: newTime, projectActivity: newProjectActivity }),
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            alert(result.message);
+            fetchEntriesByDate(); // Refresh entries after update
+        } else {
+            alert(`Error: ${result.error}`);
+        }
     } catch (error) {
-      console.error('Error editing entry:', error);
-      alert('Error editing entry.');
+        console.error('Error editing entry:', error);
+        alert('Error editing entry.');
     }
 }
+
   

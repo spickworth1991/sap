@@ -320,7 +320,6 @@ app.post('/api/sapInput', async (req, res) => {
   }
 });
 
-// Route to get entries for a specific date
 app.get('/api/entries/:date', async (req, res) => {
   try {
     const sheets = await getGoogleSheetsService();
@@ -334,7 +333,9 @@ app.get('/api/entries/:date', async (req, res) => {
     });
 
     const allEntries = response.data.values || [];
-    const dateEntries = allEntries.filter(row => row[0] === selectedDate);
+    const dateEntries = allEntries
+      .map((row, index) => ({ rowNumber: index + 1, values: row }))
+      .filter(row => row.values[0] === selectedDate);
 
     res.status(200).json({ entries: dateEntries });
   } catch (error) {
@@ -342,6 +343,7 @@ app.get('/api/entries/:date', async (req, res) => {
     res.status(500).json({ error: error.message || 'Unknown error occurred' });
   }
 });
+
 
 // Route to edit an entry
 app.post('/api/editEntry', async (req, res) => {
