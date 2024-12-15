@@ -125,8 +125,10 @@ async function fetchEntriesByDate() {
     const formattedDate = `${month}/${day}/${year}`;
     console.log("Formatted date:", formattedDate);
 
+    const encodedDate = encodeURIComponent(formattedDate); // Encode the date for the URL
+
     try {
-        const response = await fetch(`/api/entries/${formattedDate}`);
+        const response = await fetch(`/api/entries/${encodedDate}`);
         console.log("Fetch response:", response);
 
         if (!response.ok) {
@@ -134,15 +136,7 @@ async function fetchEntriesByDate() {
             throw new Error(`Server Error: ${response.status} - ${errorText}`);
         }
 
-        let data;
-        try {
-            data = await response.json();
-        } catch (jsonError) {
-            const errorText = await response.text();
-            console.error('Invalid JSON response:', errorText);
-            throw new Error('Invalid JSON received from the server');
-        }
-
+        const data = await response.json();
         console.log("Fetched data:", data);
 
         const entriesContainer = document.getElementById('entriesContainer');
