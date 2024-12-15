@@ -2,6 +2,7 @@ const express = require('express');
 const { google } = require('googleapis');
 const cors = require('cors');
 const moment = require('moment-timezone');
+const errors = require('./errors');
 require('dotenv').config();
 
 const app = express();
@@ -47,20 +48,23 @@ function calculateElapsedTimeDecimal(milliseconds) {
   return (milliseconds / (1000 * 60 * 60)).toFixed(4);
 }
 
-// Ensure headers exist in the specified sheet
-async function ensureHeaders(sheets, sheetName) {
+// Ensure headers exist if the last entry in Column A is not the current date
+async function ensureHeaders(sheets, sheetName, currentDate) {
   const response = await sheets.spreadsheets.values.get({
     spreadsheetId: SPREADSHEET_ID,
-    range: `${sheetName}!A1:E1`,
+    range: `${sheetName}!A:A`,
   });
 
-  if (!response.data.values || response.data.values.length === 0) {
-    await sheets.spreadsheets.values.update({
+  const rows = response.data.values || [];
+  const lastEntry = rows[rows.length - 1]?.[0];
+
+  if (lastEntry !== currentDate) {
+    await sheets.spreadsheets.values.append({
       spreadsheetId: SPREADSHEET_ID,
       range: `${sheetName}!A1:E1`,
       valueInputOption: 'USER_ENTERED',
       requestBody: {
-        values: [['Date', 'Time', 'Punch In', 'Elapsed Time', 'SAP Time']],
+        values: [['Date', 'Time', 'Project/Activity', 'Elapsed Time', 'SAP Time']],
       },
     });
   }
@@ -81,64 +85,6 @@ async function findDateRow(sheets, monthSheetName, currentDate) {
   }
   return null;
 }
-
-// Punch In Route
-app.post('/api/punchIn', async (req, res) => {
-  try {
-    const sheets = await getGoogleSheetsService();
-    const currentDate = getCurrentDate();
-    const currentTime = getCurrentTime();
-    const monthName = getCurrentMonthName();
-    const monthSheetName = monthName;
-    const sapSheetName = `${monthName}:SAP`;
-
-    await ensureHeaders(sheets, monthSheetName);
-    await ensureHeaders(sheets, sapSheetName);
-
-    let rowIndex = await findDateRow(sheets, monthSheetName, currentDate);
-
-    if (!rowIndex) {
-      rowIndex = (await sheets.spreadsheets.values.get({
-        spreadsheetId: SPREADSHEET_ID,
-        range: `${monthSheetName}!B:B`,
-      })).data.values.length + 1;
-
-      await sheets.spreadsheets.values.update({
-        spreadsheetId: SPREADSHEET_ID,
-        range: `${monthSheetName}!B${rowIndex}`,
-        valueInputOption: 'USER_ENTERED',
-        requestBody: { values: [[currentDate]] },
-      });
-    } else {
-      const punchInResponse = await sheets.spreadsheets.values.get({
-        spreadsheetId: SPREADSHEET_ID,
-        range: `${monthSheetName}!C${rowIndex}`,
-      });
-      if (punchInResponse.data.values?.[0]?.[0]) {
-        return res.status(400).json({ error: `Already punched in on ${currentDate}` });
-      }
-    }
-
-    await sheets.spreadsheets.values.update({
-      spreadsheetId: SPREADSHEET_ID,
-      range: `${monthSheetName}!C${rowIndex}`,
-      valueInputOption: 'USER_ENTERED',
-      requestBody: { values: [[currentTime]] },
-    });
-
-    await sheets.spreadsheets.values.append({
-      spreadsheetId: SPREADSHEET_ID,
-      range: `${sapSheetName}!A:E`,
-      valueInputOption: 'USER_ENTERED',
-      requestBody: { values: [[currentDate, currentTime, 'Punch In', '', '']] },
-    });
-
-    res.status(200).json({ message: 'Punch In Accepted' });
-  } catch (error) {
-    console.error('Error in Punch In:', error);
-    res.status(500).json({ error: error.message || 'Unknown error occurred' });
-  }
-});
 
 // Punch Out Route
 app.post('/api/punchOut', async (req, res) => {
@@ -189,20 +135,13 @@ app.post('/api/punchOut', async (req, res) => {
     res.status(200).json({ message: 'Punch Out Accepted' });
   } catch (error) {
     console.error('Error in Punch Out:', error);
-    res.status(500).json({ error: error.message || 'Unknown error occurred' });
+    res.status(500).json({ error: error.message || errors.UNKNOWN_ERROR });
   }
 });
 
-// SAP Input Route
-app.post('/api/sapInput', async (req, res) => {
+// Punch In Route
+app.post('/api/punchIn', async (req, res) => {
   try {
-    console.log('Received request for SAP Input');
-    const { input } = req.body;
-
-    if (!input) {
-      return res.status(400).json({ error: 'No input provided for SAP entry.' });
-    }
-
     const sheets = await getGoogleSheetsService();
     const currentDate = getCurrentDate();
     const currentTime = getCurrentTime();
@@ -216,14 +155,73 @@ app.post('/api/sapInput', async (req, res) => {
       range: `${sapSheetName}!A:E`,
       valueInputOption: 'USER_ENTERED',
       requestBody: {
-        values: [[currentDate, currentTime, input, '', '']],
+        values: [[currentDate, currentTime, 'Punch In', '', '']],
       },
+    });
+
+    res.status(200).json({ message: 'Punch In Accepted' });
+  } catch (error) {
+    console.error('Error in Punch In:', error);
+    res.status(500).json({ error: error.message || errors.UNKNOWN_ERROR });
+  }
+});
+
+// SAP Input Route with Calculations
+app.post('/api/sapInput', async (req, res) => {
+  try {
+    const { input } = req.body;
+    if (!input) {
+      return res.status(400).json({ error: errors.NO_INPUT_PROVIDED });
+    }
+
+    const sheets = await getGoogleSheetsService();
+    const currentDate = getCurrentDate();
+    const currentTime = getCurrentTime();
+    const monthName = getCurrentMonthName();
+    const sapSheetName = `${monthName}:SAP`;
+
+    await ensureHeaders(sheets, sapSheetName, currentDate);
+
+    // Fetch the last row to calculate elapsed time
+    const lastRow = (await sheets.spreadsheets.values.get({
+      spreadsheetId: SPREADSHEET_ID,
+      range: `${sapSheetName}!B:B`,
+    })).data.values.length;
+
+    const previousTimeResponse = await sheets.spreadsheets.values.get({
+      spreadsheetId: SPREADSHEET_ID,
+      range: `${sapSheetName}!B${lastRow}`,
+    });
+
+    const previousTime = previousTimeResponse.data.values?.[0]?.[0];
+
+    if (previousTime) {
+      const previousDateTime = moment.tz(`${currentDate} ${previousTime}`, 'MM/DD/YYYY HH:mm:ss', 'America/New_York');
+      const now = moment.tz(`${currentDate} ${currentTime}`, 'MM/DD/YYYY HH:mm:ss', 'America/New_York');
+      const elapsedMilliseconds = now.diff(previousDateTime);
+      const elapsedFormatted = formatElapsedTime(elapsedMilliseconds);
+      const elapsedDecimal = calculateElapsedTimeDecimal(elapsedMilliseconds);
+
+      await sheets.spreadsheets.values.update({
+        spreadsheetId: SPREADSHEET_ID,
+        range: `${sapSheetName}!D${lastRow}:E${lastRow}`,
+        valueInputOption: 'USER_ENTERED',
+        requestBody: { values: [[elapsedFormatted, elapsedDecimal]] },
+      });
+    }
+
+    // Append the new SAP input
+    await sheets.spreadsheets.values.append({
+      spreadsheetId: SPREADSHEET_ID,
+      range: `${sapSheetName}!A:E`,
+      valueInputOption: 'USER_ENTERED',
+      requestBody: { values: [[currentDate, currentTime, input, '', '']] },
     });
 
     res.status(200).json({ message: 'SAP Input Accepted' });
   } catch (error) {
     console.error('Error in SAP Input:', error);
-    res.status(500).json({ error: error.message || 'Unknown error occurred' });
+    res.status(500).json({ error: error.message || errors.UNKNOWN_ERROR });
   }
 });
 
