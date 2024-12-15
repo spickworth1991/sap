@@ -366,8 +366,6 @@ app.post('/api/editEntry', async (req, res) => {
     });
 
     // 2. Fetch the updated sheet data to recalculate elapsed times and SAP times
-    await delay(1000); // Delay to allow Google Sheets API to process updates
-
     let sapDataResponse = await sheets.spreadsheets.values.get({
       spreadsheetId: SPREADSHEET_ID,
       range: `${sapSheetName}!A:E`,
@@ -376,7 +374,7 @@ app.post('/api/editEntry', async (req, res) => {
     let sapData = sapDataResponse.data.values || [];
 
     // Find all rows with the same date
-    const dateRows = sapData
+    let dateRows = sapData
       .map((row, index) => ({ index: index + 1, row }))
       .filter(item => item.row[0] === date);
 
@@ -405,15 +403,18 @@ app.post('/api/editEntry', async (req, res) => {
       }
     }
 
-    // 3. Fetch the updated sheet data again after recalculating elapsed times
-    await delay(1000); // Delay to allow recalculations to complete
-
+    // 3. Fetch the updated sheet data again after recalculations
     let updatedSapDataResponse = await sheets.spreadsheets.values.get({
       spreadsheetId: SPREADSHEET_ID,
       range: `${sapSheetName}!A:E`,
     });
 
     let updatedSapData = updatedSapDataResponse.data.values || [];
+
+    // Create fresh dateRows with the updated data
+    dateRows = updatedSapData
+      .map((row, index) => ({ index: index + 1, row }))
+      .filter(item => item.row[0] === date);
 
     // 4. Recalculate totals for the current date
     let lastRowWithDate = dateRows[dateRows.length - 1].index;
