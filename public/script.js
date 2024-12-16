@@ -18,6 +18,7 @@ function navigate(pageId) {
 // Function to update status and hide it after a certain duration
 function updateStatus(message, type) {
     const statusBox = document.getElementById("statusBox");
+
     if (statusBox) {
         if (typeof message === 'object' && message.code && message.message) {
             statusBox.innerText = `${type === 'error' ? 'Error' : 'Success'} ${message.code}: ${message.message}`;
@@ -28,13 +29,15 @@ function updateStatus(message, type) {
         }
         
         statusBox.className = type;
-        statusBox.classList.add("show");
+        statusBox.classList.add(".show");
 
+        // Hide the status box after a delay
         setTimeout(() => {
-            statusBox.classList.remove("show");
+            statusBox.classList.remove(".show");
         }, type === "success" ? 3000 : 5000);
     }
 }
+
 
 
 
