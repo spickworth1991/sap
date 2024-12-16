@@ -27,10 +27,10 @@ function updateStatus(message, type) {
         } else {
             statusBox.innerText = type === 'error' ? 'An unknown error occurred.' : 'Operation successful.';
         }
-        
+
         statusBox.className = type;
         statusBox.classList.add(".show");
-
+        console.log("statusBox.classList", statusBox.classList);
         // Hide the status box after a delay
         setTimeout(() => {
             statusBox.classList.remove(".show");
