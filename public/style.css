@@ -265,7 +265,7 @@
         }
 
         /* Make entries full-width */
-        .entry {
+        .entriesContainer {
             width: 80%;
             flex-direction: column;
             text-align: center;
