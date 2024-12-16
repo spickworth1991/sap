@@ -181,6 +181,8 @@ body {
         width: 90%;
         height: 100px;
         font-size: 40px;
+        margin: 10px auto;
+        padding: 15px;
     }
 
     /* Ensure full height for center containers */
