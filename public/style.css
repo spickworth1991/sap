@@ -252,18 +252,18 @@
 
         /* Resize divs containing buttons */
         .center div {
-            width: 100%;
+            width: 90%;
             min-height: 300px; /* Adjust div height */
             margin:0 auto;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 15px; /* Add space between buttons */
+            gap:5px; /* Add space between buttons */
         }
 
         /* Ensure textarea and date picker fit well */
         #inputBox, #datePicker {
-            width: 200%;
+            width: 95%;
             height: 400px; /* Adjust height for mobile */
             font-size: 25px;
         }
@@ -271,6 +271,8 @@
         /* Make entries full-width */
         .entriesContainer {
             width: 70%;
+            margin:0 auto;
+            padding: 5px;
         }
 
 
@@ -288,7 +290,7 @@
 
         /* Center text and buttons vertically */
         .center {
-            padding: 20px;
+            padding: 10px;
         }
 
         
