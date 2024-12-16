@@ -131,7 +131,7 @@ async function fetchEntriesByDate() {
     const formattedDate = `${month}/${day}/${year}`;
     console.log("Formatted date:", formattedDate);
 
-    const encodedDate = encodeURIComponent(formattedDate); // Encode the date for the URL
+    const encodedDate = encodeURIComponent(formattedDate);
 
     try {
         const response = await fetch(`/api/entries/${encodedDate}`);
@@ -153,24 +153,45 @@ async function fetchEntriesByDate() {
             return;
         }
 
-        data.entries.forEach((entry) => {
-            const { rowNumber, values } = entry;
-            const entryDiv = document.createElement('div');
-            entryDiv.innerHTML = `
-                <div>
-                    <span>${values.join(' | ')}</span>
-                    <button onclick="editEntry('${formattedDate}', ${rowNumber})">Edit</button>
-                </div>
-            `;
-            entriesContainer.appendChild(entryDiv);
-        });
+        // Create a table to display entries
+        const table = document.createElement('table');
+        table.classList.add('entries-table');
+        table.innerHTML = `
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Project/Activity</th>
+                    <th>Elapsed Time</th>
+                    <th>SAP Time</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${data.entries.map(entry => {
+                    const { rowNumber, values } = entry;
+                    return `
+                        <tr>
+                            <td>${values[0] || ''}</td>
+                            <td>${values[1] || ''}</td>
+                            <td>${values[2] || ''}</td>
+                            <td>${values[3] || ''}</td>
+                            <td>${values[4] || ''}</td>
+                            <td><button class="button edit-button" onclick="editEntry('${formattedDate}', ${rowNumber})">Edit</button></td>
+                        </tr>
+                    `;
+                }).join('')}
+            </tbody>
+        `;
 
+        entriesContainer.appendChild(table);
         navigate('editEntriesPage');
     } catch (error) {
         console.error('Error fetching entries:', error);
         updateStatus({ code: 9999, message: "Network error or server is unavailable." }, "error");
     }
 }
+
 
 
 async function editEntry(date, rowIndex) {
