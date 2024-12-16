@@ -99,6 +99,8 @@
         width: 100%;
         text-align: center;
         margin: 0 auto;
+        padding: 0;
+        
     }
     /* Prevent dragging and scrolling on all devices */
     body {
@@ -106,6 +108,8 @@
         touch-action: manipulation; /* Disable pinch-zoom and double-tap zoom */
         user-select: none; /* Prevent text selection */
         margin: 0 auto;
+        padding: 0;
+        overflow-x: hidden;
     }
 
     /* Ensure each page container has full height and centers content */
@@ -156,7 +160,7 @@
     /* Table Styles */
     .entries-table {
         width: 100%;
-        max-width: 800px;
+        max-width: 100%;
         border-collapse: collapse;
         margin: 20px auto; /* Auto margin to center horizontally */
         font-size: 16px;
@@ -226,6 +230,7 @@
           overscroll-behavior: none;
           touch-action: manipulation;
           user-select: none;
+          overflow-x: hidden;
         }
 
       .center, .button, #inputBox {
@@ -254,7 +259,9 @@
         .center div {
             width: 90%;
             min-height: 300px; /* Adjust div height */
-            margin:0 auto;
+            max-width: 100%; /* Ensure it doesn't exceed the screen width */
+            margin: 0 auto;  /* Center horizontally */
+            padding: 10px;   /* Consistent padding */
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -269,7 +276,7 @@
         }
 
         /* Make entries full-width */
-        .entriesContainer {
+        #entriesContainer {
             width: 70%;
             margin:0 auto;
             padding: 5px;
@@ -291,6 +298,12 @@
         /* Center text and buttons vertically */
         .center {
             padding: 10px;
+        }
+
+        .entries-table {
+            width: 100%;      /* Make the table take full width */
+            max-width: 100%;  /* Ensure no max-width constraint */
+            margin: 0 auto;   /* Center the table horizontally */
         }
 
         
