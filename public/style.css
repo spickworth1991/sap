@@ -142,6 +142,49 @@
         user-select: none;
     }
 
+    /* Table Styles */
+    .entries-table {
+        width: 100%;
+        max-width: 800px;
+        border-collapse: collapse;
+        margin: 20px 0;
+        font-size: 16px;
+        text-align: left;
+    }
+
+    .entries-table th,
+    .entries-table td {
+        border: 1px solid #ccc;
+        padding: 10px;
+    }
+
+    .entries-table th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+
+    .entries-table tbody tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    .entries-table tbody tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    .button.edit-button {
+        font-size: 14px;
+        padding: 5px 10px;
+        background-color: #FFD700;
+        color: black;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+    }
+
+    .button.edit-button:hover {
+        background-color: #FFC107;
+    }
+
    /* Responsive Design for Mobile */
     @media (pointer: coarse) {
         /* Ensure full height for center containers */
@@ -160,13 +203,13 @@
           overscroll-behavior: none;
           touch-action: manipulation;
           user-select: none;
-      }
+        }
 
       .center, .button, #inputBox {
           touch-action: manipulation;
           user-select: none;
           -webkit-user-drag: none;
-      }
+        }
 
         /* Resize heights of elements within divs */
         .button.nav-button{
@@ -201,18 +244,6 @@
             font-size: 25px;
         }
 
-        /* Make entries full-width */
-        .entry {
-            width: 90%;
-            flex-direction: column;
-            text-align: center;
-        }
-
-        .entry span {
-            display: block;
-            margin-bottom: 10px;
-        }
-
         /* Status box full-width */
         #statusBox {
             position: fixed;
@@ -230,46 +261,5 @@
             padding: 20px;
         }
 
-        /* Table Styles */
-        .entries-table {
-            width: 100%;
-            max-width: 800px;
-            border-collapse: collapse;
-            margin: 20px 0;
-            font-size: 16px;
-            text-align: left;
-        }
-
-        .entries-table th,
-        .entries-table td {
-            border: 1px solid #ccc;
-            padding: 10px;
-        }
-
-        .entries-table th {
-            background-color: #f2f2f2;
-            font-weight: bold;
-        }
-
-        .entries-table tbody tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-
-        .entries-table tbody tr:hover {
-            background-color: #f1f1f1;
-        }
-
-        .button.edit-button {
-            font-size: 14px;
-            padding: 5px 10px;
-            background-color: #FFD700;
-            color: black;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-        }
-
-        .button.edit-button:hover {
-            background-color: #FFC107;
-        }
+        
     }
