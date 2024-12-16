@@ -141,15 +141,27 @@
         touch-action: manipulation;
         user-select: none;
     }
+    /* Center the entries container */
+    #entriesContainer {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 20px;
+    }
 
     /* Table Styles */
     .entries-table {
         width: 100%;
         max-width: 800px;
         border-collapse: collapse;
-        margin: 20px 0;
+        margin: 20px auto; /* Auto margin to center horizontally */
         font-size: 16px;
         text-align: left;
+        background-color: #fff; /* Ensure table has a background */
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Optional: Add a subtle shadow */
+        border-radius: 8px; /* Optional: Add rounded corners */
+        overflow: hidden; /* Ensures border radius applies correctly */
     }
 
     .entries-table th,
@@ -161,6 +173,7 @@
     .entries-table th {
         background-color: #f2f2f2;
         font-weight: bold;
+        text-align: center;
     }
 
     .entries-table tbody tr:nth-child(even) {
@@ -171,6 +184,12 @@
         background-color: #f1f1f1;
     }
 
+    /* Center the text inside table cells */
+    .entries-table td {
+        text-align: center;
+    }
+
+    /* Style for the Edit button */
     .button.edit-button {
         font-size: 14px;
         padding: 5px 10px;
@@ -184,6 +203,7 @@
     .button.edit-button:hover {
         background-color: #FFC107;
     }
+
 
    /* Responsive Design for Mobile */
     @media (pointer: coarse) {
@@ -243,6 +263,14 @@
             height: 400px; /* Adjust height for mobile */
             font-size: 25px;
         }
+
+        /* Make entries full-width */
+        .entry {
+            width: 80%;
+            flex-direction: column;
+            text-align: center;
+        }
+
 
         /* Status box full-width */
         #statusBox {
