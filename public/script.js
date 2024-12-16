@@ -29,11 +29,11 @@ function updateStatus(message, type) {
         }
 
         statusBox.className = type;
-        statusBox.classList.add(".show");
+        statusBox.classList.add("show");
         console.log("statusBox.classList", statusBox.classList);
         // Hide the status box after a delay
         setTimeout(() => {
-            statusBox.classList.remove(".show");
+            statusBox.classList.remove("show");
         }, type === "success" ? 3000 : 5000);
     }
 }
