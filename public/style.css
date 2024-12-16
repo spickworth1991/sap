@@ -1,6 +1,6 @@
        /* Base Button Styles */
        .button {
-        padding: 10px 20px;
+        padding: 10px;
         font-weight: bold;
         border-radius: 10px;
         transition: background-color 0.5s ease;
@@ -8,6 +8,8 @@
         touch-action: manipulation;
         user-select: none;
         -webkit-user-drag: none;
+        margin: 10px auto; /* Center buttons horizontally */
+        display: block;    /* Ensure they are block-level for full-width centering */
     }
 
     /* Navigation Buttons */
@@ -96,13 +98,14 @@
         height: 100vh;
         width: 100%;
         text-align: center;
-        margin: 0;
+        margin: 0 auto;
     }
     /* Prevent dragging and scrolling on all devices */
     body {
         overscroll-behavior: none; /* Prevent overscroll on mobile */
         touch-action: manipulation; /* Disable pinch-zoom and double-tap zoom */
         user-select: none; /* Prevent text selection */
+        margin: 0 auto;
     }
 
     /* Ensure each page container has full height and centers content */
@@ -251,6 +254,7 @@
         .center div {
             width: 100%;
             min-height: 300px; /* Adjust div height */
+            margin:0 auto;
             display: flex;
             flex-direction: column;
             align-items: center;
