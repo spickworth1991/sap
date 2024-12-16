@@ -173,13 +173,13 @@ body {
     }
 
     .button.nav-button {
-        height: 70px;
+        height: 150px;
         font-size: 30px;
     }
 
     .button.punch-button {
         width: 90%;
-        height: 100px;
+        height: 200px;
         font-size: 40px;
         margin: 10px auto;
         padding: 15px;
