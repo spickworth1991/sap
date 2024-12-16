@@ -48,48 +48,44 @@
     }
 
     /* Status Box */
-    #statusBox {
-        position: fixed;          /* Fix it at the top of the screen */
-        top: 0;                   /* Align it to the top edge */
-        left: 0;
-        right: 0;                 /* Stretch across the entire width */
-        padding: 10px;
-        margin: 0;
-        text-align: center;
-        z-index: 1000;            /* Ensure it stays above other elements */
-        border-bottom: 2px solid #ccc;
-    }
+#statusBox {
+    position: fixed;          /* Fix it at the top of the screen */
+    top: 0;                   /* Align it to the top edge */
+    left: 0;
+    right: 0;                 /* Stretch across the entire width */
+    padding: 15px;
+    text-align: center;
+    z-index: 1000;            /* Ensure it stays above other elements */
+    border-bottom: 2px solid #ccc;
 
-    #statusBox {
-        transform: translateY(-100%);
-        transition: transform 0.5s ease-in-out;
-        display: block;
-    }
-    
-    #statusBox.show {
-        transform: translateY(0);
-    }
-    
+    /* Initial hidden state */
+    transform: translateY(-100%);
+    transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
+    opacity: 0;               /* Initially hidden */
+}
 
-    #statusBox.show {
-        transform: translateY(0);
-    }
+/* Show state for the status box */
+#statusBox.show {
+    transform: translateY(0);
+    opacity: 1;
+}
 
-    /* Different styles for status types */
-    #statusBox.info {
-        background-color: #D9EDF7;
-        color: #31708F;
-    }
+/* Different styles for status types */
+#statusBox.info {
+    background-color: #D9EDF7;
+    color: #31708F;
+}
 
-    #statusBox.error {
-        background-color: #F2DEDE;
-        color: #A94442;
-    }
+#statusBox.error {
+    background-color: #F2DEDE;
+    color: #A94442;
+}
 
-    #statusBox.success {
-        background-color: #DFF0D8;
-        color: #3C763D;
-    }
+#statusBox.success {
+    background-color: #DFF0D8;
+    color: #3C763D;
+}
+
 
     /* Ensure the body and all page containers are centered */
     body, .center {
