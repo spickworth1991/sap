@@ -1,10 +1,11 @@
 const express = require('express');
 const router = express.Router();
 
-// Placeholder user data
+// Placeholder user data with spreadsheet IDs
 const users = [
-    { username: 'admin', password: 'admin123', role: 'admin' },
-    { username: 'user', password: 'user123', role: 'user' }
+    { username: 'admin', password: 'admin123', role: 'admin', spreadsheetId: 'admin-spreadsheet-id' },
+    { username: 'user1', password: 'user123', role: 'user', spreadsheetId: 'user1-spreadsheet-id' },
+    { username: 'user2', password: 'user123', role: 'user', spreadsheetId: 'user2-spreadsheet-id' }
 ];
 
 router.post('/login', (req, res) => {
@@ -12,7 +13,7 @@ router.post('/login', (req, res) => {
     const user = users.find(u => u.username === username && u.password === password);
 
     if (user) {
-        res.json({ success: true, role: user.role });
+        res.json({ success: true, role: user.role, spreadsheetId: user.spreadsheetId });
     } else {
         res.status(401).json({ success: false, message: 'Invalid credentials' });
     }

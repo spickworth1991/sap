@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Check if user is logged in
     const userRole = localStorage.getItem('role');
+    const spreadsheetId = localStorage.getItem('spreadsheetId');
     if (userRole) {
         loginPage.style.display = 'none';
         homePage.style.display = 'block';
@@ -36,6 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const data = await response.json();
                 localStorage.setItem('role', data.role);
+                localStorage.setItem('spreadsheetId', data.spreadsheetId);  // Store spreadsheetId
                 loginPage.style.display = 'none';
                 homePage.style.display = 'block';
 
@@ -48,12 +50,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    
-
     // Logout functionality
     if (logoutBtn) {
         logoutBtn.addEventListener('click', () => {
             localStorage.removeItem('role');
+            localStorage.removeItem('spreadsheetId');
             loginPage.style.display = 'block';
             homePage.style.display = 'none';
             adminHomeBtn.style.display = 'none';
@@ -99,9 +100,6 @@ function updateStatus(message, type) {
     }
 }
 
-
-
-
 // SAP Input function
 async function sapInput(button) {
     const inputBox = document.getElementById("inputBox");
@@ -118,7 +116,10 @@ async function sapInput(button) {
     try {
       const response = await fetch("/api/sapInput", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+            "Content-Type": "application/json",
+            "spreadsheet-id": localStorage.getItem('spreadsheetId')  // Add spreadsheetId header
+        },
         body: JSON.stringify({ input: inputText }),
       });
   
@@ -136,13 +137,15 @@ async function sapInput(button) {
     }
 }
   
-
 // Punch In function
 async function punchIn(button) {
     button.style.backgroundColor = "#555";
 
     try {
-        const response = await fetch("/api/punchIn", { method: "POST" });
+        const response = await fetch("/api/punchIn", {
+            method: "POST",
+            headers: { "spreadsheet-id": localStorage.getItem('spreadsheetId') }  // Add spreadsheetId header
+        });
         const result = await response.json();
 
         if (response.ok) {
@@ -163,7 +166,10 @@ async function punchOut(button) {
     button.style.backgroundColor = "#555";
 
     try {
-        const response = await fetch("/api/punchOut", { method: "POST" });
+        const response = await fetch("/api/punchOut", {
+            method: "POST",
+            headers: { "spreadsheet-id": localStorage.getItem('spreadsheetId') }  // Add spreadsheetId header
+        });
         const result = await response.json();
 
         if (response.ok) {
@@ -179,7 +185,7 @@ async function punchOut(button) {
     }
 }
 
-
+// Fetch Entries by Date function
 async function fetchEntriesByDate() {
     const dateInput = document.getElementById('datePicker').value;
     if (!dateInput) {
@@ -195,7 +201,9 @@ async function fetchEntriesByDate() {
     const encodedDate = encodeURIComponent(formattedDate);
 
     try {
-        const response = await fetch(`/api/entries/${encodedDate}`);
+        const response = await fetch(`/api/entries/${encodedDate}`, {
+            headers: { "spreadsheet-id": localStorage.getItem('spreadsheetId') }  // Add spreadsheetId header
+        });
         console.log("Fetch response:", response);
 
         if (!response.ok) {
