@@ -73,6 +73,13 @@ async function ensureHeaders(sheets, sheetName, currentDate, spreadsheetId ) {
 
 // Find the row for the current date in the month sheet
 async function findDateRow(sheets, monthSheetName, currentDate) {
+  try {
+    const sheets = await getGoogleSheetsService();
+    const spreadsheetId = req.headers['spreadsheet-id']; // Extract spreadsheetId from request headers
+
+    if (!spreadsheetId) {
+      return res.status(400).json({ error: 'Spreadsheet ID is missing in request headers' });
+    }
   const response = await sheets.spreadsheets.values.get({
     spreadsheetId,
     range: `${monthSheetName}!B:B`,
