@@ -12,7 +12,7 @@ const PORT = process.env.PORT || 5000;
 app.use(express.json());
 app.use(cors());
 
-const req.headers['spreadsheet-id'] = process.env.GOOGLE_SHEET_ID;
+
 
 // Authenticate with Google Sheets API
 async function getGoogleSheetsService() {
