@@ -292,8 +292,6 @@ app.post('/api/sapInput', async (req, res) => {
     const sapSheetName = `${monthName}:SAP`;
 	
 
-    await ensureHeaders(sheets, spreadsheetId, sapSheetName, currentDate);
-
     // Fetch the last row to calculate elapsed time
     const lastRow = (await sheets.spreadsheets.values.get({
       spreadsheetId,
