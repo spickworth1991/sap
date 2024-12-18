@@ -5,7 +5,7 @@ const router = express.Router();
 const users = [
     { username: 'admin', password: 'admin123', role: 'admin', spreadsheetId: '19ernax6WLojBLh1OOBaU6IcDuKFxwLB4FL6pNVpqrGI' },
     { username: 'user1', password: 'user123', role: 'user', spreadsheetId: '1RzOAQmsdoWw3Df5G0625RlCpySZpEXx39oAnf0YM4PE' },
-    { username: 'user2', password: 'spickworth', role: 'test', spreadsheetId: '1bu86Ld2p1BCXf-wubb9yW26KMigqdZldIeCt_ho12ss' }
+    { username: 'spickworth', password: 'test', role: 'user', spreadsheetId: '1bu86Ld2p1BCXf-wubb9yW26KMigqdZldIeCt_ho12ss' }
 ];
 
 router.post('/login', (req, res) => {
