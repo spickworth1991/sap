@@ -98,10 +98,10 @@ app.post('/api/punchIn', async (req, res) => {
     const sapSheetName = `${monthName}:SAP`;
 
     // Ensure headers are present in the SAP sheet
-    await ensureHeaders(sheets, sapSheetName, currentDate);
+    await ensureHeaders(sheets, spreadsheetId, sapSheetName, currentDate);
 
     // Find the row with the current date on the month sheet
-    let rowIndex = await findDateRow(sheets, monthSheetName, currentDate);
+    let rowIndex = await findDateRow(sheets, spreadsheetId, monthSheetName, currentDate);
 
     if (!rowIndex) {
       return res.status(400).json(errors.NO_ENTRY_FOUND);
@@ -150,7 +150,7 @@ app.post('/api/punchOut', async (req, res) => {
     const sapSheetName = `${monthName}:SAP`;
 
     // Find the row with the current date on the month sheet
-    let rowIndex = await findDateRow(sheets, monthSheetName, currentDate);
+    let rowIndex = await findDateRow(sheets, spreadsheetId, monthSheetName, currentDate);
 
     if (!rowIndex) {
       return res.status(400).json(errors.NO_ENTRY_FOUND);
@@ -273,7 +273,7 @@ app.post('/api/sapInput', async (req, res) => {
     const monthName = getCurrentMonthName();
     const sapSheetName = `${monthName}:SAP`;
 
-    await ensureHeaders(sheets, sapSheetName, currentDate);
+    await ensureHeaders(sheets, spreadsheetId, sapSheetName, currentDate);
 
     // Fetch the last row to calculate elapsed time
     const lastRow = (await sheets.spreadsheets.values.get({
