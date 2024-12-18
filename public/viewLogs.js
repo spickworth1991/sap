@@ -4,11 +4,15 @@ const logsPerPage = 10;
 
 // Fetch Logs from the Server
 async function fetchLogs() {
-    const selectedDate = document.getElementById('logDatePicker').value;
+    const selectedDate = document.getElementById('logDatePicker').value; // In YYYY-MM-DD format
     const searchTerm = document.getElementById('logSearch').value;
 
+    // Convert YYYY-MM-DD to MM-DD-YYYY
+    const [year, month, day] = selectedDate.split('-');
+    const formattedDate = `${month}-${day}-${year}`;
+
     try {
-        const response = await fetch(`/api/logs?date=${selectedDate}&search=${encodeURIComponent(searchTerm)}`, {
+        const response = await fetch(`/api/logs?date=${formattedDate}&search=${encodeURIComponent(searchTerm)}`, {
             headers: { 
                 'Content-Type': 'application/json',
                 'spreadsheet-id': localStorage.getItem('spreadsheetId') // Attach spreadsheet ID
@@ -28,6 +32,7 @@ async function fetchLogs() {
         alert('Error fetching logs.');
     }
 }
+
 
 // Display Logs with Pagination
 function displayLogs() {
