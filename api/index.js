@@ -87,10 +87,10 @@ async function findDateRow(sheets, spreadsheetId, monthSheetName, currentDate) {
 }
 
 
-app.post('/api/punchIn', async (req, res) => {
+app.post('/api/punchIn', logAction, async (req, res) => {
   try {
     const sheets = await getGoogleSheetsService();
-    const spreadsheetId = req.headers['spreadsheet-id']; // Extract spreadsheetId from request headers
+    const spreadsheetId = req.headers['spreadsheet-id'];
 
     if (!spreadsheetId) {
       return res.status(400).json({ error: 'Spreadsheet ID is missing in request headers' });
@@ -147,7 +147,7 @@ app.post('/api/punchIn', async (req, res) => {
 
 
 // Punch Out Route
-app.post('/api/punchOut', async (req, res) => {
+app.post('/api/punchOut', logAction, async (req, res) => {
   try {
     const sheets = await getGoogleSheetsService();
 	const spreadsheetId = req.headers['spreadsheet-id']; // Extract spreadsheetId from request headers
@@ -273,7 +273,7 @@ app.post('/api/punchOut', async (req, res) => {
 });
 
 // SAP Input Route with Calculations
-app.post('/api/sapInput', async (req, res) => {
+app.post('/api/sapInput', logAction, async (req, res) => {
   try {
     const { input } = req.body;
     if (!input) {
@@ -369,7 +369,7 @@ app.get('/api/entries/:date', async (req, res) => {
 
 
 // Route to edit an entry
-app.post('/api/editEntry', async (req, res) => {
+app.post('/api/editEntry', logAction, async (req, res) => {
   try {
     const { date, rowIndex, time, projectActivity } = req.body;
     const sheets = await getGoogleSheetsService();
@@ -535,6 +535,77 @@ app.get('/api/logs', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch logs' });
   }
 });
+
+
+// Helper function to ensure the Logs sheet exists
+async function ensureLogSheetExists(sheets, spreadsheetId) {
+  try {
+    // Get the sheet metadata
+    const sheetMetadata = await sheets.spreadsheets.get({ spreadsheetId });
+    const sheetNames = sheetMetadata.data.sheets.map(sheet => sheet.properties.title);
+
+    // Check if "Logs" sheet exists
+    if (!sheetNames.includes('Logs')) {
+      // Create a new Logs sheet with headers
+      await sheets.spreadsheets.batchUpdate({
+        spreadsheetId,
+        requestBody: {
+          requests: [
+            {
+              addSheet: {
+                properties: {
+                  title: 'Logs',
+                  gridProperties: { rowCount: 1000, columnCount: 5 },
+                },
+              },
+            },
+          ],
+        },
+      });
+
+      // Add headers to the Logs sheet
+      await sheets.spreadsheets.values.append({
+        spreadsheetId,
+        range: 'Logs!A1:E1',
+        valueInputOption: 'USER_ENTERED',
+        requestBody: {
+          values: [['Date', 'Time', 'Username', 'Action', 'Details']],
+        },
+      });
+    }
+  } catch (error) {
+    console.error('Error ensuring Logs sheet exists:', error);
+  }
+}
+
+// Logging middleware
+async function logAction(req, res, next) {
+  try {
+    const sheets = await getGoogleSheetsService();
+    const spreadsheetId = req.headers['spreadsheet-id'];
+    const username = req.headers['username'] || 'Unknown User'; // Assuming username is passed in headers
+    const action = req.method + ' ' + req.originalUrl;
+    const details = JSON.stringify(req.body);
+
+    // Ensure the Logs sheet exists
+    await ensureLogSheetExists(sheets, spreadsheetId);
+
+    // Log the action
+    await sheets.spreadsheets.values.append({
+      spreadsheetId,
+      range: 'Logs!A:E',
+      valueInputOption: 'USER_ENTERED',
+      requestBody: {
+        values: [[getCurrentDate(), getCurrentTime(), username, action, details]],
+      },
+    });
+  } catch (error) {
+    console.error('Error logging action:', error);
+  }
+
+  next();
+}
+
 
 
 
