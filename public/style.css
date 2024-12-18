@@ -1,216 +1,24 @@
-/* Base Button Styles */
-.button {
-    padding: 10px;
-    font-weight: bold;
-    border-radius: 10px;
-    transition: background-color 0.5s ease;
-    cursor: pointer;
-    touch-action: manipulation;
-    user-select: none;
-    -webkit-user-drag: none;
-    margin: 10px;          /* Margin for spacing */
-    display: inline-block; /* Align buttons horizontally by default */
-}
-
-/* Navigation Buttons */
-.button.nav-button {
-    font-size: 20px;
-    background-color: #E8E8E8;
-    color: blue;
-    border: 1px solid #ccc;
-}
-
-/* Punch Buttons */
-.button.punch-button {
-    font-size: 40px;
-    width: 300px;
-    margin: 10px 0;
-    color: black;
-    border: none;
-}
-
-#punchInButton {
-    background-color: #4CAF50; /* Green */
-}
-
-#punchOutButton {
-    background-color: #FF4136; /* Red */
-}
-
-/* Edit Button */
-.button.edit-button {
-    font-size: 16px;
-    background-color: #FFD700;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.button.edit-button:hover {
-    background-color: #FFC107;
-}
-
-/* Error Highlight */
-.input-error {
-    border-color: red !important;
-}
-
-/* Status Box */
-#statusBox {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    padding: 15px;
-    text-align: center;
-    z-index: 1000;
-    border-bottom: 2px solid #ccc;
-    transform: translateY(-100%);
-    transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
-    opacity: 0;
-}
-
-#statusBox.show {
-    transform: translateY(0);
-    opacity: 1;
-}
-
-/* Different styles for status types */
-#statusBox.info {
-    background-color: #D9EDF7;
-    color: #31708F;
-}
-
-#statusBox.error {
-    background-color: #F2DEDE;
-    color: #A94442;
-}
-
-#statusBox.success {
-    background-color: #DFF0D8;
-    color: #3C763D;
-}
-
-/* Ensure the body and all page containers are centered */
-body, .center {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    width: 100%;
+body {
+    font-family: Arial, sans-serif;
     text-align: center;
     margin: 0;
     padding: 0;
+    background-color: #f4f4f4;
 }
 
-body {
-    overscroll-behavior: none;
-    touch-action: manipulation;
-    user-select: none;
-    overflow-x: hidden;
+.page {
+    margin-top: 50px;
 }
 
-/* Calendar Styles */
-#datePicker {
-    font-size: 16px;
+input, button {
+    margin: 10px;
     padding: 10px;
-    margin: 10px 0;
 }
 
-/* Entries Container */
-#entriesContainer {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 20px;
+button {
+    cursor: pointer;
 }
 
-/* Table Styles */
-.entries-table {
-    width: 100%;
-    max-width: 800px;
-    border-collapse: collapse;
-    margin: 20px auto;
-    font-size: 16px;
-    background-color: #fff;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    overflow: hidden;
-}
-
-.entries-table th,
-.entries-table td {
-    border: 1px solid #ccc;
-    padding: 10px;
-    text-align: center;
-}
-
-.entries-table th {
-    background-color: #f2f2f2;
-    font-weight: bold;
-}
-
-.entries-table tbody tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
-
-.entries-table tbody tr:hover {
-    background-color: #f1f1f1;
-}
-
-/* Responsive Design for Mobile */
-@media (pointer: coarse) {
-    /* Stack buttons vertically on mobile */
-    .button {
-        display: block;
-        width: 90%;
-        margin: 10px auto;
-        font-size: 30px;
-        padding: 15px;
-    }
-
-    .button.nav-button {
-        height: 150px;
-        font-size: 30px;
-    }
-
-    .button.punch-button {
-        width: 90%;
-        height: 200px;
-        font-size: 40px;
-        margin: 10px auto;
-        padding: 15px;
-    }
-
-    /* Ensure full height for center containers */
-    .center {
-        min-height: 100vh;
-        padding: 20px;
-    }
-
-    /* Ensure textarea and date picker fit well */
-    #inputBox, #datePicker {
-        width: 95%;
-        font-size: 25px;
-    }
-
-    /* Make entries container full-width */
-    #entriesContainer {
-        width: 100%;
-        padding: 10px;
-    }
-
-    /* Ensure table takes full width on mobile */
-    .entries-table {
-        width: 100%;
-        max-width: 100%;
-    }
-
-    /* Center text and buttons vertically */
-    .center {
-        padding: 10px;
-    }
+.error {
+    color: red;
 }

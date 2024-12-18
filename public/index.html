@@ -3,59 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Time Management</title>
-    <link rel="stylesheet" href="style.css"> <!-- Make sure this path is correct -->
+    <link rel="stylesheet" href="style.css">
+    <title>Work Hours Tracker</title>
 </head>
-<body onload="showPage('homePage')">
-    <div id="statusBox" class="info" ></div>
-    <div id="homePage" class="center">
-        <h1>Home</h1>
-        <div>
-          <button class="button nav-button" onclick="navigate('clockPage')">Clock In/Out</button>
-          <button class="button nav-button" onclick="navigate('sapPage')">SAP Input</button>
-          <button class="button nav-button" onclick="navigate('dateSelectionPage')">Date Selection</button>
-        </div>
+<body>
+    <div id="login-page" class="page">
+        <h2>Login</h2>
+        <form id="login-form">
+            <input type="text" id="username" placeholder="Username" required><br>
+            <input type="password" id="password" placeholder="Password" required><br>
+            <button type="submit">Login</button>
+        </form>
+        <p id="login-error" class="error"></p>
     </div>
 
-    <div id="clockPage" class="center" style="display: none;">
-        <h1>Clock In/Out</h1>
-        <div>
-            <button class="button punch-button" id="punchInButton" onclick="punchIn(this)">Punch In</button>
-            <button class="button punch-button" id="punchOutButton" onclick="punchOut(this)">Punch Out</button>
-        </div>
-        <button class="button nav-button" onclick="navigate('homePage')">Back to Home</button>
+    <div id="home-page" class="page" style="display:none;">
+        <h1>Welcome to Work Hours Tracker</h1>
+        <button id="admin-home-btn" style="display:none;">Admin Home</button>
+        <button id="logout-btn">Logout</button>
+        <div id="content"></div>
     </div>
 
-    <div id="statusBox" class="info" style="display: none;"></div>
-
-    <div id="sapPage" class="center" style="display: none;">
-        <h1>SAP Input</h1>
-        <div>
-          <textarea id="inputBox" placeholder="Enter Project Number or SAP Info..." rows="5" style="width: 50%;" wrap="soft"></textarea>
-        </div>
-        <div>
-          <button class="button nav-button" onclick="sapInput(this)">Submit</button>
-          <button class="button nav-button" onclick="navigate('homePage')">Back to Home</button>
-        </div>
+    <div id="admin-page" class="page" style="display:none;">
+        <h2>Admin Dashboard</h2>
+        <button id="view-users-btn">Manage Users</button>
+        <button id="view-logs-btn">View Logs</button>
+        <button id="back-to-home-btn">Back to Home</button>
     </div>
 
-    <div id="dateSelectionPage" class="center" style="display: none;">
-        <h1>Date Selection</h1>
-        <div>
-          <input type="date" id="datePicker">
-        </div>
-        <div>
-          <button class="button nav-button" onclick="fetchEntriesByDate()">Select Date</button>
-          <button class="button nav-button" onclick="navigate('homePage')">Back to Home</button>
-        </div>
-    </div>
-
-    <div id="editEntriesPage" class="center" style="display: none;">
-        <h1>Edit Entries</h1>
-        <div id="entriesContainer"></div>
-        <button class="button nav-button" onclick="navigate('dateSelectionPage')">Back to Date Selection</button>
-    </div>
-
-    <script src="script.js"></script> <!-- Ensure this path is correct -->
+    <script src="script.js"></script>
 </body>
 </html>
