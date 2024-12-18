@@ -262,7 +262,6 @@ async function fetchEntriesByDate() {
 }
 
 
-
 async function editEntry(date, rowIndex) {
     const newTime = prompt('Enter new time (HH:mm:ss):');
     const newProjectActivity = prompt('Enter new project/activity:');
@@ -275,7 +274,10 @@ async function editEntry(date, rowIndex) {
     try {
         const response = await fetch('/api/editEntry', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                'spreadsheet-id': localStorage.getItem('spreadsheetId'),  // Add spreadsheetId header
+            },
             body: JSON.stringify({ date, rowIndex, time: newTime, projectActivity: newProjectActivity }),
         });
 
@@ -285,7 +287,7 @@ async function editEntry(date, rowIndex) {
             alert(result.message);
             fetchEntriesByDate(); // Refresh entries after update
         } else {
-            alert(`Error: ${result.error}`);
+            alert(`Error: ${result.error || 'Failed to edit entry.'}`);
         }
     } catch (error) {
         console.error('Error editing entry:', error);
