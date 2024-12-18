@@ -7,8 +7,8 @@ async function fetchLogs() {
     const selectedDate = document.getElementById('logDatePicker').value; // In YYYY-MM-DD format
     const searchTerm = document.getElementById('logSearch').value;
 
-    // Convert YYYY-MM-DD to MM-DD-YYYY
-    const [year, month, day] = selectedDate.split('-');
+    // Convert YYYY-MM-DD to MM/DD/YYYY
+    const [year, month, day] = selectedDate.split('/');
     const formattedDate = `${month}-${day}-${year}`;
 
     try {
