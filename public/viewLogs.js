@@ -8,8 +8,8 @@ async function fetchLogs() {
     const searchTerm = document.getElementById('logSearch').value;
 
     // Convert YYYY-MM-DD to MM/DD/YYYY
-    const [year, month, day] = selectedDate.split('/');
-    const formattedDate = `${month}-${day}-${year}`;
+    const [year, month, day] = selectedDate.split('-');
+    const formattedDate = `${month}/${day}/${year}`;
 
     try {
         const response = await fetch(`/api/logs?date=${formattedDate}&search=${encodeURIComponent(searchTerm)}`, {
