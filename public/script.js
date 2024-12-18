@@ -175,6 +175,7 @@ async function punchOut(button) {
             headers: {
                 "spreadsheet-id": localStorage.getItem('spreadsheetId'),
                 "username": localStorage.getItem('username'), // Send username in headers
+            },
         });
         const result = await response.json();
 
@@ -288,6 +289,7 @@ headers: {
                 'Content-Type': 'application/json',
                 "spreadsheet-id": localStorage.getItem('spreadsheetId'),  // Add spreadsheetId header
                 "username": localStorage.getItem('username'), // Send username in headers
+                },
             },
             body: JSON.stringify({ date, rowIndex, time: newTime, projectActivity: newProjectActivity }),
         });
