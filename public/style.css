@@ -128,6 +128,35 @@ body {
     margin-top: 20px;
 }
 
+#logsTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+#logsTable th, #logsTable td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+
+#logsTable th {
+  background-color: #f2f2f2;
+}
+
+.log-controls {
+  margin-bottom: 15px;
+}
+
+.log-controls input {
+  margin-right: 10px;
+}
+
+#paginationControls {
+  margin-top: 15px;
+}
+
+
 /* Table Styles */
 .entries-table {
     width: 100%;
