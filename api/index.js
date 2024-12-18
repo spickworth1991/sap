@@ -488,7 +488,6 @@ app.post('/api/editEntry', async (req, res) => {
   }
 });
 
-// View Logs Route
 app.get('/api/logs', async (req, res) => {
   try {
     const sheets = await getGoogleSheetsService();
@@ -536,7 +535,6 @@ app.get('/api/logs', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch logs' });
   }
 });
-
 
 
 
