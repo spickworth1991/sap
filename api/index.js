@@ -52,7 +52,7 @@ function calculateElapsedTimeDecimal(milliseconds) {
 // Ensure headers exist if the last entry in Column A is not the current date
 async function ensureHeaders(sheets, sheetName, currentDate) {
   const response = await sheets.spreadsheets.values.get({
-    spreadsheetId: req.headers['spreadsheet-id'],
+    spreadsheetId,
     range: `${sheetName}!A:A`,
   });
 
@@ -61,7 +61,7 @@ async function ensureHeaders(sheets, sheetName, currentDate) {
 
   if (lastEntry !== currentDate) {
     await sheets.spreadsheets.values.append({
-      spreadsheetId: req.headers['spreadsheet-id'],
+      spreadsheetId,
       range: `${sheetName}!A1:E1`,
       valueInputOption: 'USER_ENTERED',
       requestBody: {
@@ -74,7 +74,7 @@ async function ensureHeaders(sheets, sheetName, currentDate) {
 // Find the row for the current date in the month sheet
 async function findDateRow(sheets, monthSheetName, currentDate) {
   const response = await sheets.spreadsheets.values.get({
-    spreadsheetId: req.headers['spreadsheet-id'],
+    spreadsheetId,
     range: `${monthSheetName}!B:B`,
   });
   const rows = response.data.values || [];
@@ -109,7 +109,7 @@ app.post('/api/punchIn', async (req, res) => {
 
     // Check if Punch In time already exists in Column C
     const punchInResponse = await sheets.spreadsheets.values.get({
-      spreadsheetId: req.headers['spreadsheet-id'],
+      spreadsheetId,
       range: `${monthSheetName}!C${rowIndex}`,
     });
     if (punchInResponse.data.values?.[0]?.[0]) {
@@ -118,7 +118,7 @@ app.post('/api/punchIn', async (req, res) => {
 
     // Update the Punch In time in Column C on the month sheet
     await sheets.spreadsheets.values.update({
-      spreadsheetId: req.headers['spreadsheet-id'],
+      spreadsheetId,
       range: `${monthSheetName}!C${rowIndex}`,
       valueInputOption: 'USER_ENTERED',
       requestBody: { values: [[currentTime]] },
@@ -126,7 +126,7 @@ app.post('/api/punchIn', async (req, res) => {
 
     // Add Punch In entry to the SAP sheet
     await sheets.spreadsheets.values.append({
-      spreadsheetId: req.headers['spreadsheet-id'],
+      spreadsheetId,
       range: `${sapSheetName}!A:E`,
       valueInputOption: 'USER_ENTERED',
       requestBody: { values: [[currentDate, currentTime, 'Punch In', '', '']] },
@@ -158,7 +158,7 @@ app.post('/api/punchOut', async (req, res) => {
 
     // Check if Punch Out time already exists in Column E
     const punchOutResponse = await sheets.spreadsheets.values.get({
-      spreadsheetId: req.headers['spreadsheet-id'],
+      spreadsheetId,
       range: `${monthSheetName}!E${rowIndex}`,
     });
     if (punchOutResponse.data.values?.[0]?.[0]) {
@@ -167,7 +167,7 @@ app.post('/api/punchOut', async (req, res) => {
 
     // Check if Punch In time exists in Column C
     const punchInResponse = await sheets.spreadsheets.values.get({
-      spreadsheetId: req.headers['spreadsheet-id'],
+      spreadsheetId,
       range: `${monthSheetName}!C${rowIndex}`,
     });
     const punchInTime = punchInResponse.data.values?.[0]?.[0];
@@ -178,7 +178,7 @@ app.post('/api/punchOut', async (req, res) => {
 
     // Update the Punch Out time in Column E on the month sheet
     await sheets.spreadsheets.values.update({
-      spreadsheetId: req.headers['spreadsheet-id'],
+      spreadsheetId,
       range: `${monthSheetName}!E${rowIndex}`,
       valueInputOption: 'USER_ENTERED',
       requestBody: { values: [[currentTime]] },
@@ -186,14 +186,14 @@ app.post('/api/punchOut', async (req, res) => {
 
     // Fetch the last row number on the SAP sheet
     const sapDataResponse = await sheets.spreadsheets.values.get({
-      spreadsheetId: req.headers['spreadsheet-id'],
+      spreadsheetId,
       range: `${sapSheetName}!B:B`,
     });
     const lastRow = sapDataResponse.data.values ? sapDataResponse.data.values.length : 1;
 
     // Get the previous row's time
     const previousTimeResponse = await sheets.spreadsheets.values.get({
-      spreadsheetId: req.headers['spreadsheet-id'],
+      spreadsheetId,
       range: `${sapSheetName}!B${lastRow}`,
     });
     const previousTime = previousTimeResponse.data.values?.[0]?.[0];
@@ -208,7 +208,7 @@ app.post('/api/punchOut', async (req, res) => {
 
       // Update the previous row with elapsed time and SAP time
       await sheets.spreadsheets.values.update({
-        spreadsheetId: req.headers['spreadsheet-id'],
+        spreadsheetId,
         range: `${sapSheetName}!D${lastRow}:E${lastRow}`,
         valueInputOption: 'USER_ENTERED',
         requestBody: { values: [[elapsedFormatted, elapsedDecimal]] },
@@ -217,7 +217,7 @@ app.post('/api/punchOut', async (req, res) => {
 
     // Add Punch Out entry to the SAP sheet
     await sheets.spreadsheets.values.append({
-      spreadsheetId: req.headers['spreadsheet-id'],
+      spreadsheetId,
       range: `${sapSheetName}!A:E`,
       valueInputOption: 'USER_ENTERED',
       requestBody: { values: [[currentDate, currentTime, 'Punch Out', '', '']] },
@@ -225,7 +225,7 @@ app.post('/api/punchOut', async (req, res) => {
 
     // Calculate totals for the current date
     const updatedSapDataResponse = await sheets.spreadsheets.values.get({
-      spreadsheetId: req.headers['spreadsheet-id'],
+      spreadsheetId,
       range: `${sapSheetName}!A:E`,
     });
 
@@ -246,7 +246,7 @@ app.post('/api/punchOut', async (req, res) => {
 
     // Append Totals row to the SAP sheet
     await sheets.spreadsheets.values.append({
-      spreadsheetId: req.headers['spreadsheet-id'],
+      spreadsheetId,
       range: `${sapSheetName}!A:E`,
       valueInputOption: 'USER_ENTERED',
       requestBody: { values: [['', '', 'Totals', totalElapsedFormatted, totalSapTimeFormatted]] },
@@ -277,12 +277,12 @@ app.post('/api/sapInput', async (req, res) => {
 
     // Fetch the last row to calculate elapsed time
     const lastRow = (await sheets.spreadsheets.values.get({
-      spreadsheetId: req.headers['spreadsheet-id'],
+      spreadsheetId,
       range: `${sapSheetName}!B:B`,
     })).data.values.length;
 
     const previousTimeResponse = await sheets.spreadsheets.values.get({
-      spreadsheetId: req.headers['spreadsheet-id'],
+      spreadsheetId,
       range: `${sapSheetName}!B${lastRow}`,
     });
 
@@ -296,7 +296,7 @@ app.post('/api/sapInput', async (req, res) => {
       const elapsedDecimal = calculateElapsedTimeDecimal(elapsedMilliseconds);
 
       await sheets.spreadsheets.values.update({
-        spreadsheetId: req.headers['spreadsheet-id'],
+        spreadsheetId,
         range: `${sapSheetName}!D${lastRow}:E${lastRow}`,
         valueInputOption: 'USER_ENTERED',
         requestBody: { values: [[elapsedFormatted, elapsedDecimal]] },
@@ -305,7 +305,7 @@ app.post('/api/sapInput', async (req, res) => {
 
     // Append the new SAP input
     await sheets.spreadsheets.values.append({
-      spreadsheetId: req.headers['spreadsheet-id'],
+      spreadsheetId,
       range: `${sapSheetName}!A:E`,
       valueInputOption: 'USER_ENTERED',
       requestBody: { values: [[currentDate, currentTime, input, '', '']] },
@@ -326,7 +326,7 @@ app.get('/api/entries/:date', async (req, res) => {
     const sapSheetName = `${monthName}:SAP`;
 
     const response = await sheets.spreadsheets.values.get({
-      spreadsheetId: req.headers['spreadsheet-id'],
+      spreadsheetId,
       range: `${sapSheetName}!A:E`,
     });
 
@@ -353,7 +353,7 @@ app.post('/api/editEntry', async (req, res) => {
 
     // 1. Update the specified row with the new time and project/activity
     await sheets.spreadsheets.values.update({
-      spreadsheetId: req.headers['spreadsheet-id'],
+      spreadsheetId,
       range: `${sapSheetName}!B${rowIndex}:C${rowIndex}`,
       valueInputOption: 'USER_ENTERED',
       requestBody: { values: [[time, projectActivity]] },
@@ -361,7 +361,7 @@ app.post('/api/editEntry', async (req, res) => {
 
     // 2. Fetch the updated sheet data to recalculate elapsed times and SAP times
     let sapDataResponse = await sheets.spreadsheets.values.get({
-      spreadsheetId: req.headers['spreadsheet-id'],
+      spreadsheetId,
       range: `${sapSheetName}!A:E`,
     });
 
@@ -389,7 +389,7 @@ app.post('/api/editEntry', async (req, res) => {
 
         // Update the previous row's elapsed time and SAP time
         await sheets.spreadsheets.values.update({
-          spreadsheetId: req.headers['spreadsheet-id'],
+          spreadsheetId,
           range: `${sapSheetName}!D${previousRow.index}:E${previousRow.index}`,
           valueInputOption: 'USER_ENTERED',
           requestBody: { values: [[elapsedFormatted, elapsedDecimal]] },
@@ -399,7 +399,7 @@ app.post('/api/editEntry', async (req, res) => {
 
     // 3. Fetch the updated sheet data again after recalculations
     let updatedSapDataResponse = await sheets.spreadsheets.values.get({
-      spreadsheetId: req.headers['spreadsheet-id'],
+      spreadsheetId,
       range: `${sapSheetName}!A:E`,
     });
 
@@ -444,7 +444,7 @@ app.post('/api/editEntry', async (req, res) => {
 
       // Update the totals row with recalculated totals
       await sheets.spreadsheets.values.update({
-        spreadsheetId: req.headers['spreadsheet-id'],
+        spreadsheetId,
         range: `${sapSheetName}!D${totalsRowIndex}:E${totalsRowIndex}`,
         valueInputOption: 'USER_ENTERED',
         requestBody: { values: [[totalElapsedFormatted, totalSapTimeFormatted]] },
