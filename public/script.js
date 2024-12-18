@@ -285,7 +285,7 @@ async function editEntry(date, rowIndex) {
                 'Content-Type': 'application/json',
                 "spreadsheet-id": localStorage.getItem('spreadsheetId'),  // Add spreadsheetId header
                 "username": localStorage.getItem('username'), // Send username in headers
-                },
+            
             },
             body: JSON.stringify({ date, rowIndex, time: newTime, projectActivity: newProjectActivity }),
         });
