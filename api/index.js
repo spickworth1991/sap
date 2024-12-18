@@ -71,15 +71,7 @@ async function ensureHeaders(sheets, sheetName, currentDate, spreadsheetId ) {
   }
 }
 
-// Find the row for the current date in the month sheet
-async function findDateRow(sheets, monthSheetName, currentDate) {
-  try {
-    const sheets = await getGoogleSheetsService();
-    const spreadsheetId = req.headers['spreadsheet-id']; // Extract spreadsheetId from request headers
-
-    if (!spreadsheetId) {
-      return res.status(400).json({ error: 'Spreadsheet ID is missing in request headers' });
-    }
+async function findDateRow(sheets, spreadsheetId, monthSheetName, currentDate) {
   const response = await sheets.spreadsheets.values.get({
     spreadsheetId,
     range: `${monthSheetName}!B:B`,
@@ -93,6 +85,7 @@ async function findDateRow(sheets, monthSheetName, currentDate) {
   }
   return null;
 }
+
 
 app.post('/api/punchIn', async (req, res) => {
   try {
@@ -113,7 +106,7 @@ app.post('/api/punchIn', async (req, res) => {
     await ensureHeaders(sheets, sapSheetName, currentDate, spreadsheetId);
 
     // Find the row with the current date on the month sheet
-    let rowIndex = await findDateRow(sheets, monthSheetName, currentDate, spreadsheetId);
+    let rowIndex = await findDateRow(sheets, spreadsheetId, monthSheetName, currentDate);
 
     if (!rowIndex) {
       return res.status(400).json(errors.NO_ENTRY_FOUND);
