@@ -50,7 +50,7 @@ function calculateElapsedTimeDecimal(milliseconds) {
 }
 
 // Ensure headers exist if the last entry in Column A is not the current date
-async function ensureHeaders(sheets, sheetName, currentDate) {
+async function ensureHeaders(sheets, sheetName, currentDate, spreadsheetId ) {
   const response = await sheets.spreadsheets.values.get({
     spreadsheetId,
     range: `${sheetName}!A:A`,
