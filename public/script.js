@@ -277,10 +277,6 @@ async function editEntry(date, rowIndex) {
         alert('Both time and project/activity are required.');
         return;
     }
-headers: {
-                "spreadsheet-id": localStorage.getItem('spreadsheetId'),
-                "username": localStorage.getItem('username'), // Send username in headers
-
     
     try {
         const response = await fetch('/api/editEntry', {
