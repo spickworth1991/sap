@@ -50,7 +50,7 @@ function calculateElapsedTimeDecimal(milliseconds) {
 }
 
 // Ensure headers exist if the last entry in Column A is not the current date
-async function ensureHeaders(sheets, sheetName, currentDate, spreadsheetId) {
+async function ensureHeaders(sheets, sheetName, currentDate) {
   const response = await sheets.spreadsheets.values.get({
     spreadsheetId,
     range: `${sheetName}!A:A`,
@@ -88,7 +88,7 @@ async function findDateRow(sheets, monthSheetName, currentDate) {
 }
 
 // Punch In Route
-app.post('/api/punchIn', async (spreadsheetId, res) => {
+app.post('/api/punchIn', async (req, res) => {
   try {
     const sheets = await getGoogleSheetsService();
     const currentDate = getCurrentDate();
@@ -140,7 +140,7 @@ app.post('/api/punchIn', async (spreadsheetId, res) => {
 });
 
 // Punch Out Route
-app.post('/api/punchOut', async (spreadsheetId, res) => {
+app.post('/api/punchOut', async (req, res) => {
   try {
     const sheets = await getGoogleSheetsService();
     const currentDate = getCurrentDate();
