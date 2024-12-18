@@ -87,10 +87,15 @@ async function findDateRow(sheets, monthSheetName, currentDate) {
   return null;
 }
 
-// Punch In Route
 app.post('/api/punchIn', async (req, res) => {
   try {
     const sheets = await getGoogleSheetsService();
+    const spreadsheetId = req.headers['spreadsheet-id']; // Extract spreadsheetId from request headers
+
+    if (!spreadsheetId) {
+      return res.status(400).json({ error: 'Spreadsheet ID is missing in request headers' });
+    }
+
     const currentDate = getCurrentDate();
     const currentTime = getCurrentTime();
     const monthName = getCurrentMonthName();
@@ -98,10 +103,10 @@ app.post('/api/punchIn', async (req, res) => {
     const sapSheetName = `${monthName}:SAP`;
 
     // Ensure headers are present in the SAP sheet
-    await ensureHeaders(sheets, spreadsheetId, sapSheetName, currentDate);
+    await ensureHeaders(sheets, sapSheetName, currentDate, spreadsheetId);
 
     // Find the row with the current date on the month sheet
-    let rowIndex = await findDateRow(sheets, spreadsheetId, monthSheetName, currentDate);
+    let rowIndex = await findDateRow(sheets, monthSheetName, currentDate, spreadsheetId);
 
     if (!rowIndex) {
       return res.status(400).json(errors.NO_ENTRY_FOUND);
@@ -132,12 +137,13 @@ app.post('/api/punchIn', async (req, res) => {
       requestBody: { values: [[currentDate, currentTime, 'Punch In', '', '']] },
     });
 
-    res.status(200).json(success.PUNCH_IN_SUCCESS );
+    res.status(200).json(success.PUNCH_IN_SUCCESS);
   } catch (error) {
     console.error('Error in Punch In:', error);
     res.status(500).json(errors.FAIL_PUNCH_IN);
   }
 });
+
 
 // Punch Out Route
 app.post('/api/punchOut', async (req, res) => {
