@@ -1,14 +1,15 @@
 const express = require('express');
 const authRoutes = require('./auth');
-const adminRoutes = require('./admin');
+const successRoutes = require('./success');
+const errorsRoutes = require('./errors');
 
 const app = express();
-
 app.use(express.json());
 
-// Mount the auth and admin routes
+// Mount routes
 app.use('/api/auth', authRoutes);
-app.use('/api/admin', adminRoutes);
+app.use('/api/success', successRoutes);
+app.use('/api/errors', errorsRoutes);
 
 app.get('/', (req, res) => {
     res.send('API is running');
