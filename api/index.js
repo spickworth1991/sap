@@ -88,7 +88,7 @@ async function findDateRow(sheets, monthSheetName, currentDate) {
 }
 
 // Punch In Route
-app.post('/api/punchIn', async (req, res) => {
+app.post('/api/punchIn', async (spreadsheetId, res) => {
   try {
     const sheets = await getGoogleSheetsService();
     const currentDate = getCurrentDate();
@@ -140,7 +140,7 @@ app.post('/api/punchIn', async (req, res) => {
 });
 
 // Punch Out Route
-app.post('/api/punchOut', async (req, res) => {
+app.post('/api/punchOut', async (spreadsheetId, res) => {
   try {
     const sheets = await getGoogleSheetsService();
     const currentDate = getCurrentDate();
