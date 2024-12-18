@@ -281,7 +281,7 @@ app.post('/api/sapInput', async (req, res) => {
     }
 
     const sheets = await getGoogleSheetsService();
-		const spreadsheetId = req.headers['spreadsheet-id']; // Extract spreadsheetId from request headers
+	const spreadsheetId = req.headers['spreadsheet-id']; // Extract spreadsheetId from request headers
 
     if (!spreadsheetId) {
       return res.status(400).json({ error: 'Spreadsheet ID is missing in request headers' });
@@ -338,7 +338,7 @@ app.post('/api/sapInput', async (req, res) => {
 app.get('/api/entries/:date', async (req, res) => {
   try {
     const sheets = await getGoogleSheetsService();
-		const spreadsheetId = req.headers['spreadsheet-id']; // Extract spreadsheetId from request headers
+	const spreadsheetId = req.headers['spreadsheet-id']; // Extract spreadsheetId from request headers
 
     if (!spreadsheetId) {
       return res.status(400).json({ error: 'Spreadsheet ID is missing in request headers' });
@@ -370,7 +370,7 @@ app.post('/api/editEntry', async (req, res) => {
   try {
     const { date, rowIndex, time, projectActivity } = req.body;
     const sheets = await getGoogleSheetsService();
-	  const spreadsheetId = req.headers['spreadsheet-id']; // Extract spreadsheetId from request headers
+	const spreadsheetId = req.headers['spreadsheet-id']; // Extract spreadsheetId from request headers
 
     if (!spreadsheetId) {
       return res.status(400).json({ error: 'Spreadsheet ID is missing in request headers' });
