@@ -3,6 +3,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const loginError = document.getElementById('login-error');
     const logoutBtn = document.getElementById('logout-btn');
     const adminHomeBtn = document.getElementById('admin-home-btn');
+    const loginPage = document.getElementById('login-page');
+    const homePage = document.getElementById('home-page');
+
+    // Check if user is logged in
+    const userRole = localStorage.getItem('role');
+    if (userRole) {
+        loginPage.style.display = 'none';
+        homePage.style.display = 'block';
+        if (userRole === 'admin') {
+            adminHomeBtn.style.display = 'inline-block';
+        }
+    }
 
     // Login form submission
     if (loginForm) {
@@ -23,8 +35,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
 
                 const data = await response.json();
-                window.location.href = 'home.html';
                 localStorage.setItem('role', data.role);
+                loginPage.style.display = 'none';
+                homePage.style.display = 'block';
+
+                if (data.role === 'admin') {
+                    adminHomeBtn.style.display = 'inline-block';
+                }
             } catch (err) {
                 loginError.textContent = 'Invalid username or password';
             }
@@ -33,15 +50,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Logout functionality
     if (logoutBtn) {
-        logoutBtn.addEventListener('click', async () => {
-            await fetch('/api/auth/logout', { method: 'POST' });
+        logoutBtn.addEventListener('click', () => {
             localStorage.removeItem('role');
-            window.location.href = 'login.html';
+            loginPage.style.display = 'block';
+            homePage.style.display = 'none';
+            adminHomeBtn.style.display = 'none';
         });
-    }
-
-    // Show admin button if the user is an admin
-    if (adminHomeBtn && localStorage.getItem('role') === 'admin') {
-        adminHomeBtn.style.display = 'inline-block';
     }
 });
