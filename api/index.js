@@ -152,6 +152,7 @@ app.post('/api/punchIn', async (req, res) => {
 });
 
 
+
 // Punch Out Route
 app.post('/api/punchOut', async (req, res) => {
   try {
