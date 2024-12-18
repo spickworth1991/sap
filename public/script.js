@@ -144,8 +144,12 @@ async function punchIn(button) {
     try {
         const response = await fetch("/api/punchIn", {
             method: "POST",
-            headers: { "spreadsheet-id": localStorage.getItem('spreadsheetId') }  // Add spreadsheetId header
+            headers: {
+                "spreadsheet-id": localStorage.getItem('spreadsheetId'),
+                "username": localStorage.getItem('username'), // Send username in headers
+            },
         });
+
         const result = await response.json();
 
         if (response.ok) {
@@ -168,7 +172,9 @@ async function punchOut(button) {
     try {
         const response = await fetch("/api/punchOut", {
             method: "POST",
-            headers: { "spreadsheet-id": localStorage.getItem('spreadsheetId') }  // Add spreadsheetId header
+            headers: {
+                "spreadsheet-id": localStorage.getItem('spreadsheetId'),
+                "username": localStorage.getItem('username'), // Send username in headers
         });
         const result = await response.json();
 
@@ -270,13 +276,18 @@ async function editEntry(date, rowIndex) {
         alert('Both time and project/activity are required.');
         return;
     }
+headers: {
+                "spreadsheet-id": localStorage.getItem('spreadsheetId'),
+                "username": localStorage.getItem('username'), // Send username in headers
 
+    
     try {
         const response = await fetch('/api/editEntry', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'spreadsheet-id': localStorage.getItem('spreadsheetId'),  // Add spreadsheetId header
+                "spreadsheet-id": localStorage.getItem('spreadsheetId'),  // Add spreadsheetId header
+                "username": localStorage.getItem('username'), // Send username in headers
             },
             body: JSON.stringify({ date, rowIndex, time: newTime, projectActivity: newProjectActivity }),
         });
