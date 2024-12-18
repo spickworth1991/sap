@@ -150,6 +150,12 @@ app.post('/api/punchIn', async (req, res) => {
 app.post('/api/punchOut', async (req, res) => {
   try {
     const sheets = await getGoogleSheetsService();
+	const spreadsheetId = req.headers['spreadsheet-id']; // Extract spreadsheetId from request headers
+
+    if (!spreadsheetId) {
+      return res.status(400).json({ error: 'Spreadsheet ID is missing in request headers' });
+    }
+
     const currentDate = getCurrentDate();
     const currentTime = getCurrentTime();
     const monthName = getCurrentMonthName();
