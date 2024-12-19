@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const logoutBtn = document.getElementById('logout-btn');
     const adminHomeBtn = document.getElementById('admin-home-btn');
     const loginPage = document.getElementById('login-page');
-    const homePage = document.getElementById('home-page');
+    const homePage = location.href='homePage.html';
 
     // Check if user is logged in
     const userRole = localStorage.getItem('role');
