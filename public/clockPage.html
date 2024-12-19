@@ -16,10 +16,10 @@
             <button class="button punch-button" id="punchInButton" onclick="punchIn(this)">Punch In</button>
             <button class="button punch-button" id="punchOutButton" onclick="punchOut(this)">Punch Out</button>
         </div>
-        <button class="button nav-button" onclick="navigateTo(location.href='homePage.html')">Home</button>
+        <button class="button nav-button" onclick="navigateTo('homePage')">Home</button>
     </div>
 
     <script src="script.js"></script>
     <script src="clockpage.js"></script> <!-- Ensure this path is correct -->
     
-</body>
+<script>document.addEventListener('DOMContentLoaded', () => { document.body.style.display = 'block'; });</script></body>

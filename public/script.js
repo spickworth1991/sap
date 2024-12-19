@@ -1,37 +1,50 @@
-// List of all possible pages
-const pages = {
-    loginPage: document.getElementById('login-page'),
-    homePage: document.getElementById('home-page'),
-    clockPage: document.getElementById('clockPage'),
-    sapPage: document.getElementById('sapPage'),
-    dateSelectionPage: document.getElementById('dateSelectionPage'),
-    editEntriesPage: document.getElementById('editEntriesPage')
-};
 
-// Hide all pages initially
-function hideAllPages() {
-    Object.values(pages).forEach(page => {
-        if (page) {
-            page.style.display = 'none';
-        }
-    });
-}
+document.addEventListener('DOMContentLoaded', () => {
+    const pages = {
+        loginPage: document.getElementById('login-page'),
+        homePage: document.getElementById('home-page'),
+        clockPage: document.getElementById('clockPage'),
+        sapPage: document.getElementById('sapPage'),
+        dateSelectionPage: document.getElementById('dateSelectionPage'),
+        editEntriesPage: document.getElementById('editEntriesPage')
+    };
 
-// Navigation function to show the selected page
-function navigateTo(pageId) {
-    hideAllPages();
-    if (pages[pageId]) {
-        console.log(`Navigating to: ${pageId}`);
-        pages[pageId].style.display = 'block';
-    } else {
-        console.log(`Page not found: ${pageId}`);
+    function hideAllPages() {
+        Object.values(pages).forEach(page => {
+            if (page) {
+                page.style.display = 'none';
+            }
+        });
     }
-}
+
+    function navigateTo(pageId) {
+        hideAllPages();
+        if (pages[pageId]) {
+            console.log(`Navigating to: ${pageId}`);
+            pages[pageId].style.display = 'block';
+        } else {
+            console.log(`Page not found: ${pageId}`);
+        }
+    }
+
+    showInitialPage();
+    window.navigateTo = navigateTo;
+    window.hideAllPages = hideAllPages;
+});
+
 
 // Show the appropriate page based on login status
 function showInitialPage() {
     const adminHomeBtn = document.getElementById('admin-home-btn');
     const userRole = localStorage.getItem('role');
+    function hideAllPages() {
+        Object.values(pages).forEach(page => {
+            if (page) {
+                page.style.display = 'none';
+            }
+        });
+    }
+
 
     hideAllPages();
     if (userRole) {
@@ -48,8 +61,6 @@ function showInitialPage() {
     }
 }
 
-// Run on initial load
-document.addEventListener('DOMContentLoaded', showInitialPage);
 
 
 

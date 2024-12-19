@@ -40,9 +40,9 @@
             <button onclick="nextPage()">Next</button>
         </div>
     </div>
-    <button id="admin-home-btn" style="display:none;" onclick="navigateTo(location.href='admin.html')">Admin Home</button>
-    <button class="button nav-button" onclick="navigateTo(location.href='homePage.html')">Home</button>
+    <button id="admin-home-btn" style="display:none;" onclick="navigateTo('adminPage')">Admin Home</button>
+    <button class="button nav-button" onclick="navigateTo('homePage')">Home</button>
     <script src="viewLogs.js"></script> <!-- Link to the viewLogs.js file -->
     <script src="script.js" ></script>
-</body>
+<script>document.addEventListener('DOMContentLoaded', () => { document.body.style.display = 'block'; });</script></body>
 </html>

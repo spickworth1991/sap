@@ -15,13 +15,15 @@
         <div id="homePage" class="center">
             <h1>Home</h1>
             <div>
-            <button class="button nav-button" onclick="navigateTo(location.href='clockPage.html')">Clock In/Out</button>
-            <button class="button nav-button" onclick="navigateTo(location.href='sapPage.html')">SAP Input</button>
-            <button class="button nav-button" onclick="navigateTo(location.href='dateSelect.html')">Date Selection</button>
+            <button class="button nav-button" onclick="navigateTo('clockPage')">Clock In/Out</button>
+            <button class="button nav-button" onclick="navigateTo('sapPage')">SAP Input</button>
+            <button class="button nav-button" onclick="navigateTo('dateSelectionPage')">Date Selection</button>
             </div>
             <button id="logout-btn">Logout</button>
         </div>
-        <button id="admin-home-btn" style="display:none;" onclick="navigateTo(location.href='admin.html')">Admin Home</button>
-        <script src="script.js"></script>
-    </body>
+        <button id="admin-home-btn" style="display:none;" onclick="navigateTo('adminPage')">Admin Home</button>
+        
+    <script>document.addEventListener('DOMContentLoaded', () => { document.body.style.display = 'block'; });</script>
+<script src="script.js"></script>
+</body>
 </html>
