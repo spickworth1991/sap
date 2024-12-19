@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
+
 document.addEventListener('DOMContentLoaded', () => {
     const logoutBtn = document.getElementById('logout-btn');
     if (logoutBtn) {
@@ -18,6 +19,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+
 
 document.addEventListener('DOMContentLoaded', () => {
     const loginForm = document.getElementById('login-form');
