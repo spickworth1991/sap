@@ -1,7 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const loginForm = document.getElementById('login-form');
-    const loginError = document.getElementById('login-error');
-    const logoutBtn = document.getElementById('logout-btn');
     const adminHomeBtn = document.getElementById('admin-home-btn');
     const loginPage = document.getElementById('login-page');
     const homePage = document.getElementById('home-page');
@@ -24,6 +21,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 // Login form submission
+const loginForm = document.getElementById('login-form');
+const loginError = document.getElementById('login-error');
+
 if (loginForm) {
     loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -57,6 +57,7 @@ if (loginForm) {
 }
 
 // Logout functionality
+
 if (logoutBtn) {
     logoutBtn.addEventListener('click', () => {
         localStorage.removeItem('role');
