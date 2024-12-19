@@ -10,8 +10,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const userRole = localStorage.getItem('role');
     const spreadsheetId = localStorage.getItem('spreadsheetId');
     if (userRole) {
-        loginPage.style.display = 'block';
-        homePage.style.display = 'none';
+        loginPage.style.display = 'none';
+        homePage.style.display = 'block';
         if (userRole === 'admin') {
             adminHomeBtn.style.display = 'inline-block';
         }
