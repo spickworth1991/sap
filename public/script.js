@@ -1,4 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const userRole = localStorage.getItem('role');
+    const homePage = document.getElementById('home-page');
+
+    if (userRole && homePage) {
+        homePage.style.display = 'block';
+    }
+});
+
+document.addEventListener('DOMContentLoaded', () => {
     const loginForm = document.getElementById('login-form');
     const loginError = document.getElementById('login-error');
     const adminHomeBtn = document.getElementById('admin-home-btn');
