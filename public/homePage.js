@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
         logoutBtn.addEventListener('click', () => {
             localStorage.removeItem('role');
             localStorage.removeItem('spreadsheetId');
-            window.location.href = 'index.html';
+            window.location.href = 'login.html';
         });
     }
 });
