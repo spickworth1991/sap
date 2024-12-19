@@ -5,9 +5,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const adminHomeBtn = document.getElementById('admin-home-btn');
     const loginPage = document.getElementById('login-page');
     const homePage = document.getElementById('home-page');
+    const userRole = localStorage.getItem('role');
 
     // Check if user is logged in
-    const userRole = localStorage.getItem('role');
+    
     const spreadsheetId = localStorage.getItem('spreadsheetId');
     if (userRole) {
         loginPage.style.display = 'none';
@@ -38,8 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const data = await response.json();
                 localStorage.setItem('role', data.role);
                 localStorage.setItem('spreadsheetId', data.spreadsheetId);  // Store spreadsheetId
-                loginPage.style.display = 'none';
-                homePage.style.display = 'block';
+                window.location.href = 'homePage.html'
 
                 if (data.role === 'admin') {
                     adminHomeBtn.style.display = 'inline-block';
@@ -55,8 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
         logoutBtn.addEventListener('click', () => {
             localStorage.removeItem('role');
             localStorage.removeItem('spreadsheetId');
-            loginPage.style.display = 'block';
-            homePage.style.display = 'none';
+            window.location.href = 'login.html'
             adminHomeBtn.style.display = 'none';
         });
     }
