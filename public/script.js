@@ -33,33 +33,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const data = await response.json();
                 localStorage.setItem('role', data.role);
-                localStorage.setItem('spreadsheetId', data.spreadsheetId);
+                localStorage.setItem('spreadsheetId', data.spreadsheetId);  // Store spreadsheetId
+                loginPage.style.display = 'none';
+                homePage.style.display = 'block';
 
-                // Redirect to homePage.html after successful login
-                window.location.href = 'homePage.html';
+                if (data.role === 'admin') {
+                    adminHomeBtn.style.display = 'inline-block';
+                }
             } catch (err) {
                 loginError.textContent = 'Invalid username or password';
             }
         });
-    }
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-    const userRole = localStorage.getItem('role');
-    const logoutBtn = document.getElementById('logout-btn');
-    const adminHomeBtn = document.getElementById('admin-home-btn');
-    const homePageContent = document.getElementById('home-page');
-
-    if (!userRole) {
-        // Redirect to login page if not logged in
-        window.location.href = 'login.html';
-    } else {
-        // Show content if logged in
-        homePageContent.style.display = 'block';
-
-        if (userRole === 'admin' && adminHomeBtn) {
-            adminHomeBtn.style.display = 'inline-block';
-        }
     }
 
     // Logout functionality
@@ -67,10 +51,13 @@ document.addEventListener('DOMContentLoaded', () => {
         logoutBtn.addEventListener('click', () => {
             localStorage.removeItem('role');
             localStorage.removeItem('spreadsheetId');
-            window.location.href = 'index.html';
+            loginPage.style.display = 'block';
+            homePage.style.display = 'none';
+            adminHomeBtn.style.display = 'none';
         });
     }
 });
+
 
 
 
