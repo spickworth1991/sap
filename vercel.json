@@ -12,7 +12,8 @@
     "routes": [
       { "src": "^/$", "dest": "/public/login.html" },
       { "src": "/api/(.*)", "dest": "/api/index.js" },
-      { "src": "/(.*)", "dest": "/public/$1" }
+      { "src": "/(.*)", "dest": "/public/$1" },
+      { "src": "/(.*)", "dest": "/public/homePage.html" }
     ]
   }
   
