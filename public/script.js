@@ -1,29 +1,57 @@
-document.addEventListener('DOMContentLoaded', () => {
+// List of all possible pages
+const pages = {
+    loginPage: document.getElementById('login-page'),
+    homePage: document.getElementById('home-page'),
+    clockPage: document.getElementById('clockPage'),
+    sapPage: document.getElementById('sapPage'),
+    dateSelectionPage: document.getElementById('dateSelectionPage'),
+    editEntriesPage: document.getElementById('editEntriesPage')
+};
+
+// Hide all pages initially
+function hideAllPages() {
+    Object.values(pages).forEach(page => {
+        if (page) {
+            page.style.display = 'none';
+        }
+    });
+}
+
+// Navigation function to show the selected page
+function navigateTo(pageId) {
+    hideAllPages();
+    if (pages[pageId]) {
+        console.log(`Navigating to: ${pageId}`);
+        pages[pageId].style.display = 'block';
+    } else {
+        console.log(`Page not found: ${pageId}`);
+    }
+}
+
+// Show the appropriate page based on login status
+function showInitialPage() {
     const adminHomeBtn = document.getElementById('admin-home-btn');
-    const loginPage = document.getElementById('login-page');
-    const homePage = document.getElementById('home-page');
-    const clockPage = document.getElementById('clockPage');
-    const sapPage = document.getElementById('sapPage');
-    const dateSelectionPage = document.getElementById('dateSelectionPage');
-    const editEntriesPage = document.getElementById('editEntriesPage');
     const userRole = localStorage.getItem('role');
 
-    // Hide all pages initially
-    const pages = [loginPage, homePage, clockPage, sapPage, dateSelectionPage, editEntriesPage];
-    pages.forEach(page => {
-        if (page) page.style.display = 'none';
-    });
-
-    // Show appropriate page based on login status and role
+    hideAllPages();
     if (userRole) {
-        if (homePage) homePage.style.display = 'block';
+        if (pages.homePage) {
+            pages.homePage.style.display = 'block';
+        }
         if (userRole === 'admin' && adminHomeBtn) {
             adminHomeBtn.style.display = 'inline-block';
         }
     } else {
-        if (loginPage) loginPage.style.display = 'block';
+        if (pages.loginPage) {
+            pages.loginPage.style.display = 'block';
+        }
     }
-});
+}
+
+// Run on initial load
+document.addEventListener('DOMContentLoaded', showInitialPage);
+
+
 
 
 
@@ -40,21 +68,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
-
-// Navigation function
-function showPage(pageId) {
-    const pages = ["homePage", "clockPage", "sapPage", "dateSelectionPage", "editEntriesPage"];
-    pages.forEach(id => {
-        const element = document.getElementById(id);
-        if (element) {
-            element.style.display = id === pageId ? "block" : "none";
-        }
-    });
-}
-
-function navigate(pageId) {
-    showPage(pageId);
-}
 
 // Function to update status and hide it after a certain duration
 function updateStatus(message, type) {
@@ -187,7 +200,7 @@ async function fetchEntriesByDate() {
         `;
 
         entriesContainer.appendChild(table);
-        navigate('editEntriesPage');
+        navigateTo('editEntriesPage');
     } catch (error) {
         console.error('Error fetching entries:', error);
         updateStatus({ code: 9999, message: "Network error or server is unavailable." }, "error");

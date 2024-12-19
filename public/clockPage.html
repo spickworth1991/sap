@@ -10,15 +10,16 @@
 </head>
 <body>
     <div id="statusBox" class="info" style="display: none;"></div>
-    <div id="clockPage" class="center">
+    <div id="clockPage" class="center" style="display: none;">
         <h1>Clock In/Out</h1>
         <div>
             <button class="button punch-button" id="punchInButton" onclick="punchIn(this)">Punch In</button>
             <button class="button punch-button" id="punchOutButton" onclick="punchOut(this)">Punch Out</button>
         </div>
-        <button class="button nav-button" onclick="location.href='homePage.html'">Back to Home</button>
+        <button class="button nav-button" onclick="navigateTo(location.href='homePage.html')">Home</button>
     </div>
 
-    <script src="clockpage.js"></script> <!-- Ensure this path is correct -->
     <script src="script.js"></script>
+    <script src="clockpage.js"></script> <!-- Ensure this path is correct -->
+    
 </body>

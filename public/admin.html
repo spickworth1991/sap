@@ -11,12 +11,12 @@
     <div id="statusBox" class="info" style="display: none;"></div>
     <h1>Admin Dashboard</h1>
     <nav>
-        <button class="button nav-button" onclick="location.href='manage_users.html'">Manage Users</button>
-        <button class="button nav-button" onclick="location.href='view_logs.html'">View Logs</button>
-        <button class="button nav-button" onclick="location.href='edit_entries.html'">Edit Entries</button>
+        <button class="button nav-button" onclick="navigateTo(location.href='manage_users.html')">Manage Users</button>
+        <button class="button nav-button" onclick="navigateTo(location.href='view_logs.html')">View Logs</button>
+        <button class="button nav-button" onclick="navigateTo(location.href='edit_entries.html')">Edit Entries</button>
 
     </nav>
-    <button class="button nav-button" onclick="location.href='homePage.html'">Back to Home</button>
+    <button class="button nav-button" onclick="navigateTo(location.href='homePage.html')">Home</button>
     <button id="logout-btn">Logout</button>
     <script src="admin.js"></script>
     <script src="script.js"></script>
