@@ -1,4 +1,26 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const adminHomeBtn = document.getElementById('admin-home-btn');
+    const loginPage = document.getElementById('login-page');
+    const homePage = document.getElementById('home-page');
+    const userRole = localStorage.getItem('role');
+
+    // Hide both pages initially
+    if (loginPage) loginPage.style.display = 'none';
+    if (homePage) homePage.style.display = 'none';
+
+    // Show appropriate page based on login status
+    if (userRole) {
+        if (homePage) homePage.style.display = 'block';
+        if (userRole === 'admin' && adminHomeBtn) {
+            adminHomeBtn.style.display = 'inline-block';
+        }
+    } else {
+        if (loginPage) loginPage.style.display = 'block';
+    }
+});
+
+
+document.addEventListener('DOMContentLoaded', () => {
     const logoutBtn = document.getElementById('logout-btn');
     if (logoutBtn) {
         logoutBtn.addEventListener('click', () => {
