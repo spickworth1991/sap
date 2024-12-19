@@ -9,17 +9,18 @@
     <title>Work Hours Tracker</title>
 </head>
 <body>
-<div id="home-page" class="page" >
-    <div id="statusBox" class="info" ></div>
-    <div id="homePage" class="center">
-        <h1>Home</h1>
-        <div>
-          <button class="button nav-button" onclick="location.href='clockPage.html'">Clock In/Out</button>
-          <button class="button nav-button" onclick="navigate('sapPage')">SAP Input</button>
-          <button class="button nav-button" onclick="navigate('dateSelectionPage')">Date Selection</button>
+    <div id="statusBox" class="info" style="display: none;"></div>
+    <div id="home-page" class="page" >
+        <div id="statusBox" class="info" ></div>
+        <div id="homePage" class="center">
+            <h1>Home</h1>
+            <div>
+            <button class="button nav-button" onclick="location.href='clockPage.html'">Clock In/Out</button>
+            <button class="button nav-button" onclick="navigate('sapPage')">SAP Input</button>
+            <button class="button nav-button" onclick="navigate('dateSelectionPage')">Date Selection</button>
+            </div>
+            <button id="logout-btn">Logout</button>
         </div>
-        <button id="logout-btn">Logout</button>
-    </div>
-    <script src="script.js"></script>
-</body>
+        <script src="script.js"></script>
+    </body>
 </html>
