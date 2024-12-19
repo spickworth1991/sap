@@ -8,7 +8,7 @@
 </head>
 <body>
     <div id="statusBox" class="info" style="display: none;"></div>
-    <div id="logsPage">
+    <div id="logsPage" style="display: block;">
         <h2>System Logs</h2>
         
         <div class="log-controls">
@@ -40,7 +40,7 @@
             <button onclick="nextPage()">Next</button>
         </div>
     </div>
-    <button id="admin-home-btn" style="display:none;" onclick="navigateTo('adminPage')">Admin Home</button>
+    <button class="button nav-button" onclick="location.href='admin.html'">Back to Admin Dashboard</button>
     <button class="button nav-button" onclick="navigateTo('homePage')">Home</button>
     <script src="viewLogs.js"></script> <!-- Link to the viewLogs.js file -->
     <script src="script.js" ></script>

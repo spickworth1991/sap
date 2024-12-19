@@ -8,11 +8,23 @@
     <title>Manage Users</title>
 </head>
 <body>
-    <div id="statusBox" class="info" style="display: none;"></div>
-    <h1>Manage Users</h1>
-    <p>This page will allow admins to create, view, and edit users.</p>
-    <button id="admin-home-btn" style="display:none;" onclick="navigateTo('adminPage')">Admin Home</button>
-    <button class="button nav-button" onclick="navigateTo('homePage')">Home</button>
+    <div id="man-user-page" class="page" >
+        <div id="statusBox" class="info" style="display: none;"></div>
+        <div id="manageUsersPage" class="center"
+
+                <h1>Manage Users</h1>
+                
+                <p>This page will allow admins to create, view, and edit users.</p>
+                </div>   
+                    <div>
+                        <button class="button nav-button" onclick="navigateTo('homePage')">Home</button>
+                        <button id="logout-btn">Logout</button>
+                        <button class="button nav-button" onclick="location.href='admin.html'">Back to Admin Dashboard</button>
+                    </div>
+        </div>
+        
+        
     <script src="script.js"></script>
-<script>document.addEventListener('DOMContentLoaded', () => { document.body.style.display = 'block'; });</script></body>
+    <script>document.addEventListener('DOMContentLoaded', () => { document.body.style.display = 'block'; });</script></body>
+</body>
 </html>

@@ -9,61 +9,79 @@ document.addEventListener('DOMContentLoaded', () => {
         editEntriesPage: document.getElementById('editEntriesPage')
     };
 
-    function hideAllPages() {
-        Object.values(pages).forEach(page => {
-            if (page) {
-                page.style.display = 'none';
-            }
-        });
-    }
 
-    function navigateTo(pageId) {
-        hideAllPages();
-        if (pages[pageId]) {
-            console.log(`Navigating to: ${pageId}`);
-            pages[pageId].style.display = 'block';
-        } else {
-            console.log(`Page not found: ${pageId}`);
-        }
-    }
-
-    showInitialPage();
-    window.navigateTo = navigateTo;
-    window.hideAllPages = hideAllPages;
+    showInitialPage(pages);
+    
 });
+
+function hideAllPages(pages) {
+    Object.values(pages).forEach(page => {
+        if (page) {
+            page.style.display = 'none';
+        }
+    });
+    window.hideAllPages = hideAllPages;
+}
 
 
 // Show the appropriate page based on login status
 function showInitialPage() {
     const adminHomeBtn = document.getElementById('admin-home-btn');
     const userRole = localStorage.getItem('role');
-    function hideAllPages() {
-        Object.values(pages).forEach(page => {
-            if (page) {
-                page.style.display = 'none';
-            }
-        });
-    }
+    console.log(`userRole: ${userRole}`);
+    const loginPage = document.getElementById('login-page');
+    const homePage = document.getElementById('home-page');
+    
 
-
-    hideAllPages();
-    if (userRole) {
-        if (pages.homePage) {
-            pages.homePage.style.display = 'block';
-        }
+   // hideAllPages(pages);
+    if (userRole) {     
+            homePage.style.display = 'block';
+            loginPage.style.display = 'none';
+        
         if (userRole === 'admin' && adminHomeBtn) {
             adminHomeBtn.style.display = 'inline-block';
         }
     } else {
-        if (pages.loginPage) {
-            pages.loginPage.style.display = 'block';
+        if (loginPage) {
+            loginPage.style.display = 'block';
+            homePage.style.display = 'none';
+
         }
     }
+    window.showInitialPage = showInitialPage;
 }
 
-
-
-
+// Navigation function to show the selected page
+function navigateTo(pageId) {
+    switch (pageId) {
+        case 'homePage':
+            window.location.href = 'homePage.html';
+            break;
+        case 'manageUsersPage':
+            window.location.href = 'manage_users.html';
+            break;
+        case 'viewLogsPage':
+            window.location.href = 'view_logs.html';
+            break;
+        case 'editEntriesPage':
+            window.location.href = 'edit_entries.html';
+            break;
+        case 'clockPage':
+            window.location.href = 'clockPage.html';
+            break;
+        case 'sapPage':
+            window.location.href = 'sapPage.html';
+            break;
+        case 'dateSelectionPage':
+            window.location.href = 'dateSelect.html';
+            break;
+        case 'adminPage':
+            window.location.href = 'admin.html';
+            break;
+        default:
+            console.log(`Page not found: ${pageId}`);
+    }
+}
 
 
 document.addEventListener('DOMContentLoaded', () => {

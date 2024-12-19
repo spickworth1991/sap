@@ -9,9 +9,8 @@
     <title>Work Hours Tracker</title>
 </head>
 <body>
-    <div id="statusBox" class="info" style="display: none;"></div>
     <div id="home-page" class="page" >
-        <div id="statusBox" class="info" ></div>
+        <div id="statusBox" class="info" style="display: none;"></div>
         <div id="homePage" class="center">
             <h1>Home</h1>
             <div>
@@ -20,8 +19,9 @@
             <button class="button nav-button" onclick="navigateTo('dateSelectionPage')">Date Selection</button>
             </div>
             <button id="logout-btn">Logout</button>
+            <button id="admin-home-btn" style="display:none;" onclick="navigateTo('adminPage')">Admin Home</button>
         </div>
-        <button id="admin-home-btn" style="display:none;" onclick="navigateTo('adminPage')">Admin Home</button>
+        
         
     <script>document.addEventListener('DOMContentLoaded', () => { document.body.style.display = 'block'; });</script>
 <script src="script.js"></script>
