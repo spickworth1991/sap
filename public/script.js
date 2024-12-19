@@ -8,6 +8,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const editEntriesPage = document.getElementById('editEntriesPage');
     const userRole = localStorage.getItem('role');
 
+    // Identify the current page by body ID or URL
+    const currentPage = document.body.id || window.location.pathname;
+
     // Hide all pages initially
     const pages = [loginPage, homePage, clockPage, sapPage, dateSelectionPage, editEntriesPage];
     pages.forEach(page => {
@@ -16,14 +19,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Show appropriate page based on login status and role
     if (userRole) {
-        if (homePage) homePage.style.display = 'block';
+        if (currentPage === '/homePage.html' && homePage) {
+            homePage.style.display = 'block';
+        }
         if (userRole === 'admin' && adminHomeBtn) {
             adminHomeBtn.style.display = 'inline-block';
         }
     } else {
-        if (loginPage) loginPage.style.display = 'block';
+        if (currentPage === '/login.html' && loginPage) {
+            loginPage.style.display = 'block';
+        }
     }
 });
+
 
 
 
