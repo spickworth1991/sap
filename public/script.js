@@ -1,20 +1,15 @@
 document.addEventListener('DOMContentLoaded', () => {
     const loginForm = document.getElementById('login-form');
     const loginError = document.getElementById('login-error');
-    const logoutBtn = document.getElementById('logout-btn');
     const adminHomeBtn = document.getElementById('admin-home-btn');
-    const loginPage = document.getElementById('login-page');
-    const homePage = location.href='homePage.html';
 
-    // Check if user is logged in
+    // Check if user is already logged in
     const userRole = localStorage.getItem('role');
     const spreadsheetId = localStorage.getItem('spreadsheetId');
+
     if (userRole) {
-        loginPage.style.display = 'none';
-        homePage.style.display = 'block';
-        if (userRole === 'admin') {
-            adminHomeBtn.style.display = 'inline-block';
-        }
+        // Redirect to homePage.html if the user is already logged in
+        window.location.href = 'homePage.html';
     }
 
     // Login form submission
@@ -37,18 +32,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const data = await response.json();
                 localStorage.setItem('role', data.role);
-                localStorage.setItem('spreadsheetId', data.spreadsheetId);  // Store spreadsheetId
-                loginPage.style.display = 'none';
-                homePage.style.display = 'block';
+                localStorage.setItem('spreadsheetId', data.spreadsheetId);
 
-                if (data.role === 'admin') {
-                    adminHomeBtn.style.display = 'inline-block';
-                }
+                // Redirect to homePage.html after successful login
+                window.location.href = 'homePage.html';
             } catch (err) {
                 loginError.textContent = 'Invalid username or password';
             }
         });
     }
+
 
     // Logout functionality
     if (logoutBtn) {
