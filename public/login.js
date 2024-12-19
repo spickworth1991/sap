@@ -28,7 +28,6 @@ if (loginForm) {
     loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         loginError.textContent = ''; // Clear previous error message
-
         const username = document.getElementById('username').value;
         const password = document.getElementById('password').value;
 
@@ -45,15 +44,17 @@ if (loginForm) {
 
             const data = await response.json();
             localStorage.setItem('role', data.role);
-            localStorage.setItem('spreadsheetId', data.spreadsheetId);
-            window.location.href = 'homePage.html';
+            localStorage.setItem('spreadsheetId', data.spreadsheetId);  // Store spreadsheetId
+            window.location.href = 'homePage.html'
 
+            if (data.role === 'admin') {
+                adminHomeBtn.style.display = 'inline-block';
+            }
         } catch (err) {
             loginError.textContent = 'Invalid username or password';
         }
     });
 }
-
 
 // Logout functionality
 if (logoutBtn) {
