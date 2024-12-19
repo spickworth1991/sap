@@ -9,42 +9,20 @@
     <title>Work Hours Tracker</title>
 </head>
 <body>
-
-
-    <!-- Original Content -->
-    
-
     <div id="statusBox" class="info" style="display: none;"></div>
-
-    <div id="sapPage" class="center" style="display: none;">
-        <h1>SAP Input</h1>
-        <div>
-          <textarea id="inputBox" placeholder="Enter Project Number or SAP Info..." rows="5" style="width: 50%;" wrap="soft"></textarea>
-        </div>
-        <div>
-          <button class="button nav-button" onclick="sapInput(this)">Submit</button>
-          <button class="button nav-button" onclick="navigate('homePage')">Back to Home</button>
-        </div>
+    <!-- Login Page -->
+    <div id="login-page" class="page">
+        <h2>Login</h2>
+        <form id="login-form">
+            <input type="text" id="username" placeholder="Username" autocomplete="username" required><br>
+            <input type="password" id="password" placeholder="Password" autocomplete="current-password" required><br>
+            <button type="submit">Login</button>
+        </form>
+        <p id="login-error" class="error"></p>
     </div>
 
-    <div id="dateSelectionPage" class="center" style="display: none;">
-        <h1>Date Selection</h1>
-        <div>
-          <input type="date" id="datePicker">
-        </div>
-        <div>
-          <button class="button nav-button" onclick="fetchEntriesByDate()">Select Date</button>
-          <button class="button nav-button" onclick="navigate('homePage')">Back to Home</button>
-        </div>
-    </div>
+<script src="login.js"></script>
+<script src="script.js"></script>
 
-    <div id="editEntriesPage" class="center" style="display: none;">
-        <h1>Edit Entries</h1>
-        <div id="entriesContainer"></div>
-        <button class="button nav-button" onclick="navigate('dateSelectionPage')">Back to Date Selection</button>
-    </div>
-
-    <script src="script.js"></script> <!-- Ensure this path is correct -->
 </body>
-
 </html>

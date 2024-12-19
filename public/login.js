@@ -40,7 +40,7 @@ if (logoutBtn) {
     logoutBtn.addEventListener('click', () => {
         localStorage.removeItem('role');
         localStorage.removeItem('spreadsheetId');
-        window.location.href = 'login.html'
+        window.location.href = 'index.html'
         adminHomeBtn.style.display = 'none';
     });
 }

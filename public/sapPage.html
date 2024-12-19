@@ -1,0 +1,28 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+
+    <title>Work Hours Tracker</title>
+</head>
+<body>
+    <div id="statusBox" class="info" style="display: none;"></div>
+    <div id="sapPage" class="center" style="display: none;">
+        <h1>SAP Input</h1>
+        <div>
+          <textarea id="inputBox" placeholder="Enter Project Number or SAP Info..." rows="5" style="width: 50%;" wrap="soft"></textarea>
+        </div>
+        <div>
+          <button class="button nav-button" onclick="sapInput(this)">Submit</button>
+          <button class="button nav-button" onclick="navigate('homePage')">Back to Home</button>
+        </div>
+    </div>
+
+
+<script src="script.js"></script>
+
+</body>
+</html>
