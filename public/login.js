@@ -1,18 +1,6 @@
 
 
 
-document.addEventListener('DOMContentLoaded', () => {
-    const logoutBtn = document.getElementById('logout-btn');
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', () => {
-            localStorage.clear();
-            window.location.href = 'login.html';
-        });
-    }
-});
-
-
-
 
 
 document.addEventListener('DOMContentLoaded', () => {
