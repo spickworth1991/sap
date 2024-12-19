@@ -20,6 +20,16 @@
         </div>
         <button id="logout-btn">Logout</button>
     </div>
-    <script src="homePage.js"></script>
+    <script src="script.js">
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const userRole = localStorage.getItem('role');
+            const homePage = document.getElementById('home-page');
+
+            if (userRole && homePage) {
+                homePage.style.display = 'block';
+            }
+        });
+    </script>
 </body>
 </html>
