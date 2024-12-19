@@ -69,11 +69,13 @@
     transform: translateY(-100%);
     transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
     opacity: 0;
+    display: none;
 }
 
 #statusBox.show {
     transform: translateY(0);
     opacity: 1;
+    display: block;
 }
 
 /* Different styles for status types */
@@ -85,11 +87,13 @@
 #statusBox.error {
     background-color: #F2DEDE;
     color: #A94442;
+    border-color: #f5c6cb;
 }
 
 #statusBox.success {
     background-color: #DFF0D8;
     color: #3C763D;
+    border-color: #c3e6cb;
 }
 
 /* Ensure the body and all page containers are centered */
