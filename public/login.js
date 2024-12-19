@@ -1,12 +1,3 @@
-document.addEventListener('DOMContentLoaded', () => {
-    setTimeout(() => {
-        const userRole = localStorage.getItem('role');
-        const homePage = document.getElementById('home-page');
-        if (userRole && homePage) {
-            homePage.style.display = 'block';
-        }
-    }, 100);
-});
 
 
 
