@@ -2,19 +2,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const adminHomeBtn = document.getElementById('admin-home-btn');
     const loginPage = document.getElementById('login-page');
     const homePage = document.getElementById('home-page');
-    const clockPage = document.getElementById('clockPage');
-    const sapPage = document.getElementById('sapPage');
-    const dateSelectionPage = document.getElementById('dateSelectionPage');
-    const editEntriesPage = document.getElementById('editEntriesPage');
     const userRole = localStorage.getItem('role');
 
-    // Hide all pages initially
-    const pages = [loginPage, homePage, clockPage, sapPage, dateSelectionPage, editEntriesPage];
-    pages.forEach(page => {
-        if (page) page.style.display = 'none';
-    });
+    // Hide both pages initially
+    if (loginPage) loginPage.style.display = 'none';
+    if (homePage) homePage.style.display = 'none';
 
-    // Show appropriate page based on login status and role
+    // Show appropriate page based on login status
     if (userRole) {
         if (homePage) homePage.style.display = 'block';
         if (userRole === 'admin' && adminHomeBtn) {
@@ -24,7 +18,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (loginPage) loginPage.style.display = 'block';
     }
 });
-
 
 
 document.addEventListener('DOMContentLoaded', () => {
