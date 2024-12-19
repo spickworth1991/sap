@@ -21,15 +21,5 @@
         <button id="logout-btn">Logout</button>
     </div>
     <script src="script.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const userRole = localStorage.getItem('role');
-            const homePage = document.getElementById('home-page');
-        
-            if (userRole && homePage) {
-                homePage.style.display = 'block';
-            }
-        });
-    </script>
 </body>
 </html>
