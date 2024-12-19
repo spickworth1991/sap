@@ -1,55 +1,36 @@
 
 document.addEventListener('DOMContentLoaded', () => {
-    const pages = {
-        loginPage: document.getElementById('login-page'),
-        homePage: document.getElementById('home-page'),
-        clockPage: document.getElementById('clockPage'),
-        sapPage: document.getElementById('sapPage'),
-        dateSelectionPage: document.getElementById('dateSelectionPage'),
-        editEntriesPage: document.getElementById('editEntriesPage')
-    };
-
-
-    showInitialPage(pages);
-    
+    // Run the function only on index.html or homePage.html
+    const currentPage = window.location.pathname;
+    if (currentPage === '/index.html' || currentPage === '/homePage.html'|| currentPage === '/') {
+        showInitialPage();
+    }
 });
 
-function hideAllPages(pages) {
-    Object.values(pages).forEach(page => {
-        if (page) {
-            page.style.display = 'none';
-        }
-    });
-    window.hideAllPages = hideAllPages;
-}
-
-
-// Show the appropriate page based on login status
 function showInitialPage() {
     const adminHomeBtn = document.getElementById('admin-home-btn');
     const userRole = localStorage.getItem('role');
     console.log(`userRole: ${userRole}`);
-    const loginPage = document.getElementById('login-page');
-    const homePage = document.getElementById('home-page');
-    
 
-   // hideAllPages(pages);
-    if (userRole) {     
-            homePage.style.display = 'block';
-            loginPage.style.display = 'none';
-        
-        if (userRole === 'admin' && adminHomeBtn) {
+    // Check the current page URL
+    const currentPage = window.location.pathname;
+
+    if (userRole) {
+        // If the user is logged in and not on the home page, redirect to homePage.html
+        if (currentPage !== '/homePage.html') {
+            window.location.href = 'homePage.html';
+        } else if (userRole === 'admin' && adminHomeBtn) {
             adminHomeBtn.style.display = 'inline-block';
         }
     } else {
-        if (loginPage) {
-            loginPage.style.display = 'block';
-            homePage.style.display = 'none';
-
+        // If no user role and not on the login page, redirect to index.html
+        if (currentPage !== '/index.html'|| currentPage === '/') {
+            window.location.href = 'index.html';
         }
     }
-    window.showInitialPage = showInitialPage;
 }
+
+
 
 // Navigation function to show the selected page
 function navigateTo(pageId) {
