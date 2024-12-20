@@ -104,7 +104,7 @@ async function editEntry(date, rowIndex) {
             alert(result.message);
             fetchEntriesByDate(); // Refresh entries after update
         } else {
-            alert(`Error: ${result.error || 'Failed to edit entry.'}`);
+            alert(`Error: ${result.error || 'Failed to refresh page, try manually refreshing.'}`);
         }
     } catch (error) {
         console.error('Error editing entry:', error);
