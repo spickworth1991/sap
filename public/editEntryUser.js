@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', async () => {
     const urlParams = new URLSearchParams(window.location.search);
     const date = urlParams.get('date');
+    console.log(`Date= ${date}`);
 
     if (!date) {
         updateStatus("No date provided.", "error");
