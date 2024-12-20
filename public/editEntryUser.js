@@ -1,11 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
     const entriesContainer = document.getElementById('entriesContainer');
-
-    if (!entriesContainer) {
-        console.error('entriesContainer element not found in the DOM');
-        return;
-    }
-
     const entries = JSON.parse(localStorage.getItem('fetchedEntries'));
     const selectedDate = localStorage.getItem('selectedDate');
 
