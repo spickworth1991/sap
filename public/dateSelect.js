@@ -29,6 +29,7 @@ async function fetchEntriesByDate() {
 
         const data = await response.json();
         console.log("Fetched data:", data);
+        window.location.href = 'editentryuser.html';
 
         const entriesContainer = document.getElementById('entriesContainer');
         entriesContainer.innerHTML = ''; // Clear previous entries
