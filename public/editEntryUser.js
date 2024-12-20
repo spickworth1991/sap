@@ -1,70 +1,79 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const date = urlParams.get('date');
-    console.log(`Date= ${date}`);
+    // Only run this code if the current page is editentryuser.html
+    if (window.location.pathname.includes('editentryuser.html')) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const date = urlParams.get('date');
+        console.log(`Date= ${date}`);
 
-    if (!date) {
-        updateStatus("No date provided.", "error");
-        return;
-    }
-
-    try {
-        const response = await fetch(`/api/entries/${encodeURIComponent(date)}`, {
-            headers: { 
-                "Content-Type": "application/json",
-                "spreadsheet-id": localStorage.getItem('spreadsheetId')
-            },
-        });
-
-        if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(`Server Error: ${response.status} - ${errorText}`);
-        }
-
-        const data = await response.json();
-
-        const entriesContainer = document.getElementById('entriesContainer');
-        if (!data.entries || data.entries.length === 0) {
-            entriesContainer.innerHTML = '<p>No entries found for this date.</p>';
+        if (!date) {
+            updateStatus("No date provided.", "error");
             return;
         }
 
-        const table = document.createElement('table');
-        table.innerHTML = `
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Time</th>
-                    <th>Project/Activity</th>
-                    <th>Elapsed Time</th>
-                    <th>SAP Time</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                ${data.entries.map(entry => {
-                    const { rowNumber, values } = entry;
-                    return `
-                        <tr>
-                            <td>${values[0] || ''}</td>
-                            <td>${values[1] || ''}</td>
-                            <td>${values[2] || ''}</td>
-                            <td>${values[3] || ''}</td>
-                            <td>${values[4] || ''}</td>
-                            <td><button class="button edit-button" onclick="editEntry('${date}', ${rowNumber})">Edit</button></td>
-                        </tr>
-                    `;
-                }).join('')}
-            </tbody>
-        `;
+        try {
+            const response = await fetch(`/api/entries/${encodeURIComponent(date)}`, {
+                headers: { 
+                    "Content-Type": "application/json",
+                    "spreadsheet-id": localStorage.getItem('spreadsheetId')
+                },
+            });
 
-        entriesContainer.appendChild(table);
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`Server Error: ${response.status} - ${errorText}`);
+            }
 
-    } catch (error) {
-        console.error('Error fetching entries:', error);
-        updateStatus({ code: 9999, message: "Network error or server is unavailable." }, "error");
+            const data = await response.json();
+
+            const entriesContainer = document.getElementById('entriesContainer');
+            if (!entriesContainer) {
+                updateStatus("entriesContainer not found.", "error");
+                return;
+            }
+
+            if (!data.entries || data.entries.length === 0) {
+                entriesContainer.innerHTML = '<p>No entries found for this date.</p>';
+                return;
+            }
+
+            const table = document.createElement('table');
+            table.innerHTML = `
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Project/Activity</th>
+                        <th>Elapsed Time</th>
+                        <th>SAP Time</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${data.entries.map(entry => {
+                        const { rowNumber, values } = entry;
+                        return `
+                            <tr>
+                                <td>${values[0] || ''}</td>
+                                <td>${values[1] || ''}</td>
+                                <td>${values[2] || ''}</td>
+                                <td>${values[3] || ''}</td>
+                                <td>${values[4] || ''}</td>
+                                <td><button class="button edit-button" onclick="editEntry('${date}', ${rowNumber})">Edit</button></td>
+                            </tr>
+                        `;
+                    }).join('')}
+                </tbody>
+            `;
+
+            entriesContainer.appendChild(table);
+
+        } catch (error) {
+            console.error('Error fetching entries:', error);
+            updateStatus({ code: 9999, message: "Network error or server is unavailable." }, "error");
+        }
     }
 });
+
 
 
 

@@ -7,5 +7,5 @@ function fetchEntriesByDate() {
 
     const [year, month, day] = dateInput.split('-');
     const formattedDate = `${month}/${day}/${year}`;
-    window.location.href = `editEntries.html?date=${encodeURIComponent(formattedDate)}`;
+    window.location.href = `/editentryuser.html?date=${encodeURIComponent(formattedDate)}`;
 }
