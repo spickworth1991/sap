@@ -225,8 +225,14 @@ body {
     }
 
     /* Ensure textarea and date picker fit well */
-    #inputBox, #datePicker {
-        width: 95%;
+    #inputBox {
+        width: 100%;
+        font-size: 25px;
+    }
+
+     /* Ensure textarea and date picker fit well */
+    #datePicker {
+        width: 150%;
         font-size: 25px;
     }
 
