@@ -1,45 +1,69 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const entriesContainer = document.getElementById('entriesContainer');
-    const entries = JSON.parse(localStorage.getItem('fetchedEntries'));
-    const selectedDate = localStorage.getItem('selectedDate');
+document.addEventListener('DOMContentLoaded', async () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const date = urlParams.get('date');
 
-    if (!entries || entries.length === 0) {
-        entriesContainer.innerHTML = '<p>No entries found for the selected date.</p>';
+    if (!date) {
+        updateStatus("No date provided.", "error");
         return;
     }
 
-    const table = document.createElement('table');
-    table.innerHTML = `
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Time</th>
-                <th>Project/Activity</th>
-                <th>Elapsed Time</th>
-                <th>SAP Time</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            ${entries.map(entry => {
-                const { rowNumber, values } = entry;
-                return `
-                    <tr>
-                        <td>${values[0] || ''}</td>
-                        <td>${values[1] || ''}</td>
-                        <td>${values[2] || ''}</td>
-                        <td>${values[3] || ''}</td>
-                        <td>${values[4] || ''}</td>
-                        <td><button class="button edit-button" onclick="editEntry('${selectedDate}', ${rowNumber})">Edit</button></td>
-                    </tr>
-                `;
-            }).join('')}
-        </tbody>
-    `;
+    try {
+        const response = await fetch(`/api/entries/${encodeURIComponent(date)}`, {
+            headers: { 
+                "Content-Type": "application/json",
+                "spreadsheet-id": localStorage.getItem('spreadsheetId')
+            },
+        });
 
-    entriesContainer.appendChild(table);
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Server Error: ${response.status} - ${errorText}`);
+        }
+
+        const data = await response.json();
+
+        const entriesContainer = document.getElementById('entriesContainer');
+        if (!data.entries || data.entries.length === 0) {
+            entriesContainer.innerHTML = '<p>No entries found for this date.</p>';
+            return;
+        }
+
+        const table = document.createElement('table');
+        table.innerHTML = `
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Project/Activity</th>
+                    <th>Elapsed Time</th>
+                    <th>SAP Time</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${data.entries.map(entry => {
+                    const { rowNumber, values } = entry;
+                    return `
+                        <tr>
+                            <td>${values[0] || ''}</td>
+                            <td>${values[1] || ''}</td>
+                            <td>${values[2] || ''}</td>
+                            <td>${values[3] || ''}</td>
+                            <td>${values[4] || ''}</td>
+                            <td><button class="button edit-button" onclick="editEntry('${date}', ${rowNumber})">Edit</button></td>
+                        </tr>
+                    `;
+                }).join('')}
+            </tbody>
+        `;
+
+        entriesContainer.appendChild(table);
+
+    } catch (error) {
+        console.error('Error fetching entries:', error);
+        updateStatus({ code: 9999, message: "Network error or server is unavailable." }, "error");
+    }
 });
-
 
 
 
