@@ -9,18 +9,16 @@
     <title>Work Hours Tracker</title>
 </head>
 <body>
-    <div id="statusBox" class="info"></div>
-    <div id="dateSelectionPage" class="center">
-      <h1>Search Day</h1>
-        <div>
-          <input type="date" id="datePicker">
-        </div>
+  <div id="dateSelectionPage" class="center">
+      <div id="statusBox" class="info"></div>
+        <h1>Search Day</h1>
+        <input type="date" id="datePicker">       
         <nav>
             <button class="button nav-button" onclick="fetchEntriesByDate()">Select Date</button>
             <button class="button nav-button" onclick="navigateTo('homePage')">Home</button>
         </nav>
         <button id="logout-btn">Logout</button>
-    </div>
+  </div>
 
 
 <script src="script.js"></script>
