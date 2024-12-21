@@ -3,6 +3,53 @@ const express = require('express');
 const router = express.Router();
 const { fetchLogs } = require('../utils/googleSheetsUtils');
 
-router.get('/', fetchLogs);
+router.get('/', fetchLogs, async (req, res) => {
+    try {
+      const sheets = await getGoogleSheetsService();
+      const spreadsheetId = req.headers['spreadsheet-id']; // Get the spreadsheet ID from headers
+      const { date, search } = req.query;
+  
+      if (!spreadsheetId) {
+        return res.status(400).json({ error: 'Spreadsheet ID is missing in request headers' });
+      }
+  
+      // Fetch logs from a sheet named "Logs"
+      const response = await sheets.spreadsheets.values.get({
+        spreadsheetId,
+        range: 'Logs!A:E', // Assuming logs are stored in columns A to E
+      });
+  
+      let logs = response.data.values || [];
+  
+      // Convert logs to objects with headers: Date, Time, Username, Action, Details
+      const headers = logs.shift();
+      logs = logs.map(row => ({
+        date: row[0],
+        time: row[1],
+        username: row[2],
+        action: row[3],
+        details: row[4],
+      }));
+  
+      // Filter by date if provided
+      if (date) {
+        logs = logs.filter(log => log.date === date);
+      }
+  
+      // Filter by search term if provided
+      if (search) {
+        const lowerSearch = search.toLowerCase();
+        logs = logs.filter(log =>
+          Object.values(log).some(value => value.toLowerCase().includes(lowerSearch))
+        );
+      }
+  
+      res.status(200).json({ logs });
+    } catch (error) {
+      console.error('Error fetching logs:', error);
+      res.status(500).json({ error: 'Failed to fetch logs' });
+    }
+  });
+      
 
 module.exports = router;
