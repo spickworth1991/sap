@@ -4,6 +4,8 @@ const cors = require('cors');
 const moment = require('moment-timezone');
 const errors = require('./errors');
 const success = require('./success');
+const authRoutes = require('./auth');
+app.use('/api/auth', authRoutes);
 require('dotenv').config();
 
 const app = express();
@@ -11,6 +13,19 @@ const PORT = process.env.PORT || 5000;
 
 app.use(express.json());
 app.use(cors());
+
+// Middleware to inject username and role into headers
+app.use((req, res, next) => {
+  // Simulated logic to retrieve username and role (can be replaced with actual authentication logic)
+  const username = req.headers['x-username'] || 'Unknown User';
+  const role = req.headers['x-role'] || 'user';
+
+  // Inject username and role into headers if not already present
+  req.headers['username'] = username;
+  req.headers['role'] = role;
+
+  next();
+});
 
 
 
