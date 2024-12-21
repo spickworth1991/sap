@@ -76,8 +76,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 
-
-
 async function editEntry(date, rowIndex) {
     const newTime = prompt('Enter new time (HH:mm:ss):');
     const newProjectActivity = prompt('Enter new project/activity:');
@@ -102,8 +100,7 @@ async function editEntry(date, rowIndex) {
         const result = await response.json();
 
         if (response.ok) {
-            alert(result.message);
-            fetchEntriesByDate(); // Refresh entries after update
+            location.href='editentryuser.html'
         } else {
             alert(`Error: ${result.error || 'Failed to refresh page, try manually refreshing.'}`);
         }
