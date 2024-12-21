@@ -1,71 +1,34 @@
 
-// utils/googleSheetsUtils.js
 const { google } = require('googleapis');
+const moment = require('moment-timezone');
 
-const getGoogleSheetsService = async () => {
+// Authenticate with Google Sheets API
+async function getGoogleSheetsService() {
+    const credentials = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY);
     const auth = new google.auth.GoogleAuth({
+        credentials,
         scopes: ['https://www.googleapis.com/auth/spreadsheets'],
     });
-    const authClient = await auth.getClient();
-    return google.sheets({ version: 'v4', auth: authClient });
-};
+    return google.sheets({ version: 'v4', auth });
+}
 
-const getSheetData = async (sheets, spreadsheetId, range) => {
-    const response = await sheets.spreadsheets.values.get({
-        spreadsheetId,
-        range,
-    });
-    return response.data.values || [];
-};
+// Date and Time Utilities
+function getCurrentMonthName() {
+    return moment().tz('America/New_York').format('MMMM');
+}
 
-const appendRow = async (sheets, spreadsheetId, range, values) => {
-    await sheets.spreadsheets.values.append({
-        spreadsheetId,
-        range,
-        valueInputOption: 'USER_ENTERED',
-        requestBody: { values: [values] },
-    });
-};
+function getCurrentDate() {
+    return moment().tz('America/New_York').format('MM/DD/YYYY');
+}
 
-const updateRow = async (sheets, spreadsheetId, range, values) => {
-    await sheets.spreadsheets.values.update({
-        spreadsheetId,
-        range,
-        valueInputOption: 'USER_ENTERED',
-        requestBody: { values: [values] },
-    });
-};
+function getCurrentTime() {
+    return moment().tz('America/New_York').format('HH:mm:ss');
+}
 
-const findRowByDate = async (sheets, spreadsheetId, sheetName, date) => {
-    const rows = await getSheetData(sheets, spreadsheetId, `${sheetName}!A:A`);
-    return rows.findIndex((row) => row[0] === date) + 1;
-};
-
-const ensureSheetExists = async (sheets, spreadsheetId, sheetName, headers) => {
-    const metadata = await sheets.spreadsheets.get({ spreadsheetId });
-    const sheetsNames = metadata.data.sheets.map((s) => s.properties.title);
-    if (!sheetsNames.includes(sheetName)) {
-        await sheets.spreadsheets.batchUpdate({
-            spreadsheetId,
-            requestBody: {
-                requests: [
-                    {
-                        addSheet: {
-                            properties: { title: sheetName },
-                        },
-                    },
-                ],
-            },
-        });
-        await appendRow(sheets, spreadsheetId, `${sheetName}!A1:Z1`, headers);
-    }
-};
-
+// Exported Functions
 module.exports = {
     getGoogleSheetsService,
-    getSheetData,
-    appendRow,
-    updateRow,
-    findRowByDate,
-    ensureSheetExists,
+    getCurrentMonthName,
+    getCurrentDate,
+    getCurrentTime,
 };

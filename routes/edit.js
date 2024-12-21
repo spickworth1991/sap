@@ -1,8 +1,8 @@
 
 const express = require('express');
 const router = express.Router();
-const { sapInput } = require('../utils/googleSheetsUtils');
+const { editEntry } = require('../utils/googleSheetsUtils');
 
-router.post('/input', sapInput);
+router.post('/', editEntry);
 
 module.exports = router;

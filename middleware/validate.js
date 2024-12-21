@@ -1,5 +1,4 @@
 
-// middleware/validate.js
 const validateSpreadsheetId = (req, res, next) => {
     const spreadsheetId = req.headers['spreadsheet-id'];
     if (!spreadsheetId) {
