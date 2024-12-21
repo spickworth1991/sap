@@ -3,7 +3,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (window.location.pathname.includes('editentryuser.html')) {
         const urlParams = new URLSearchParams(window.location.search);
         const date = urlParams.get('date');
-        console.log(`Date= ${date}`);
 
         if (!date) {
             updateStatus("No date provided.", "error");
@@ -101,7 +100,6 @@ async function editEntry(date, rowIndex) {
 
         if (response.ok) {
             window.location.href = `/editentryuser.html?date=${encodeURIComponent(date)}`
-            console.log(`rows= ${rows}`);
         } else {
             alert(`Error: ${result.error || 'Failed to refresh page, try manually refreshing.'}`);
         }

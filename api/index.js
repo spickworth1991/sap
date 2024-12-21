@@ -584,8 +584,6 @@ async function logAction(req, res, next) {
     const spreadsheetId = req.headers['spreadsheet-id'];
     const username = req.headers['username'] || 'Unknown User';
     const action = req.method + ' ' + req.originalUrl;
-    console.log(`Username= ${username}`);
-    console.log(`spreadsheetId= ${spreadsheetId}`);
 
     let details;
     
