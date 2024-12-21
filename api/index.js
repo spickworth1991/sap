@@ -105,9 +105,6 @@ app.post('/api/punchIn', logAction, async (req, res) => {
     const sheets = await getGoogleSheetsService();
     const spreadsheetId = req.headers['spreadsheet-id'];
 
-    if (!spreadsheetId) {
-      return res.status(400).json({ error: 'Spreadsheet ID is missing in request headers' });
-    }
 
     const currentDate = getCurrentDate();
     const currentTime = getCurrentTime();
@@ -164,10 +161,6 @@ app.post('/api/punchOut', logAction, async (req, res) => {
   try {
     const sheets = await getGoogleSheetsService();
 	const spreadsheetId = req.headers['spreadsheet-id']; // Extract spreadsheetId from request headers
-
-    if (!spreadsheetId) {
-      return res.status(400).json({ error: 'Spreadsheet ID is missing in request headers' });
-    }
 
     const currentDate = getCurrentDate();
     const currentTime = getCurrentTime();
@@ -296,9 +289,6 @@ app.post('/api/sapInput', logAction, async (req, res) => {
     const sheets = await getGoogleSheetsService();
 	const spreadsheetId = req.headers['spreadsheet-id']; // Extract spreadsheetId from request headers
 
-    if (!spreadsheetId) {
-      return res.status(400).json({ error: 'Spreadsheet ID is missing in request headers' });
-    }
     const currentDate = getCurrentDate();
     const currentTime = getCurrentTime();
     const monthName = getCurrentMonthName();
@@ -353,10 +343,6 @@ app.get('/api/entries/:date', async (req, res) => {
     const sheets = await getGoogleSheetsService();
     const spreadsheetId = req.headers['spreadsheet-id']; // Extract spreadsheetId from request headers
 
-    if (!spreadsheetId) {
-      return res.status(400).json({ error: 'Spreadsheet ID is missing in request headers' });
-    }
-
     const selectedDate = req.params.date; // Date in MM/DD/YYYY format
     const monthName = moment(selectedDate, 'MM/DD/YYYY').tz('America/New_York').format('MMMM');
     const sapSheetName = `${monthName}:SAP`;
@@ -388,9 +374,6 @@ app.post('/api/editEntry', logAction, async (req, res) => {
     const sheets = await getGoogleSheetsService();
 	const spreadsheetId = req.headers['spreadsheet-id']; // Extract spreadsheetId from request headers
 
-    if (!spreadsheetId) {
-      return res.status(400).json({ error: 'Spreadsheet ID is missing in request headers' });
-    }
     const monthName = moment(date, 'MM/DD/YYYY').tz('America/New_York').format('MMMM');
     const sapSheetName = `${monthName}:SAP`;
 
@@ -507,9 +490,6 @@ app.get('/api/logs', async (req, res) => {
     const spreadsheetId = req.headers['spreadsheet-id']; // Get the spreadsheet ID from headers
     const { date, search } = req.query;
 
-    if (!spreadsheetId) {
-      return res.status(400).json({ error: 'Spreadsheet ID is missing in request headers' });
-    }
 
     // Fetch logs from a sheet named "Logs"
     const response = await sheets.spreadsheets.values.get({
@@ -598,7 +578,7 @@ async function logAction(req, res, next) {
     const username = req.headers['username'] || 'Unknown User';
     const action = req.method + ' ' + req.originalUrl;
     console.log(`Username= ${username}`);
-    console.log(`spreadsheet-id= ${spreadsheet-id}`);
+    console.log(`spreadsheet-id= ${spreadsheetId}`);
 
 
     let details;
