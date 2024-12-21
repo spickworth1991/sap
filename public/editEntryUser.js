@@ -14,7 +14,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             const response = await fetch(`/api/entries/${encodeURIComponent(date)}`, {
                 headers: { 
                     "Content-Type": "application/json",
-                    "spreadsheet-id": localStorage.getItem('spreadsheetId')
+                    "spreadsheet-id": localStorage.getItem('spreadsheetId'),  // Add spreadsheetId header
+                    "username": localStorage.getItem('username'), // Send username in headers
                 },
             });
 

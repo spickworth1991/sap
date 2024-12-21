@@ -16,7 +16,8 @@ async function sapInput(button) {
         method: "POST",
         headers: { 
             "Content-Type": "application/json",
-            "spreadsheet-id": localStorage.getItem('spreadsheetId')  // Add spreadsheetId header
+            "spreadsheet-id": localStorage.getItem('spreadsheetId'),  // Add spreadsheetId header
+            "username": localStorage.getItem('username'), // Send username in headers
         },
         body: JSON.stringify({ input: inputText }),
       });
