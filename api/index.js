@@ -6,9 +6,6 @@ require('dotenv').config();
 // Middleware and Routes
 const { validateSpreadsheetId } = require('../middleware/validate');
 const { logAction } = require('../middleware/log');
-const { loginForm } = require('../routes/login');
-const { logoutBtn } = require('../routes/logout');
-
 
 const punchRoutes = require('../routes/punch');
 const sapRoutes = require('../routes/sap');
@@ -27,8 +24,7 @@ app.use(express.json());
 app.use(cors());
 app.use(validateSpreadsheetId);
 app.use(logAction);
-app.use(loginForm)
-app.use(logoutBtn)
+
 
 // Modular Routes
 app.use('/api/punch', punchRoutes);

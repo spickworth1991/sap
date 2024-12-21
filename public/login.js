@@ -12,7 +12,9 @@ if (loginForm) {
         loginError.textContent = ''; // Clear previous error message
         const username = document.getElementById('username').value;
         const password = document.getElementById('password').value;
-
+        // console.log(`username= ${username}`)
+        // console.log(`password= ${password}`)
+        console.log(`password= ${apiBaseUrl}/login`)
         try {
             const response = await fetch(`${apiBaseUrl}/login`, {
                 method: 'POST',
@@ -35,7 +37,6 @@ if (loginForm) {
         }
     });
 }
-
 
 // Logout functionality
 const logoutBtn = document.getElementById('logout-btn')

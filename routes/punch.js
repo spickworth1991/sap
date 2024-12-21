@@ -4,7 +4,7 @@ const router = express.Router();
 const { punchIn, punchOut } = require('../utils/googleSheetsUtils');
 const { logAction } = require('../middleware/log');
 
-router.post('/in', punchIn, logAction, async (req, res) => {
+router.post('In', punchIn, logAction, async (req, res) => {
     try {
       const sheets = await getGoogleSheetsService();
       const spreadsheetId = req.headers['spreadsheet-id'];
@@ -61,7 +61,7 @@ router.post('/in', punchIn, logAction, async (req, res) => {
     }
   });
 
-router.post('/out', punchOut, logAction, async (req, res) => {
+router.post('Out', punchOut, logAction, async (req, res) => {
     try {
       const sheets = await getGoogleSheetsService();
       const spreadsheetId = req.headers['spreadsheet-id']; // Extract spreadsheetId from request headers
