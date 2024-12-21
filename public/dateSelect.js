@@ -1,4 +1,3 @@
-let formattedDate;
 
 function fetchEntriesByDate() {
     const dateInput = document.getElementById('datePicker').value;
