@@ -12,19 +12,6 @@ const PORT = process.env.PORT || 5000;
 app.use(express.json());
 app.use(cors());
 
-// Middleware to inject username and role into headers
-app.use((req, res, next) => {
-  // Simulated logic to retrieve username and role (can be replaced with actual authentication logic)
-  const username = req.headers['x-username'] || 'Unknown User';
-  const role = req.headers['x-role'] || 'user';
-
-  // Inject username and role into headers if not already present
-  req.headers['username'] = username;
-  req.headers['role'] = role;
-
-  next();
-});
-
 
 
 // Authenticate with Google Sheets API
@@ -105,6 +92,9 @@ app.post('/api/punchIn', logAction, async (req, res) => {
     const sheets = await getGoogleSheetsService();
     const spreadsheetId = req.headers['spreadsheet-id'];
 
+    if (!spreadsheetId) {
+      return res.status(400).json({ error: 'Spreadsheet ID is missing in request headers' });
+    }
 
     const currentDate = getCurrentDate();
     const currentTime = getCurrentTime();
@@ -161,6 +151,10 @@ app.post('/api/punchOut', logAction, async (req, res) => {
   try {
     const sheets = await getGoogleSheetsService();
 	const spreadsheetId = req.headers['spreadsheet-id']; // Extract spreadsheetId from request headers
+
+    if (!spreadsheetId) {
+      return res.status(400).json({ error: 'Spreadsheet ID is missing in request headers' });
+    }
 
     const currentDate = getCurrentDate();
     const currentTime = getCurrentTime();
@@ -289,6 +283,9 @@ app.post('/api/sapInput', logAction, async (req, res) => {
     const sheets = await getGoogleSheetsService();
 	const spreadsheetId = req.headers['spreadsheet-id']; // Extract spreadsheetId from request headers
 
+    if (!spreadsheetId) {
+      return res.status(400).json({ error: 'Spreadsheet ID is missing in request headers' });
+    }
     const currentDate = getCurrentDate();
     const currentTime = getCurrentTime();
     const monthName = getCurrentMonthName();
@@ -343,6 +340,10 @@ app.get('/api/entries/:date', async (req, res) => {
     const sheets = await getGoogleSheetsService();
     const spreadsheetId = req.headers['spreadsheet-id']; // Extract spreadsheetId from request headers
 
+    if (!spreadsheetId) {
+      return res.status(400).json({ error: 'Spreadsheet ID is missing in request headers' });
+    }
+
     const selectedDate = req.params.date; // Date in MM/DD/YYYY format
     const monthName = moment(selectedDate, 'MM/DD/YYYY').tz('America/New_York').format('MMMM');
     const sapSheetName = `${monthName}:SAP`;
@@ -374,6 +375,9 @@ app.post('/api/editEntry', logAction, async (req, res) => {
     const sheets = await getGoogleSheetsService();
 	const spreadsheetId = req.headers['spreadsheet-id']; // Extract spreadsheetId from request headers
 
+    if (!spreadsheetId) {
+      return res.status(400).json({ error: 'Spreadsheet ID is missing in request headers' });
+    }
     const monthName = moment(date, 'MM/DD/YYYY').tz('America/New_York').format('MMMM');
     const sapSheetName = `${monthName}:SAP`;
 
@@ -490,6 +494,9 @@ app.get('/api/logs', async (req, res) => {
     const spreadsheetId = req.headers['spreadsheet-id']; // Get the spreadsheet ID from headers
     const { date, search } = req.query;
 
+    if (!spreadsheetId) {
+      return res.status(400).json({ error: 'Spreadsheet ID is missing in request headers' });
+    }
 
     // Fetch logs from a sheet named "Logs"
     const response = await sheets.spreadsheets.values.get({
@@ -574,12 +581,11 @@ async function ensureLogSheetExists(sheets, spreadsheetId) {
 async function logAction(req, res, next) {
   try {
     const sheets = await getGoogleSheetsService();
-    const spreadsheetId = req.headers['spreadsheet-id'];
+    const spreadsheetId = req.headers['spreadsheetId'];
     const username = req.headers['username'] || 'Unknown User';
     const action = req.method + ' ' + req.originalUrl;
     console.log(`Username= ${username}`);
-    console.log(`spreadsheet-id= ${spreadsheetId}`);
-
+    console.log(`spreadsheetId= ${spreadsheetId}`);
 
     let details;
     
@@ -603,7 +609,7 @@ async function logAction(req, res, next) {
       const rows = response.data.values;
       const previousEntry = rows.find(row => row[3] && row[3].includes(`/api/editEntry`) && row[4].includes(`rowIndex=${rowIndex}`));
 
-      const previousTime = previousEntry ? previousEntry[4].match(/Updated time = (\d{2}:\d{2}:\d{2})/)[1] : 'undefined';
+      const previousTime = previousEntry ? previousEntry[3].match(/Updated time = (\d{2}:\d{2}:\d{2})/)[1] : 'undefined';
       const previousProjectActivity = previousEntry ? previousEntry[4].match(/Updated Project\/Activity = ([^,]+)/)[1] : 'undefined';
 
       details = `rowIndex=${rowIndex}, Previous time = ${previousTime}, Updated time = ${time}, ` +
