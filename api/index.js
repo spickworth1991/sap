@@ -609,7 +609,7 @@ async function logAction(req, res, next) {
       const rows = response.data.values;
       const previousEntry = rows.find(row => row[3] && row[3].includes(`/api/editEntry`) && row[4].includes(`rowIndex=${rowIndex}`));
 
-      const previousTime = previousEntry ? previousEntry[3].match(/Updated time = (\d{2}:\d{2}:\d{2})/)[1] : 'undefined';
+      const previousTime = previousEntry ? previousEntry[1].match(/Updated time = (\d{2}:\d{2}:\d{2})/)[1] : 'undefined';
       const previousProjectActivity = previousEntry ? previousEntry[4].match(/Updated Project\/Activity = ([^,]+)/)[1] : 'undefined';
 
       details = `rowIndex=${rowIndex}, Previous time = ${previousTime}, Updated time = ${time}, ` +
