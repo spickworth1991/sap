@@ -578,14 +578,30 @@ async function ensureLogSheetExists(sheets, spreadsheetId) {
   }
 }
 
-// Logging middleware
 async function logAction(req, res, next) {
   try {
     const sheets = await getGoogleSheetsService();
     const spreadsheetId = req.headers['spreadsheet-id'];
-    const username = req.headers['username'] || 'Unknown User'; // Assuming username is passed in headers
+    const username = req.headers['username'] || 'Unknown User';
     const action = req.method + ' ' + req.originalUrl;
-    const details = JSON.stringify(req.body);
+
+    let details;
+    
+    // Format details based on the route
+    if (req.originalUrl === '/api/punchIn') {
+      details = 'Punch In';
+    } else if (req.originalUrl === '/api/punchOut') {
+      details = 'Punch Out';
+    } else if (req.originalUrl === '/api/sapInput') {
+      const { input } = req.body;
+      details = `Project/Activity = ${input}`;
+    } else if (req.originalUrl === '/api/editEntry') {
+      const { date, rowIndex, time, projectActivity, previousTime, previousProjectActivity } = req.body;
+      details = `rowIndex=${rowIndex}, Previous time = ${previousTime}, Updated time = ${time}, ` +
+                `Previous Project/Activity = ${previousProjectActivity}, Updated Project/Activity = ${projectActivity}`;
+    } else {
+      details = JSON.stringify(req.body);
+    }
 
     // Ensure the Logs sheet exists
     await ensureLogSheetExists(sheets, spreadsheetId);
