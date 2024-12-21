@@ -100,7 +100,7 @@ async function editEntry(date, rowIndex) {
         const result = await response.json();
 
         if (response.ok) {
-            location.href='editentryuser.html'
+            window.location.href = `/editentryuser.html?date=${encodeURIComponent(formattedDate)}`
         } else {
             alert(`Error: ${result.error || 'Failed to refresh page, try manually refreshing.'}`);
         }
