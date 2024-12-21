@@ -4,8 +4,6 @@ const cors = require('cors');
 const moment = require('moment-timezone');
 const errors = require('./errors');
 const success = require('./success');
-const authRoutes = require('./auth');
-app.use('/api/auth', authRoutes);
 require('dotenv').config();
 
 const app = express();
