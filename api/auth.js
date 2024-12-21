@@ -8,7 +8,7 @@ const users = [
     { username: 'spickworth', password: 'test', role: 'admin', spreadsheetId: '1bu86Ld2p1BCXf-wubb9yW26KMigqdZldIeCt_ho12ss' }
 ];
 
-router.post('../login', (req, res) => {
+router.post('/login', (req, res) => {
     const { username, password } = req.body;
     const user = users.find(u => u.username === username && u.password === password);
 

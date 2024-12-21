@@ -14,7 +14,7 @@ if (loginForm) {
         const password = document.getElementById('password').value;
         // console.log(`username= ${username}`)
         // console.log(`password= ${password}`)
-        console.log(`password= ${apiBaseUrl}/login`)
+        //console.log(`password= ${apiBaseUrl}/login`)
         try {
             const response = await fetch(`${apiBaseUrl}/login`, {
                 method: 'POST',
