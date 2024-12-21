@@ -581,7 +581,7 @@ async function ensureLogSheetExists(sheets, spreadsheetId) {
 async function logAction(req, res, next) {
   try {
     const sheets = await getGoogleSheetsService();
-    const spreadsheetId = req.headers['spreadsheetId'];
+    const spreadsheetId = req.headers['spreadsheet-id'];
     const username = req.headers['username'] || 'Unknown User';
     const action = req.method + ' ' + req.originalUrl;
     console.log(`Username= ${username}`);
