@@ -10,8 +10,8 @@ const punchRoutes = require('../routes/punch');
 const sapRoutes = require('../routes/sap');
 const editRoutes = require('../routes/edit');
 const logsRoutes = require('../routes/logs');
+const logoutRoutes = require('../routes/logout');
 const loginRoutes = require('../routes/login');
-const logoutRoutes = require('../routes/logut');
 
 // Import utilities
 const { getGoogleSheetsService, getCurrentDate, getCurrentTime, getCurrentMonthName } = require('../utils/googleSheetsUtils');
@@ -30,8 +30,8 @@ app.use('/api/punch', punchRoutes);
 app.use('/api/sap', sapRoutes);
 app.use('/api/editEntry', editRoutes);
 app.use('/api/logs', logsRoutes);
-app.use('/api/login', loginRoutes)
 app.use('/api/logout', logoutRoutes)
+app.use('/api/login', loginRoutes)
 
  
   // Start the Server
