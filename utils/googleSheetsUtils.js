@@ -114,7 +114,9 @@ if (lastEntry !== currentDate) {
     });
 }
 }
-  
+
+
+
 
 // Exported Functions
 module.exports = {

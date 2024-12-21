@@ -59,6 +59,6 @@ async function logAction(req, res, next) {
     }
   
     next();
-  }
+} 
 
 module.exports = { logAction };
