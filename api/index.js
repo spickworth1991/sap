@@ -599,9 +599,11 @@ async function logAction(req, res, next) {
       const { date, rowIndex, time, projectActivity } = req.body;
 
       // Fetch previous data from Google Sheets
+      const monthName = getCurrentMonthName();
+      const sapSheetName = `${monthName}:SAP`;
       const response = await sheets.spreadsheets.values.get({
         spreadsheetId,
-        range: `Logs!A:E`,
+        range: `${sapSheetName}!A:E`,
       });
 
       const rows = response.data.values;
