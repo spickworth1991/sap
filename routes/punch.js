@@ -2,6 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const { punchIn, punchOut } = require('../utils/googleSheetsUtils');
+const { logAction } = require('../middleware/log');
 
 router.post('/in', punchIn, logAction, async (req, res) => {
     try {

@@ -2,6 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const { sapInput } = require('../utils/googleSheetsUtils');
+const { logAction } = require('../middleware/log');
 
 router.post('/input', sapInput, logAction, async (req, res) => {
     try {
