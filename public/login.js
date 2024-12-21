@@ -25,6 +25,7 @@ if (loginForm) {
             }
 
             const data = await response.json();
+            localStorage.setItem('username', username); // Store the username
             localStorage.setItem('role', data.role);
             localStorage.setItem('spreadsheetId', data.spreadsheetId);  // Store spreadsheetId
             window.location.href = 'homePage.html';
