@@ -584,6 +584,9 @@ async function logAction(req, res, next) {
     const spreadsheetId = req.headers['spreadsheet-id'];
     const username = req.headers['username'] || 'Unknown User';
     const action = req.method + ' ' + req.originalUrl;
+    console.log(`Username= ${username}`);
+    console.log(`spreadsheet-id= ${spreadsheet-id}`);
+
 
     let details;
     
@@ -596,7 +599,20 @@ async function logAction(req, res, next) {
       const { input } = req.body;
       details = `Project/Activity = ${input}`;
     } else if (req.originalUrl === '/api/editEntry') {
-      const { date, rowIndex, time, projectActivity, previousTime, previousProjectActivity } = req.body;
+      const { date, rowIndex, time, projectActivity } = req.body;
+
+      // Fetch previous data from Google Sheets
+      const response = await sheets.spreadsheets.values.get({
+        spreadsheetId,
+        range: `Logs!A:E`,
+      });
+
+      const rows = response.data.values;
+      const previousEntry = rows.find(row => row[3] && row[3].includes(`/api/editEntry`) && row[4].includes(`rowIndex=${rowIndex}`));
+
+      const previousTime = previousEntry ? previousEntry[4].match(/Updated time = (\d{2}:\d{2}:\d{2})/)[1] : 'undefined';
+      const previousProjectActivity = previousEntry ? previousEntry[4].match(/Updated Project\/Activity = ([^,]+)/)[1] : 'undefined';
+
       details = `rowIndex=${rowIndex}, Previous time = ${previousTime}, Updated time = ${time}, ` +
                 `Previous Project/Activity = ${previousProjectActivity}, Updated Project/Activity = ${projectActivity}`;
     } else {
@@ -621,6 +637,7 @@ async function logAction(req, res, next) {
 
   next();
 }
+
 
 
 
