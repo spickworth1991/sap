@@ -15,9 +15,6 @@ async function loginUser(event, button) {
 
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
-    //console.log(`username: ${username}`);
-    //console.log(`password: ${password}`);
-    //console.log(`fetch= ${apiBaseUrl}/login`);
 
     try {
         const response = await fetch(`${apiBaseUrl}/login`, {
@@ -30,7 +27,7 @@ async function loginUser(event, button) {
             loginError.textContent = result.error || 'Login failed';
             return;
         }
-        
+
         const result = await response.json();
         localStorage.setItem('authToken', result.token);
         localStorage.setItem('username', username); // Store the username
