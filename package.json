@@ -1,6 +1,7 @@
 {
     "name": "backend-api",
     "version": "1.0.0",
+    "description": "A project using Node.js and Express",
     "main": "api/index.js",
     "scripts": {
         "start": "node api/index.js"
@@ -10,7 +11,12 @@
         "dotenv": "^16.x",
         "express": "^4.x",
         "googleapis": "^123.x",
+        "morgan": "^1.10.0",
+        "bcrypt": "^5.0.1",
         "jsonwebtoken": "^9.0.2",
         "moment-timezone": "^0.5.46"
+    },
+    "devDependencies": {
+      "supertest": "^6.2.4"
     }
-}
+  }
