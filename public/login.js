@@ -35,12 +35,11 @@ async function loginUser(event, button) {
             loginError.textContent = result.error || 'Login failed';
             return;
         }
-        const data = await response.json();
 
         localStorage.setItem('authToken', result.token);
         localStorage.setItem('username', username); // Store the username
-        localStorage.setItem('role', data.role);
-        localStorage.setItem('spreadsheetId', data.spreadsheetId);  // Store spreadsheetId
+        localStorage.setItem('role', result.role);
+        localStorage.setItem('spreadsheetId', result.spreadsheetId);  // Store spreadsheetId
         window.location.href = 'homePage.html';
 
     } catch (err) {
