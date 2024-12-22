@@ -9,10 +9,13 @@ app.use(express.json());
 // Logging
 console.log("Starting server...");
 
-// Dynamically load all routes from 'routes' directory
-const routesPath = path.join(__dirname, '../routes');
+// Explicitly mount auth.js at /api/auth
+const authRoute = require(path.join(routesPath, 'auth.js'));
+app.use('/api/auth', authRoute);
+
+// Dynamically load all other routes
 fs.readdirSync(routesPath).forEach((file) => {
-    if (file.endsWith('.js')) {
+    if (file.endsWith('.js') && file !== 'auth.js') {
         const route = require(path.join(routesPath, file));
         const routeName = '/' + file.replace('.js', '');
         console.log(`Loading route: ${routeName}`);
