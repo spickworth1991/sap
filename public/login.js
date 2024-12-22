@@ -25,16 +25,13 @@ async function loginUser(event, button) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, password }),
         });
-        //console.log('Response object:', response); // Log full response object
-
-        const result = await response.json();
-        //console.log('Response JSON:', result); // Log response body
 
         if (!response.ok) {
             loginError.textContent = result.error || 'Login failed';
             return;
         }
-
+        
+        const result = await response.json();
         localStorage.setItem('authToken', result.token);
         localStorage.setItem('username', username); // Store the username
         localStorage.setItem('role', result.role);
