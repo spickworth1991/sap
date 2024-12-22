@@ -16,9 +16,9 @@ async function loginUser(event, button) {
 
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
-    console.log(`username: ${username}`);
-    console.log(`password: ${password}`);
-    console.log(`fetch= ${apiBaseUrl}/login`);
+    //console.log(`username: ${username}`);
+    //console.log(`password: ${password}`);
+    //console.log(`fetch= ${apiBaseUrl}/login`);
 
     try {
         const response = await fetch(`${apiBaseUrl}/login`, {
