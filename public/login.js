@@ -24,7 +24,9 @@ async function loginUser(button) {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, password }),
             });
-
+            console.log(`body= ${body}`);
+            console.log(`headers= ${headers}`);
+            
             const result = await response.json();
             if (!response.ok) {
                 loginError.textContent = result.error || 'Login failed';
