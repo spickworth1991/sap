@@ -7,10 +7,10 @@ const apiBaseUrl = window.location.hostname === 'localhost'
 const loginForm = document.getElementById('login-form');
 const loginError = document.getElementById('login-error');
 
-if (loginForm) {
-    loginForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        loginError.textContent = ''; // Clear previous error message
+async function loginUser(button) {
+    button.style.backgroundColor = "#555";
+
+    loginError.textContent = ''; // Clear previous error message
         const username = document.getElementById('username').value;
         const password = document.getElementById('password').value;
 
@@ -33,5 +33,8 @@ if (loginForm) {
         } catch (err) {
             loginError.textContent = 'An error occurred. Please try again later.';
         }
-    });
-}
+}   
+
+
+
+
