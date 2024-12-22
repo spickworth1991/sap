@@ -1,11 +1,8 @@
 // Global Scripts
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Run the function only on specific pages
-    const currentPage = window.location.pathname;
-    if (currentPage === '/index.html' || currentPage === '/homePage.html' || currentPage === '/') {
-        showInitialPage();
-    }
+    showInitialPage();
+    
 });
 
 function decodeToken(token) {
@@ -42,11 +39,11 @@ function showInitialPage() {
     const currentPage = window.location.pathname;
     const adminHomeBtn = document.getElementById('admin-home-btn');
 
-    if (role === 'admin') {
+    if (role) {
         // Redirect to homePage.html if not already there
         if (currentPage !== '/homePage.html') {
             window.location.href = 'homePage.html';
-        } else if (adminHomeBtn) {
+        } else if (role === 'admin' && adminHomeBtn) {
             adminHomeBtn.style.display = 'inline-block';
         }
     } else {
