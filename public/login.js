@@ -26,10 +26,10 @@ async function loginUser(event, button) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, password }),
         });
-        console.log('Response object:', response); // Log full response object
+        //console.log('Response object:', response); // Log full response object
 
         const result = await response.json();
-        console.log('Response JSON:', result); // Log response body
+        //console.log('Response JSON:', result); // Log response body
 
         if (!response.ok) {
             loginError.textContent = result.error || 'Login failed';
@@ -38,7 +38,7 @@ async function loginUser(event, button) {
 
         localStorage.setItem('authToken', result.token);
         localStorage.setItem('username', username);
-        window.location.href = 'clockPage.html';
+        window.location.href = 'index.html';
     } catch (err) {
         console.error('Fetch error:', err);
         loginError.textContent = 'An error occurred. Please try again later.';
