@@ -14,22 +14,4 @@ const users = [
     { username: 'user2', password: bcrypt.hashSync('user123', 10), role: 'user', spreadsheetId: '1bu86Ld2p1BCXf-wubb9yW26KMigqdZldIeCt_ho12ss' },
 ];
 
-// Login route
-router.post('/login', async (req, res) => {
-    const { username, password } = req.body;
-    const user = users.find((u) => u.username === username);
 
-    if (!user || !(await bcrypt.compare(password, user.password))) {
-        return res.status(401).json({ error: 'Invalid username or password' });
-    }
-
-    // Generate JWT with spreadsheet ID
-    const token = jwt.sign(
-        { username: user.username, role: user.role, spreadsheetId: user.spreadsheetId },
-        SECRET_KEY,
-        { expiresIn: '1h' }
-    );
-    res.json({ token });
-});
-
-module.exports = router;
