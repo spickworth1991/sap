@@ -1,7 +1,7 @@
 
 const express = require('express');
 const router = express.Router();
-const { fetchLogs } = require('../utils/googleSheetsUtils');
+const { fetchLogs } = require('../public/viewLogs');
 
 router.get('/', fetchLogs, async (req, res) => {
     try {
