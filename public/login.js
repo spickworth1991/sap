@@ -1,3 +1,4 @@
+
 const apiBaseUrl = window.location.hostname === 'localhost'
     ? 'http://localhost:5000/api/auth'
     : '/api/auth'; // For production deployment on Vercel
