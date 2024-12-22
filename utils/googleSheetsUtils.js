@@ -197,27 +197,6 @@ async function sapInput(req, res, next) {
   }
 }
 
-function decodeToken(token) {
-  try {
-      const payloadBase64 = token.split('.')[1];
-      const decodedPayload = atob(payloadBase64);
-      return JSON.parse(decodedPayload);
-  } catch (error) {
-      console.error('Error decoding token:', error);
-      return null;
-  }
-}
-
-function setUserDetails(authToken) {
-  const userData = decodeToken(authToken);
-  if (userData) {
-      localStorage.setItem('role', userData.role);
-      localStorage.setItem('spreadsheetId', userData.spreadsheetId);
-  } else {
-      console.error('Failed to decode user details from token.');
-  }
-}
-
 
 // Function to update status and hide it after a certain duration
 function updateStatus(message, type) {
@@ -261,8 +240,6 @@ module.exports = {
     editEntry,
     sapInput,
     fetchLogs,
-    decodeToken,
-    setUserDetails,
     updateStatus,
 
 
