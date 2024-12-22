@@ -1,5 +1,5 @@
 // Global Scripts
-function decodeToken(token) {
+export function decodeToken(token) {
     try {
         const payloadBase64 = token.split('.')[1];
         const decodedPayload = atob(payloadBase64);
@@ -10,7 +10,7 @@ function decodeToken(token) {
     }
 }
   
-function setUserDetails(authToken) {
+export function setUserDetails(authToken) {
     const userData = decodeToken(authToken);
     if (userData) {
         localStorage.setItem('role', userData.role);
@@ -21,7 +21,7 @@ function setUserDetails(authToken) {
 }
   
   
-function showInitialPage() {
+export function showInitialPage() {
     const authToken = localStorage.getItem('authToken');
     if (authToken) {
         setUserDetails(authToken);
@@ -48,7 +48,7 @@ function showInitialPage() {
         }
     }
 }
-  module.exports = { decodeToken, setUserDetails, setUserDetails };
+
 
 // Navigation function to show the selected page
 function navigateTo(pageId) {

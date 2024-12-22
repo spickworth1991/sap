@@ -1,4 +1,4 @@
-const { decodeToken, setUserDetails, showInitialPage } = require('./helpers')
+import { decodeToken, setUserDetails, showInitialPage } from './script.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     showInitialPage();
