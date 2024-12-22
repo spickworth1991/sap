@@ -145,6 +145,58 @@ async function editEntry(req, res, next) {
   }
 }
 
+async function fetchLogs(req, res, next) {
+  try {
+      const sheets = await getGoogleSheetsService();
+      const spreadsheetId = req.headers['spreadsheet-id'];
+
+      if (!spreadsheetId) {
+          return res.status(400).json({ error: 'Spreadsheet ID is required' });
+      }
+
+      const response = await sheets.spreadsheets.values.get({
+          spreadsheetId,
+          range: 'Logs!A:E', // Assuming logs are stored in columns A to E
+      });
+
+      req.logs = response.data.values || [];
+      next(); // Pass control to the next middleware
+  } catch (error) {
+      console.error('Error fetching logs:', error);
+      res.status(500).json({ error: 'Failed to fetch logs' });
+  }
+}
+
+async function sapInput(req, res, next) {
+  try {
+      const sheets = await getGoogleSheetsService();
+      const { input } = req.body;
+      const spreadsheetId = req.headers['spreadsheet-id'];
+
+      if (!spreadsheetId || !input) {
+          return res.status(400).json({ error: 'Spreadsheet ID and input are required' });
+      }
+
+      const currentDate = getCurrentDate();
+      const currentTime = getCurrentTime();
+      const monthName = getCurrentMonthName();
+      const sapSheetName = `${monthName}:SAP`;
+
+      // Append the new SAP input
+      await sheets.spreadsheets.values.append({
+          spreadsheetId,
+          range: `${sapSheetName}!A:E`,
+          valueInputOption: 'USER_ENTERED',
+          requestBody: { values: [[currentDate, currentTime, input, '', '']] },
+      });
+
+      next(); // Pass control to the next middleware
+  } catch (error) {
+      console.error('Error in SAP input middleware:', error);
+      res.status(500).json({ error: 'Failed to process SAP input' });
+  }
+}
+
 
 // Exported Functions
 module.exports = {
@@ -158,5 +210,7 @@ module.exports = {
     calculateElapsedTimeDecimal,
     ensureHeaders,
     editEntry,
+    sapInput,
+    fetchLogs,
 
 };
