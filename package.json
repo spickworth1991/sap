@@ -7,16 +7,16 @@
         "start": "node api/index.js"
     },
     "dependencies": {
+        "bcrypt": "^5.0.1",
         "cors": "^2.x",
-        "dotenv": "^16.x",
+        "dotenv": "^16.4.7",
         "express": "^4.x",
         "googleapis": "^123.x",
-        "morgan": "^1.10.0",
-        "bcrypt": "^5.0.1",
         "jsonwebtoken": "^9.0.2",
-        "moment-timezone": "^0.5.46"
+        "moment-timezone": "^0.5.46",
+        "morgan": "^1.10.0"
     },
     "devDependencies": {
-      "supertest": "^6.2.4"
+        "supertest": "^6.2.4"
     }
-  }
+}

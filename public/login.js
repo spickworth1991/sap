@@ -31,11 +31,6 @@ async function loginUser(event, button) {
         const result = await response.json();
         localStorage.setItem('authToken', result.token);
         localStorage.setItem('username', username); // Store the username
-        console.log(`username: ${username}`);
-        localStorage.setItem('role', role);
-        console.log(`role: ${role}`);
-        localStorage.setItem('spreadsheetId', spreadsheetId);  // Store spreadsheetId
-        console.log(`spreadsheetId: ${spreadsheetId}`);
         window.location.href = 'homePage.html';
 
     } catch (err) {
