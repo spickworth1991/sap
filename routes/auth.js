@@ -7,6 +7,8 @@ const { findUserByUsername } = require('../api/users');
 // Use environment variable for the secret key
 const SECRET_KEY = process.env.SECRET_KEY;
 
+console.log('SECRET_KEY:', process.env.SECRET_KEY ? 'Loaded' : 'Not Loaded');
+
 // Login route
 router.post('/login', async (req, res) => {
     console.log('POST /login called');
