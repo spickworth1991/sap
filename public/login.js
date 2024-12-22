@@ -38,6 +38,8 @@ async function loginUser(event, button) {
 
         localStorage.setItem('authToken', result.token);
         localStorage.setItem('username', username);
+        localStorage.setItem('userRole', userRole);
+        localStorage.setItem('spreadsheetId', spreadsheetId);
         window.location.href = 'homePage.html';
     } catch (err) {
         console.error('Fetch error:', err);
