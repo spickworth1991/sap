@@ -35,12 +35,14 @@ async function loginUser(event, button) {
             loginError.textContent = result.error || 'Login failed';
             return;
         }
+        const data = await response.json();
 
         localStorage.setItem('authToken', result.token);
-        localStorage.setItem('username', username);
-        localStorage.setItem('userRole', userRole);
-        localStorage.setItem('spreadsheetId', spreadsheetId);
+        localStorage.setItem('username', username); // Store the username
+        localStorage.setItem('role', data.role);
+        localStorage.setItem('spreadsheetId', data.spreadsheetId);  // Store spreadsheetId
         window.location.href = 'homePage.html';
+
     } catch (err) {
         console.error('Fetch error:', err);
         loginError.textContent = 'An error occurred. Please try again later.';
