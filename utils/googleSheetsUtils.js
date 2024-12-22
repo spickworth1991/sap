@@ -219,35 +219,6 @@ function setUserDetails(authToken) {
 }
 
 
-function showInitialPage() {
-  const authToken = localStorage.getItem('authToken');
-  if (authToken) {
-      setUserDetails(authToken);
-  }
-
-  const role = localStorage.getItem('role');
-  console.log(`userRole: ${role}`);
-
-  // Check the current page URL
-  const currentPage = window.location.pathname;
-  const adminHomeBtn = document.getElementById('admin-home-btn');
-
-  if (role) {
-      // Redirect to homePage.html if not already there
-      if (currentPage !== '/homePage.html') {
-          window.location.href = 'homePage.html';
-      } else if (role === 'admin' && adminHomeBtn) {
-          adminHomeBtn.style.display = 'inline-block';
-      }
-  } else {
-      // Redirect to index.html for non-admin users
-      if (currentPage !== '/index.html' && currentPage !== '/') {
-          window.location.href = 'index.html';
-      }
-  }
-}
-
-
 // Function to update status and hide it after a certain duration
 function updateStatus(message, type) {
   const statusBox = document.getElementById("statusBox");
@@ -290,7 +261,6 @@ module.exports = {
     editEntry,
     sapInput,
     fetchLogs,
-    showInitialPage,
     decodeToken,
     setUserDetails,
     updateStatus,
