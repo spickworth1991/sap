@@ -38,7 +38,7 @@ async function loginUser(event, button) {
 
         localStorage.setItem('authToken', result.token);
         localStorage.setItem('username', username);
-        window.location.href = 'index.html';
+        window.location.href = 'homePage.html';
     } catch (err) {
         console.error('Fetch error:', err);
         loginError.textContent = 'An error occurred. Please try again later.';
