@@ -23,9 +23,11 @@ async function loginUser(button) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, password }),
         });
+
+        console.log('Response object:', response); // Log full response object
+
         const result = await response.json();
-        console.log('Response status:', response.status);
-        console.log('Response body:', result);
+        console.log('Response JSON:', result); // Log response body
 
         if (!response.ok) {
             loginError.textContent = result.error || 'Login failed';
@@ -40,3 +42,4 @@ async function loginUser(button) {
         loginError.textContent = 'An error occurred. Please try again later.';
     }
 }
+
