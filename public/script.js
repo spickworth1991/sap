@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function showInitialPage() {
     const adminHomeBtn = document.getElementById('admin-home-btn');
-    const userRole = localStorage.getItem('role');
+    const userRole = localStorage.getItem('authToken');
     console.log(`userRole: ${userRole}`);
 
     // Check the current page URL

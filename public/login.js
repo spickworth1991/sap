@@ -40,6 +40,7 @@ async function loginUser(event, button) {
         localStorage.setItem('role', result.role);
         console.log(`result.role: ${result.role}`);
         localStorage.setItem('spreadsheetId', result.spreadsheetId);  // Store spreadsheetId
+        console.log(`result.spreadsheetId: ${result.spreadsheetId}`);
         window.location.href = 'homePage.html';
 
     } catch (err) {
