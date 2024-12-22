@@ -112,10 +112,38 @@ if (lastEntry !== currentDate) {
         values: [['Date', 'Time', 'Project/Activity', 'Elapsed Time', 'SAP Time']],
     },
     });
+
+    
 }
 }
 
+async function editEntry(req, res, next) {
+  try {
+      const sheets = await getGoogleSheetsService();
+      const { date, rowIndex, time, projectActivity } = req.body;
+      const spreadsheetId = req.headers['spreadsheet-id'];
 
+      if (!spreadsheetId) {
+          return res.status(400).json({ error: 'Spreadsheet ID is required' });
+      }
+
+      const monthName = moment(date, 'MM/DD/YYYY').tz('America/New_York').format('MMMM');
+      const sapSheetName = `${monthName}:SAP`;
+
+      // Update the specified row with new values
+      await sheets.spreadsheets.values.update({
+          spreadsheetId,
+          range: `${sapSheetName}!B${rowIndex}:C${rowIndex}`,
+          valueInputOption: 'USER_ENTERED',
+          requestBody: { values: [[time, projectActivity]] },
+      });
+
+      next(); // Pass control to the next middleware or route handler
+  } catch (error) {
+      console.error('Error in editEntry middleware:', error);
+      res.status(500).json({ error: 'Failed to edit entry' });
+  }
+}
 
 
 // Exported Functions
@@ -129,5 +157,6 @@ module.exports = {
     formatElapsedTime,
     calculateElapsedTimeDecimal,
     ensureHeaders,
+    editEntry,
 
 };
