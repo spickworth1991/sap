@@ -9,10 +9,14 @@ const SECRET_KEY = process.env.SECRET_KEY;
 
 // Login route
 router.post('/login', async (req, res) => {
+    console.log('POST /login called');
+    console.log('Request body:', req.body);
+
     const { username, password } = req.body;
     const user = findUserByUsername(username);
 
     if (!user || !(await bcrypt.compare(password, user.password))) {
+        console.log('Invalid username or password');
         return res.status(401).json({ error: 'Invalid username or password' });
     }
 
@@ -22,6 +26,7 @@ router.post('/login', async (req, res) => {
         SECRET_KEY,
         { expiresIn: '1h' }
     );
+    console.log('Login successful:', { username });
     res.json({ token });
 });
 

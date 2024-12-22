@@ -1,4 +1,3 @@
-
 const express = require('express');
 const app = express();
 const fs = require('fs');
@@ -8,8 +7,7 @@ const path = require('path');
 app.use(express.json());
 
 // Logging
-const { setupLogging } = require('../middleware/logSetup');
-setupLogging(app);
+console.log("Starting server...");
 
 // Dynamically load all routes from 'routes' directory
 const routesPath = path.join(__dirname, '../routes');
@@ -17,6 +15,7 @@ fs.readdirSync(routesPath).forEach((file) => {
     if (file.endsWith('.js')) {
         const route = require(path.join(routesPath, file));
         const routeName = '/' + file.replace('.js', '');
+        console.log(`Loading route: ${routeName}`);
         app.use(routeName, route);
     }
 });
