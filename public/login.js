@@ -1,3 +1,8 @@
+document.addEventListener('DOMContentLoaded', () => {
+    showInitialPage();
+    
+});
+
 // Updated login.js with enhanced logging
 const apiBaseUrl = window.location.hostname === 'localhost'
     ? 'http://localhost:5000/api/auth'
