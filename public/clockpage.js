@@ -1,13 +1,24 @@
+
 // Punch In function
 async function punchIn(button) {
     button.style.backgroundColor = "#555";
 
     try {
-        const response = await fetch("/api/punchIn", {
-            method: "POST",
+        const token = localStorage.getItem('authToken');
+        const username = localStorage.getItem('username');
+        const spreadsheetId = localStorage.getItem('spreadsheetId');
+
+        if (!token || !spreadsheetId || !username) {
+            alert('You are not logged in!');
+            return (window.location.href = 'index.html');
+        }
+
+        const response = await fetch('/api/punch/in', {
+            method: 'POST',
             headers: {
-                "spreadsheet-id": localStorage.getItem('spreadsheetId'),
-                "username": localStorage.getItem('username'), // Send username in headers
+                'Authorization': `Bearer ${token}`,
+                'spreadsheet-id': spreadsheetId,
+                'username': username,
             },
         });
 
@@ -31,13 +42,24 @@ async function punchOut(button) {
     button.style.backgroundColor = "#555";
 
     try {
-        const response = await fetch("/api/punchOut", {
-            method: "POST",
+        const token = localStorage.getItem('authToken');
+        const username = localStorage.getItem('username');
+        const spreadsheetId = localStorage.getItem('spreadsheetId');
+
+        if (!token || !spreadsheetId || !username) {
+            alert('You are not logged in!');
+            return (window.location.href = 'index.html');
+        }
+
+        const response = await fetch('/api/punch/out', {
+            method: 'POST',
             headers: {
-                "spreadsheet-id": localStorage.getItem('spreadsheetId'),
-                "username": localStorage.getItem('username'), // Send username in headers
+                'Authorization': `Bearer ${token}`,
+                'spreadsheet-id': spreadsheetId,
+                'username': username,
             },
         });
+
         const result = await response.json();
 
         if (response.ok) {

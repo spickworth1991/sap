@@ -6,45 +6,42 @@ const apiBaseUrl = window.location.hostname === 'localhost'
 const loginForm = document.getElementById('login-form');
 const loginError = document.getElementById('login-error');
 
-if (loginForm) {
-    loginForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        loginError.textContent = ''; // Clear previous error message
+async function loginUser(button) {
+    
+    button.style.backgroundColor = "#555";
+
+    loginError.textContent = ''; // Clear previous error message
         const username = document.getElementById('username').value;
         const password = document.getElementById('password').value;
-        // console.log(`username= ${username}`)
-        // console.log(`password= ${password}`)
-        //console.log(`password= ${apiBaseUrl}/login`)
+        console.log(`username: ${username}`);
+        console.log(`password: ${password}`);
+        console.log(`fetch= ${apiBaseUrl}/login`);
+        
+
         try {
             const response = await fetch(`${apiBaseUrl}/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, password })
+                body: JSON.stringify({ username, password }),
             });
-
+            console.log(`body= ${body}`);
+            console.log(`headers= ${headers}`);
+            
+            const result = await response.json();
             if (!response.ok) {
-                throw new Error('Login failed');
+                loginError.textContent = result.error || 'Login failed';
+                return;
             }
 
-            const data = await response.json();
-            localStorage.setItem('username', username); // Store the username
-            localStorage.setItem('role', data.role);
-            localStorage.setItem('spreadsheetId', data.spreadsheetId);  // Store spreadsheetId
-            window.location.href = 'homePage.html';
-
+            localStorage.setItem('authToken', result.token);
+            localStorage.setItem('username', username);
+            window.location.href = 'clockPage.html';
         } catch (err) {
-            loginError.textContent = 'Invalid username or password';
+            loginError.textContent = 'An error occurred. Please try again later.';
         }
-    });
-}
+}   
 
-// Logout functionality
-const logoutBtn = document.getElementById('logout-btn')
-if (logoutBtn) {
-    logoutBtn.addEventListener('click', () => {
-        localStorage.removeItem('role');
-        localStorage.removeItem('spreadsheetId');
-        window.location.href = 'index.html'
-        adminHomeBtn.style.display = 'none';
-    });
-}
+
+
+
+
