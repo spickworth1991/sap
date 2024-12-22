@@ -35,6 +35,10 @@ async function loginUser(button) {
         }
 }   
 
+module.exports = {
+    loginUser
+
+};
 
 
 
