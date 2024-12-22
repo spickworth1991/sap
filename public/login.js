@@ -7,11 +7,16 @@ const loginForm = document.getElementById('login-form');
 const loginError = document.getElementById('login-error');
 
 async function loginUser(button) {
+    
     button.style.backgroundColor = "#555";
 
     loginError.textContent = ''; // Clear previous error message
         const username = document.getElementById('username').value;
         const password = document.getElementById('password').value;
+        console.log(`username: ${username}`);
+        console.log(`password: ${password}`);
+        console.log(`fetch= ${apiBaseUrl}/login`);
+        
 
         try {
             const response = await fetch(`${apiBaseUrl}/login`, {
