@@ -7,7 +7,10 @@ const apiBaseUrl = window.location.hostname === 'localhost'
 const loginForm = document.getElementById('login-form');
 const loginError = document.getElementById('login-error');
 
-async function loginUser(button) {
+async function loginUser(event, button) {
+    // Prevent default form submission
+    event.preventDefault();
+
     button.style.backgroundColor = "#555";
     loginError.textContent = ''; // Clear previous error message
 
@@ -23,7 +26,6 @@ async function loginUser(button) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, password }),
         });
-
         console.log('Response object:', response); // Log full response object
 
         const result = await response.json();
