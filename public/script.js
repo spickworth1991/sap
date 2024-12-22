@@ -33,13 +33,4 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// Exported Functions
-module.exports = {
-    decodeToken,
-    setUserDetails,
-    setUserDetails,
-    showInitialPage,
-    navigateTo
-
-};
 
