@@ -10,9 +10,8 @@ const loginError = document.getElementById('login-error');
 async function loginUser(event, button) {
     // Prevent default form submission
     event.preventDefault();
-
-    button.style.backgroundColor = "#555";
     loginError.textContent = ''; // Clear previous error message
+    button.style.backgroundColor = "#555";
 
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
@@ -39,6 +38,7 @@ async function loginUser(event, button) {
         localStorage.setItem('authToken', result.token);
         localStorage.setItem('username', username); // Store the username
         localStorage.setItem('role', result.role);
+        console.log(`result.role: ${result.role}`);
         localStorage.setItem('spreadsheetId', result.spreadsheetId);  // Store spreadsheetId
         window.location.href = 'homePage.html';
 
