@@ -31,13 +31,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
     const logoutBtn = document.getElementById('logout-btn')
     if (logoutBtn) {
         logoutBtn.addEventListener('click', () => {
-            localStorage.removeItem('role');
-            localStorage.removeItem('spreadsheetId');
-            localStorage.removeItem('username');
-            localStorage.removeItem('authToken')
             localStorage.clear();
             console.log('LocalStorage has been cleared:', localStorage);
-            window.location.href = 'index.html'
+            window.location.href = 'index.html';
             adminHomeBtn.style.display = 'none';
         });
     }
