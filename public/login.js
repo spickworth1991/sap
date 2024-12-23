@@ -10,8 +10,9 @@ async function handleLogin(event) {
 
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
-    console.log('username' = username )
-    console.log('password' = password )
+    console.log(`username: ${username}`)
+    console.log(`password: ${password}`)
+ 
 
     try {
         const response = await fetch(`${apiBaseUrl}/login`, {
