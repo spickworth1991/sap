@@ -221,7 +221,7 @@ export async function sapInput(req, res, next) {
 
 
 // Function to update status and hide it after a certain duration
-export function updateStatus(message, type) {
+export async function updateStatus(message, type) {
   const statusBox = document.getElementById("statusBox");
 
   if (statusBox) {
