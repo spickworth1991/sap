@@ -1,3 +1,12 @@
+import { fetchUserDetails } from './login.js';
+
+document.addEventListener('DOMContentLoaded', () => {
+    const token = localStorage.getItem('authToken');
+    if (token) {
+        fetchUserDetails(); // Fetch details if token already exists
+    }
+});
+
 
 // Punch In function
 async function punchIn(button) {
