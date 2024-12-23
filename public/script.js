@@ -23,6 +23,8 @@ function navigateTo(pageId) {
     }
 }
 
+const adminHomeBtn = document.getElementById('admin-home-btn');
+
 document.addEventListener('DOMContentLoaded', () => {
     // Logout functionality
     const logoutBtn = document.getElementById('logout-btn')
@@ -30,6 +32,8 @@ document.addEventListener('DOMContentLoaded', () => {
         logoutBtn.addEventListener('click', () => {
             localStorage.removeItem('role');
             localStorage.removeItem('spreadsheetId');
+            localStorage.removeItem('username', username);
+            localStorage.removeItem('authToken', data.token)
             window.location.href = 'index.html'
             adminHomeBtn.style.display = 'none';
         });
