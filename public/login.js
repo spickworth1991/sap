@@ -71,6 +71,7 @@ async function fetchUserDetails() {
             const data = await response.json();
             localStorage.setItem('role', data.user.role);
             localStorage.setItem('spreadsheetId', data.user.spreadsheetId);
+            console.log('LocalStorage contents after setting user details:', localStorage);
             showInitialPage(); // Call showInitialPage after successfully fetching details
         } else {
             console.error('Failed to fetch user details');
