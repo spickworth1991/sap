@@ -62,6 +62,7 @@ const apiBaseUrl = window.location.hostname === 'localhost'
 async function fetchUserDetails() {
     try {
         const response = await fetch('../auth/user-details', {
+            method: 'POST',
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('authToken')}`
             }

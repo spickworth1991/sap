@@ -31,7 +31,7 @@ router.post('/login', async (req, res) => {
 });
 
 // User details route
-router.get('/user-details', async (req, res) => {
+router.post('/user-details', async (req, res) => {
     const authHeader = req.headers.authorization;
 
     if (!authHeader) {
