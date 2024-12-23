@@ -1,6 +1,33 @@
+
+
+document.addEventListener('DOMContentLoaded', () => {
+
+    const token = localStorage.getItem('authToken');
+    if (token || !token) {
+        checkLogin(); // Fetch details if token already exists
+    }
+});
+
+
 // Global Scripts
+export function checkLogin() {
+    const role = localStorage.getItem('role');
+    console.log(`User role: ${role}`);
 
+    // Check the current page URL
+    const currentPage = window.location.pathname;
+    const adminHomeBtn = document.getElementById('admin-home-btn');
 
+    if (!role && currentPage !== '/index.html') {
+        window.location.href = 'index.html';
+    }
+    else if (role === 'admin' && adminHomeBtn) {
+        adminHomeBtn.style.display = 'block'; // Show admin-specific button
+        }
+    
+}    
+
+window.navigateTo = checkLogin;
 
 // Navigation function to show the selected page
 export function navigateTo(pageId) {

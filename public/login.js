@@ -103,21 +103,4 @@ function showInitialPage() {
     }
 }    
 
-export function checkLogin() {
-    const role = localStorage.getItem('role');
-    console.log(`User role: ${role}`);
-
-    // Check the current page URL
-    const currentPage = window.location.pathname;
-    const adminHomeBtn = document.getElementById('admin-home-btn');
-
-    if (!role && currentPage !== '/index.html') {
-        window.location.href = 'index.html';
-    }
-    else if (role === 'admin' && adminHomeBtn) {
-        adminHomeBtn.style.display = 'block'; // Show admin-specific button
-        }
-    
-    
-}    
 

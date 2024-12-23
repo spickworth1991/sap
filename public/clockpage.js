@@ -1,4 +1,4 @@
-import { checkLogin } from './login.js';
+
 
 document.addEventListener('DOMContentLoaded', () => {
     const punchIn = document.getElementById('punchInButton');
@@ -15,10 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('Punch Out button not found.');
     }
 
-    const token = localStorage.getItem('authToken');
-    if (token) {
-        checkLogin(); // Fetch details if token already exists
-    }
+
 });
 
 
