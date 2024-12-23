@@ -1,6 +1,6 @@
+import { google } from 'googleapis';
+import moment from 'moment-timezone';
 
-const { google } = require('googleapis');
-const moment = require('moment-timezone');
 
 // Authenticate with Google Sheets API
 export async function getGoogleSheetsService() {
@@ -223,22 +223,3 @@ export function updateStatus(message, type) {
 }
 
 
-
-
-
-// Exported Functions
-export {
-    getGoogleSheetsService,
-    getCurrentMonthName,
-    getCurrentDate,
-    getCurrentTime,
-    ensureLogSheetExists,
-    findDateRow,
-    formatElapsedTime,
-    calculateElapsedTimeDecimal,
-    ensureHeaders,
-    editEntry,
-    sapInput,
-    fetchLogs,
-
-};

@@ -1,7 +1,11 @@
-const bcrypt = require('bcrypt');
+// Import modules (using ES Modules syntax)
+
+import bcrypt from 'bcrypt';
+
+
 
 // User data with hashed passwords
-const users = [
+export const users = [
     {
         username: 'spickworth',
         password: bcrypt.hashSync('admin123', 10),
@@ -23,6 +27,6 @@ const users = [
 ];
 
 // Function to find a user by username
-const findUserByUsername = (username) => users.find((user) => user.username === username);
+export const findUserByUsername = (username) => users.find((user) => user.username === username);
 
-module.exports = { users, findUserByUsername };
+

@@ -20,4 +20,3 @@ export function verifyToken(token) {
     }
 }
 
-export default  decodeToken, verifyToken ;
