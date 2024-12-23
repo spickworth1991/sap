@@ -34,7 +34,8 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.removeItem('spreadsheetId');
             localStorage.removeItem('username', username);
             localStorage.removeItem('authToken', data.token)
-            console.log('LocalStorage contents after clearing:', localStorage);
+            localStorage.clear();
+            console.log('LocalStorage has been cleared:', localStorage);
             window.location.href = 'index.html'
             adminHomeBtn.style.display = 'none';
         });

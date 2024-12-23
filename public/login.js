@@ -29,6 +29,7 @@ const apiBaseUrl = window.location.hostname === 'localhost'
         const loginButton = document.getElementById('login-button');
         if (loginButton) {
             loginButton.style.backgroundColor = "#555";
+            console.log('LocalStorage contents after clearing:', localStorage);
         }
     
         try {
