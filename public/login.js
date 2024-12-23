@@ -94,7 +94,7 @@ function showInitialPage() {
         // Redirect to homePage.html if not already there
         if (currentPage !== '/homePage.html') {
             window.location.href = 'homePage.html';
-        } else if (role === 'admin' && adminHomeBtn && currentPage !== '/homePage.html') {
+        } else if (role === 'admin' && currentPage !== '/homePage.html') {
             adminHomeBtn.style.display = 'block';
             window.location.href = 'homePage.html';
         }
