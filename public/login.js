@@ -1,11 +1,18 @@
+// Updated login.js with enhanced logging
+const apiBaseUrl = window.location.hostname === 'localhost'
+    ? 'http://localhost:5000/api/auth'
+    : '/api/auth'; // For production deployment on Vercel
+
 async function handleLogin(event) {
+    
     event.preventDefault(); // Prevent default form submission
+    button.style.backgroundColor = "#555";
 
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
 
     try {
-        const response = await fetch('/auth/login', {
+        const response = await fetch(`${apiBaseUrl}/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -16,6 +23,7 @@ async function handleLogin(event) {
         if (response.ok) {
             const data = await response.json();
             localStorage.setItem('authToken', data.token); // Store the token
+            localStorage.setItem('username', username); // Store the username
             console.log('Login successful, token stored');
             fetchUserDetails(); // Fetch user details after successful login
         } else {
