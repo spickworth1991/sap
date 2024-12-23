@@ -57,7 +57,7 @@ export async function punchInHandler(button) {
         button.style.backgroundColor = "";
     }
 }
-window.navigateTo = punchInHandler;
+window.punchInHandler = punchInHandler;
 
 // Punch Out function
 async function punchOutHandler(button) {

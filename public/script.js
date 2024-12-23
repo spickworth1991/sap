@@ -27,7 +27,7 @@ export function checkLogin() {
     
 }    
 
-window.navigateTo = checkLogin;
+window.checkLogin = checkLogin;
 
 // Navigation function to show the selected page
 export function navigateTo(pageId) {
