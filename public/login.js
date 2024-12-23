@@ -94,8 +94,11 @@ function showInitialPage() {
         // Redirect to homePage.html if not already there
         if (currentPage !== '/homePage.html') {
             window.location.href = 'homePage.html';
-        } else if (role === 'admin' && currentPage !== '/homePage.html') {
-            adminHomeBtn.style.display = 'block';
+        }
+    } else if (role === 'admin') {
+        // If the role is admin and not already on homePage.html
+        if (currentPage !== '/homePage.html') {
+            adminHomeBtn.style.display = 'block'; // Show admin-specific button
             window.location.href = 'homePage.html';
         }
     } else {
@@ -104,13 +107,5 @@ function showInitialPage() {
             window.location.href = 'index.html';
         }
     }
-}
-
-
-document.addEventListener('DOMContentLoaded', () => {
-    const token = localStorage.getItem('authToken');
-    if (token) {
-        fetchUserDetails(); // Fetch details if token already exists
-    }
-});
+}    
 
