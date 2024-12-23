@@ -81,24 +81,25 @@ export async function fetchUserDetails() {
 }
 
 function showInitialPage() {
-    const role = localStorage.getItem('role');
-    console.log(`User role: ${role}`);
-
-    // Check the current page URL
     const currentPage = window.location.pathname;
-    //const adminHomeBtn = document.getElementById('admin-home-btn');
 
     if (role === 'user' && (currentPage === '/' || currentPage.startsWith('/index.html'))) {
-    window.location.href = 'homePage.html';
+        const role = localStorage.getItem('role');
+        console.log(`User role: ${role}`);
+        window.location.href = 'homePage.html';
     }
 
      else if (role === 'admin' && (currentPage === '/' || currentPage.startsWith('/index.html'))) {
+        const role = localStorage.getItem('role');
+        console.log(`User role: ${role}`);
         window.location.href = 'homePage.html';
         //adminHomeBtn.style.display = 'block'; // Show admin-specific button
         }
      else {
         // Redirect to index.html for non-role users
         if (!role) {
+            const role = localStorage.getItem('role');
+            console.log(`User role: ${role}`);
             window.location.href = 'index.html';
         }
     }
