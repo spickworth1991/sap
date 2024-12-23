@@ -1,4 +1,4 @@
-async function handleLogin(event) {
+async function handleLogin(event, button) {
     event.preventDefault(); // Prevent default form submission
 
     const username = document.getElementById('username').value;
