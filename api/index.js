@@ -30,17 +30,22 @@ app.use(logAction); // This makes logAction run for all requests except for /api
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Dynamically load all other routes from 'routes' directory
+// Explicitly load the Punch route
+import punchRoute from '../routes/punch.js';
+app.use('/api/punch', punchRoute);
+console.log("Mounted /api/punch route explicitly");
+
+// Dynamically load other routes from 'routes' directory
 const routesPath = path.join(__dirname, '../routes');
 fs.readdirSync(routesPath).forEach((file) => {
-    if (file.endsWith('.js') && file !== 'auth.js') { // Skip auth.js to avoid duplicate loading
+    if (file.endsWith('.js') && file !== 'auth.js' && file !== 'punch.js') { // Skip auth.js and punch.js to avoid duplicate loading
+        const routeName = '/' + file.replace('.js', '');
+        console.log(`Loading route: /api${routeName}`);
         const filePath = path.join(routesPath, file);
         const fileUrl = pathToFileURL(filePath).href; // Convert to file:// URL
         import(fileUrl)
             .then((module) => {
-                const routeName = '/' + file.replace('.js', '');
-                console.log(`Loading route: ${routeName}`);
-                app.use(routeName, module.default);
+                app.use(`/api${routeName}`, module.default);
             })
             .catch((err) => {
                 console.error(`Error loading route ${file}:`, err);

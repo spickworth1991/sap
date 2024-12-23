@@ -24,26 +24,27 @@ document.addEventListener('DOMContentLoaded', () => {
 export async function punchInHandler(button) {
     button.style.backgroundColor = "#555";
 
-    try {
+    
         const token = localStorage.getItem('authToken');
         const username = localStorage.getItem('username');
         const spreadsheetId = localStorage.getItem('spreadsheetId');
+        console.log(`username: ${username}`);
+        console.log(`spreadsheetId: ${spreadsheetId}`);
 
         if (!token || !spreadsheetId || !username) {
             alert('You are not logged in!');
             return (window.location.href = 'index.html');
         }
-        
-        const response = await fetch(`${apiBaseUrl}/punch/in`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'spreadsheet-id': spreadsheetId,
-                'username': username,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ spreadsheetId }) // Username is not needed if it’s already in the token
-        });
+        try {
+            const response = await fetch(`${apiBaseUrl}/punch/in`, {
+                method: 'POST',
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ spreadsheetId })
+            });
+    
 
         //const result = await response.json();
 
@@ -64,7 +65,7 @@ export async function punchInHandler(button) {
 export async function punchOutHandler(button) {
     button.style.backgroundColor = "#555";
 
-    try {
+    
         const token = localStorage.getItem('authToken');
         const username = localStorage.getItem('username');
         const spreadsheetId = localStorage.getItem('spreadsheetId');
@@ -73,7 +74,7 @@ export async function punchOutHandler(button) {
             alert('You are not logged in!');
             return (window.location.href = 'index.html');
         }
-
+    try {
         const response = await fetch(`${apiBaseUrl}/punch/out`, {
             method: 'POST',
             headers: {

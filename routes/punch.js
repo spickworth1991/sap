@@ -14,7 +14,7 @@ import {
 const router = express.Router();
 
 // Punch-in route
-router.post('/in', async (req, res) => {
+router.post('/in', ensureAuthenticated, async (req, res) => {
     try {
         const sheets = await getGoogleSheetsService();
         const currentDate = getCurrentDate();
