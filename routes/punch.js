@@ -2,7 +2,7 @@
 import express from 'express';
 import { getCurrentTime, getCurrentDate, formatElapsedTime, getGoogleSheetsService } from '../utils/googleSheetsUtils.js';
 import { ensureAuthenticated } from '../middleware/validate.js';
-import { getCurrentMonthName, findDateRow, formatElapsedTime, calculateElapsedTimeDecimal } from '../utils/googleSheetsUtils.js';
+import { getCurrentMonthName, findDateRow, calculateElapsedTimeDecimal } from '../utils/googleSheetsUtils.js';
 import { logAction } from '../middleware/log.js';
 
 // Create the router instance
