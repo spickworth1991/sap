@@ -64,4 +64,4 @@ router.get('/user-details', async (req, res) => {
     }
 });
 
-module.exports = router;
+export default router;

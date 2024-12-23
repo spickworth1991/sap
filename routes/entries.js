@@ -71,4 +71,4 @@ router.get('/api/entries/:date', async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

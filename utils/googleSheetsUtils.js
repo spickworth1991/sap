@@ -227,7 +227,7 @@ function updateStatus(message, type) {
 
 
 // Exported Functions
-module.exports = {
+export {
     getGoogleSheetsService,
     getCurrentMonthName,
     getCurrentDate,
@@ -241,6 +241,5 @@ module.exports = {
     sapInput,
     fetchLogs,
     updateStatus,
-
 
 };
