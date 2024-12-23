@@ -99,8 +99,8 @@ function showInitialPage() {
             window.location.href = 'homePage.html';
         }
     } else {
-        // Redirect to index.html for non-admin users
-        if (currentPage !== '/index.html' && currentPage !== '/') {
+        // Redirect to index.html for non-role users
+        if (!role) {
             window.location.href = 'index.html';
         }
     }
