@@ -70,6 +70,7 @@ async function fetchUserDetails() {
 
         if (response.ok) {
             const data = await response.json();
+            localStorage.setItem('username', data.user.username);
             localStorage.setItem('role', data.user.role);
             localStorage.setItem('spreadsheetId', data.user.spreadsheetId);
             console.log('LocalStorage contents after setting user details:', localStorage);

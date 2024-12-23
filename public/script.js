@@ -33,8 +33,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
         logoutBtn.addEventListener('click', () => {
             localStorage.removeItem('role');
             localStorage.removeItem('spreadsheetId');
-            localStorage.removeItem('username', username);
-            localStorage.removeItem('authToken', data.token)
+            localStorage.removeItem('username');
+            localStorage.removeItem('authToken')
             localStorage.clear();
             console.log('LocalStorage has been cleared:', localStorage);
             window.location.href = 'index.html'
