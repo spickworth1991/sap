@@ -1,8 +1,12 @@
 
-const express = require('express');
+// Import modules (using ES Modules syntax)
+import express from 'express';
+import { editEntry } from '../utils/googleSheetsUtils.js';
+import { logAction } from '../middleware/log.js';
+
+// Create the router instance
 const router = express.Router();
-const { editEntry } = require('../utils/googleSheetsUtils');
-const { logAction } = require('../middleware/log');
+
 
 router.post('/', editEntry, logAction, async (req, res) => {
     try {

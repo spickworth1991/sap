@@ -1,8 +1,13 @@
 
-// routes/entries.js
-const express = require('express');
+
+// Import modules (using ES Modules syntax)
+import express from 'express';
+import { getGoogleSheetsService } from '../utils/googleSheetsUtils.js';
+
+// Create the router instance
 const router = express.Router();
-const { getGoogleSheetsService, getSheetData } = require('../utils/googleSheetsUtils');
+
+
 
 router.get('/:date', async (req, res) => {
     try {

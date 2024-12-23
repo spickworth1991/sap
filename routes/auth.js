@@ -1,7 +1,10 @@
-const express = require('express');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const { findUserByUsername } = require('../api/users');
+// Import modules (using ES Modules syntax)
+import express from 'express';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import { findUserByUsername } from '../api/users.js';
+
+// Create the router instance
 const router = express.Router();
 
 // Use environment variable for the secret key

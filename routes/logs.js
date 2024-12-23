@@ -1,7 +1,12 @@
 
-const express = require('express');
+
+// Import modules (using ES Modules syntax)
+import express from 'express';
+import { getGoogleSheetsService } from '../utils/googleSheetsUtils.js';
+import { fetchLogs } from '../utils/googleSheetsUtils.js';
+
+// Create the router instance
 const router = express.Router();
-const { fetchLogs } = require('../utils/googleSheetsUtils');
 
 router.get('/', fetchLogs, async (req, res) => {
     try {

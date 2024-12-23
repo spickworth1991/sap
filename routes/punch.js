@@ -1,9 +1,12 @@
+// Import modules (using ES Modules syntax)
+import express from 'express';
+import { getGoogleSheetsService } from '../utils/googleSheetsUtils.js';
+import { ensureAuthenticated } from '../middleware/validate.js';
+import { logAction } from '../middleware/log.js';
 
-const express = require('express');
+// Create the router instance
 const router = express.Router();
-const { getGoogleSheetsService } = require('../utils/googleSheetsUtils');
-const { ensureAuthenticated } = require('../middleware/validate');
-const { logAction } = require('../middleware/log');
+
 
 // Punch-in route
 router.post('/in', logAction, ensureAuthenticated, async (req, res) => {
