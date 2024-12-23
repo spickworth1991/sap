@@ -3,7 +3,7 @@ const { google } = require('googleapis');
 const moment = require('moment-timezone');
 
 // Authenticate with Google Sheets API
-async function getGoogleSheetsService() {
+export async function getGoogleSheetsService() {
     const credentials = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY);
     const auth = new google.auth.GoogleAuth({
         credentials,
@@ -13,20 +13,20 @@ async function getGoogleSheetsService() {
 }
 
 // Date and Time Utilities
-function getCurrentMonthName() {
+export function getCurrentMonthName() {
     return moment().tz('America/New_York').format('MMMM');
 }
 
-function getCurrentDate() {
+export function getCurrentDate() {
     return moment().tz('America/New_York').format('MM/DD/YYYY');
 }
 
-function getCurrentTime() {
+export function getCurrentTime() {
     return moment().tz('America/New_York').format('HH:mm:ss');
 }
 
 // Helper function to ensure the Logs sheet exists
-async function ensureLogSheetExists(sheets, spreadsheetId) {
+export async function ensureLogSheetExists(sheets, spreadsheetId) {
     try {
       // Get the sheet metadata
       const sheetMetadata = await sheets.spreadsheets.get({ spreadsheetId });
@@ -66,7 +66,7 @@ async function ensureLogSheetExists(sheets, spreadsheetId) {
     }
 }
 
-async function findDateRow(sheets, spreadsheetId, monthSheetName, currentDate) {
+export async function findDateRow(sheets, spreadsheetId, monthSheetName, currentDate) {
 const response = await sheets.spreadsheets.values.get({
     spreadsheetId,
     range: `${monthSheetName}!B:B`,
@@ -81,7 +81,7 @@ for (let i = 0; i < rows.length; i++) {
 return null;
 }
 
-function formatElapsedTime(milliseconds) {
+export function formatElapsedTime(milliseconds) {
     const totalSeconds = Math.floor(milliseconds / 1000);
     const hours = Math.floor(totalSeconds / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
@@ -94,7 +94,7 @@ function formatElapsedTime(milliseconds) {
 }
   
   // Ensure headers exist if the last entry in Column A is not the current date
-async function ensureHeaders(sheets, sapSheetName, currentDate, spreadsheetId ) {
+export async function ensureHeaders(sheets, sapSheetName, currentDate, spreadsheetId ) {
 const response = await sheets.spreadsheets.values.get({
     spreadsheetId,
     range: `${sapSheetName}!A:A`,
@@ -117,7 +117,7 @@ if (lastEntry !== currentDate) {
 }
 }
 
-async function editEntry(req, res, next) {
+export async function editEntry(req, res, next) {
   try {
       const sheets = await getGoogleSheetsService();
       const { date, rowIndex, time, projectActivity } = req.body;
@@ -145,7 +145,7 @@ async function editEntry(req, res, next) {
   }
 }
 
-async function fetchLogs(req, res, next) {
+export async function fetchLogs(req, res, next) {
   try {
       const sheets = await getGoogleSheetsService();
       const spreadsheetId = req.headers['spreadsheet-id'];
@@ -167,7 +167,7 @@ async function fetchLogs(req, res, next) {
   }
 }
 
-async function sapInput(req, res, next) {
+export async function sapInput(req, res, next) {
   try {
       const sheets = await getGoogleSheetsService();
       const { input } = req.body;
@@ -199,7 +199,7 @@ async function sapInput(req, res, next) {
 
 
 // Function to update status and hide it after a certain duration
-function updateStatus(message, type) {
+export function updateStatus(message, type) {
   const statusBox = document.getElementById("statusBox");
 
   if (statusBox) {

@@ -1,6 +1,11 @@
-const { verifyToken } = require('../utils/token');
+// Import modules (using ES Modules syntax)
+import express from 'express';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import { verifyToken } from '../utils/token.js';
 
-function tokenMiddleware(req, res, next) {
+
+export function tokenMiddleware(req, res, next) {
     const authToken = req.headers.authorization?.split(' ')[1]; // Expecting 'Bearer <token>'
     if (authToken) {
         const decoded = verifyToken(authToken);
@@ -14,4 +19,4 @@ function tokenMiddleware(req, res, next) {
     next();
 }
 
-module.exports = { tokenMiddleware };
+export default tokenMiddleware;
