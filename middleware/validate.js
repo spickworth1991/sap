@@ -1,4 +1,3 @@
-
 export const validateSpreadsheetId = (req, res, next) => {
     const spreadsheetId = req.headers['spreadsheet-id'];
     if (!spreadsheetId) {
@@ -8,7 +7,6 @@ export const validateSpreadsheetId = (req, res, next) => {
     next();
 };
 
-// ensureAuthenticated is adapted from validateSpreadsheetId for broader authentication purposes
 export const ensureAuthenticated = (req, res, next) => {
     const spreadsheetId = req.headers['spreadsheet-id'];
     const userToken = req.headers['authorization'];
@@ -21,5 +19,3 @@ export const ensureAuthenticated = (req, res, next) => {
     req.userToken = userToken;
     next();
 };
-
-export default { validateSpreadsheetId, ensureAuthenticated };

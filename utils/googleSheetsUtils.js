@@ -12,6 +12,27 @@ export async function getGoogleSheetsService() {
     return google.sheets({ version: 'v4', auth });
 }
 
+// Log a punch action
+export async function logPunchAction(spreadsheetId, logEntry) {
+  const sheets = await getGoogleSheetsService();
+  const { userId, date, time, action } = logEntry;
+
+  const row = [userId, action, date, time];
+
+  try {
+      await sheets.spreadsheets.values.append({
+          spreadsheetId,
+          range: 'Logs!A:D',
+          valueInputOption: 'RAW',
+          requestBody: { values: [row] },
+      });
+      console.log(`Logged punch action: ${action} for user ${userId}`);
+  } catch (error) {
+      console.error('Error logging punch action:', error);
+      throw error;
+  }
+}
+
 
 // Date and Time Utilities
 export function getCurrentMonthName() {
