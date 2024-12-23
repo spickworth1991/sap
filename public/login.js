@@ -88,18 +88,16 @@ function showInitialPage() {
     const currentPage = window.location.pathname;
     //const adminHomeBtn = document.getElementById('admin-home-btn');
 
-    if (role === 'user') {
+    if (role === 'user' && currentPage == '/index.html') {
         // Redirect to homePage.html if not already there
-        if (currentPage !== '/homePage.html') {
             window.location.href = 'homePage.html';
         }
-    } else if (role === 'admin') {
+     else if (role === 'admin'&& currentPage == '/index.html') {
         // If the role is admin and not already on homePage.html
-        if (currentPage !== '/homePage.html') {
-            //adminHomeBtn.style.display = 'block'; // Show admin-specific button
             window.location.href = 'homePage.html';
+            //adminHomeBtn.style.display = 'block'; // Show admin-specific button
         }
-    } else {
+     else {
         // Redirect to index.html for non-role users
         if (!role) {
             window.location.href = 'index.html';
