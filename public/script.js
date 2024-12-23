@@ -25,7 +25,8 @@ function navigateTo(pageId) {
 
 const adminHomeBtn = document.getElementById('admin-home-btn');
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', (event) => {
+    event.preventDefault(); // Prevent default form submission
     // Logout functionality
     const logoutBtn = document.getElementById('logout-btn')
     if (logoutBtn) {
