@@ -40,8 +40,12 @@
             <button onclick="nextPage()">Next</button>
         </div>
     </div>
-    <button class="button nav-button" onclick="location.href='admin.html'">Back to Admin Dashboard</button>
+    <nav>
     <button class="button nav-button" onclick="navigateTo('homePage')">Home</button>
+    </nav>  
+    <navAdmin>
+        <button id="logout-btn">Logout</button>
+    </navAdmin>
     <script type= "module" src="viewLogs.js"></script> <!-- Link to the viewLogs.js file -->
     <script type= "module" src="script.js" ></script>
 <script>document.addEventListener('DOMContentLoaded', () => { document.body.style.display = 'block'; });</script></body>

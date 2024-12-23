@@ -1,4 +1,7 @@
-
+// Updated login.js with enhanced logging
+const apiBaseUrl = window.location.hostname === 'localhost'
+    ? 'http://localhost:3000/api'
+    : '/api/auth'; // For production deployment on Vercel
 
 document.addEventListener('DOMContentLoaded', () => {
     const punchIn = document.getElementById('punchInButton');
@@ -21,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 // Punch In function
-export async function punchInHandler(button) {
+export async function punchInHandler(button, event) {
     button.style.backgroundColor = "#555";
 
     try {
@@ -34,7 +37,7 @@ export async function punchInHandler(button) {
             return (window.location.href = 'index.html');
         }
 
-        const response = await fetch('/api/punch/in', {
+        const response = await fetch(`${apiBaseUrl}/punch/in`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${token}`,

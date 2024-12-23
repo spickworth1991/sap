@@ -11,21 +11,21 @@ export async function getGoogleSheetsService() {
     });
     return google.sheets({ version: 'v4', auth });
 }
-window.getGoogleSheetsService = getGoogleSheetsService;
+
 
 // Date and Time Utilities
 export function getCurrentMonthName() {
     return moment().tz('America/New_York').format('MMMM');
 }
-window.getCurrentMonthName = getCurrentMonthName;
+
 export function getCurrentDate() {
     return moment().tz('America/New_York').format('MM/DD/YYYY');
 }
-window.getCurrentDate = getCurrentDate;
+
 export function getCurrentTime() {
     return moment().tz('America/New_York').format('HH:mm:ss');
 }
-window.getCurrentTime = getCurrentTime;
+
 // Helper function to ensure the Logs sheet exists
 export async function ensureLogSheetExists(sheets, spreadsheetId) {
     try {
@@ -66,7 +66,7 @@ export async function ensureLogSheetExists(sheets, spreadsheetId) {
       console.error('Error ensuring Logs sheet exists:', error);
     }
 }
-window.ensureLogSheetExists = ensureLogSheetExists(sheets, spreadsheetId);
+
 export async function findDateRow(sheets, spreadsheetId, monthSheetName, currentDate) {
 const response = await sheets.spreadsheets.values.get({
     spreadsheetId,
@@ -81,7 +81,7 @@ for (let i = 0; i < rows.length; i++) {
 }
 return null;
 }
-window.findDateRow = findDateRow(sheets, spreadsheetId, monthSheetName, currentDate);
+
 export function formatElapsedTime(milliseconds) {
     const totalSeconds = Math.floor(milliseconds / 1000);
     const hours = Math.floor(totalSeconds / 3600);
@@ -89,11 +89,11 @@ export function formatElapsedTime(milliseconds) {
     const seconds = totalSeconds % 60;
     return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
   }
-window.navigateTo = formatElapsedTime(milliseconds)
+  
 export function calculateElapsedTimeDecimal(milliseconds) {
     return (milliseconds / (1000 * 60 * 60)).toFixed(4);
 }
-window.calculateElapsedTimeDecimal = calculateElapsedTimeDecimal(milliseconds);
+  
   // Ensure headers exist if the last entry in Column A is not the current date
 export async function ensureHeaders(sheets, sapSheetName, currentDate, spreadsheetId ) {
 const response = await sheets.spreadsheets.values.get({
@@ -117,7 +117,7 @@ if (lastEntry !== currentDate) {
     
 }
 }
-window.ensureHeaders = ensureHeaders(sheets, sapSheetName, currentDate, spreadsheetId );
+
 export async function editEntry(req, res, next) {
   try {
       const sheets = await getGoogleSheetsService();
@@ -145,7 +145,7 @@ export async function editEntry(req, res, next) {
       res.status(500).json({ error: 'Failed to edit entry' });
   }
 }
-window.editEntry = editEntry(req, res, next);
+
 export async function fetchLogs(req, res, next) {
   try {
       const sheets = await getGoogleSheetsService();
@@ -167,7 +167,7 @@ export async function fetchLogs(req, res, next) {
       res.status(500).json({ error: 'Failed to fetch logs' });
   }
 }
-window.fetchLogs = fetchLogs(req, res, next);
+
 export async function sapInput(req, res, next) {
   try {
       const sheets = await getGoogleSheetsService();
@@ -197,7 +197,7 @@ export async function sapInput(req, res, next) {
       res.status(500).json({ error: 'Failed to process SAP input' });
   }
 }
-window.sapInput = sapInput(req, res, next);
+
 
 // Function to update status and hide it after a certain duration
 export function updateStatus(message, type) {
@@ -223,4 +223,4 @@ export function updateStatus(message, type) {
   }
 }
 
-window.updateStatus = updateStatus(message, type);
+

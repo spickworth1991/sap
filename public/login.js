@@ -1,10 +1,11 @@
 // Updated login.js with enhanced logging
 const apiBaseUrl = window.location.hostname === 'localhost'
-    ? 'http://localhost:5000/api/auth'
+    ? 'http://localhost:3000/api/auth'
     : '/api/auth'; // For production deployment on Vercel
 
     document.addEventListener('DOMContentLoaded', () => {
         // Ensure DOM is ready before attaching event listeners
+        
         const loginForm = document.getElementById('login-form');
         if (loginForm) {
             loginForm.addEventListener('submit', handleLogin);    
@@ -15,6 +16,9 @@ const apiBaseUrl = window.location.hostname === 'localhost'
             showInitialPage(); // Show Intial Page
         }
     });
+
+
+
     
     async function handleLogin(event) {
         event.preventDefault(); // Prevent default form submission
@@ -83,24 +87,21 @@ export async function fetchUserDetails() {
 function showInitialPage() {
     const currentPage = window.location.pathname;
     const role = localStorage.getItem('role');
+
     if (role === 'user' && (currentPage === '/' || currentPage.startsWith('/index.html'))) {
         console.log(`User role: ${role}`);
         window.location.href = 'homePage.html';
-    }
-
-     else if (role === 'admin' && (currentPage === '/' || currentPage.startsWith('/index.html'))) {
+    } else if (role === 'admin' && (currentPage === '/' || currentPage.startsWith('/index.html'))) {
         console.log(`User role: ${role}`);
         window.location.href = 'homePage.html';
-        const adminHomeBtn = document.getElementById('admin-home-btn');
-        adminHomeBtn.style.display = 'block'; // Show admin-specific button
-        }
-     else {
+        localStorage.setItem('adminNavigate', 'true'); // Set flag for admin-specific setup
+    } else {
         // Redirect to index.html for non-role users
         if (!role) {
             console.log(`User role: ${role}`);
             window.location.href = 'index.html';
         }
     }
-}    
+}
 
 

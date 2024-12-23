@@ -1,31 +1,57 @@
 
 
 document.addEventListener('DOMContentLoaded', () => {
+    checkLogin(); // Fetch details if token already exists
 
-    const token = localStorage.getItem('authToken');
-    if (token || !token) {
-        checkLogin(); // Fetch details if token already exists
-    }
+
+ 
 });
 
 
 // Global Scripts
+export function adminButton() {
+    // Dynamically create the admin button
+    const navContainer = document.querySelector('navAdmin'); // Adjust the selector for your nav
+    if (navContainer) {
+        const adminHomeBtn = document.createElement('button');
+        adminHomeBtn.id = 'admin-home-btn';
+        adminHomeBtn.textContent = 'Admin Home';
+        adminHomeBtn.addEventListener('click', () => {
+            navigateTo('adminPage');
+        });
+        navContainer.appendChild(adminHomeBtn);
+    } else {
+        console.error('Navigation container not found.');
+    }
+}
+window.adminButton = adminButton;
+
 export function checkLogin() {
     const role = localStorage.getItem('role');
     console.log(`User role: ${role}`);
 
     // Check the current page URL
     const currentPage = window.location.pathname;
-    const adminHomeBtn = document.getElementById('admin-home-btn');
+ 
 
     if (!role && currentPage !== '/index.html') {
         window.location.href = 'index.html';
+        alert('Please log on before visiting other pages');
+    } else if (
+        role === 'user' && 
+        (
+            currentPage === '/admin.html' || 
+            currentPage === '/manage_users.html' || 
+            currentPage === '/view_logs.html' || 
+            currentPage === '/edit_entries.html'
+        )
+    ) {
+        alert('Nice try :). You dont have access to this page.');
+        window.location.href = 'homePage.html';
+    } else if (role === 'admin') {
+        adminButton();
     }
-    else if (role === 'admin' && adminHomeBtn) {
-        adminHomeBtn.style.display = 'block'; // Show admin-specific button
-        }
-    
-}    
+}
 
 window.checkLogin = checkLogin;
 
