@@ -88,7 +88,7 @@ function showInitialPage() {
 
     // Check the current page URL
     const currentPage = window.location.pathname;
-    const adminHomeBtn = document.getElementById('admin-home-btn');
+    //const adminHomeBtn = document.getElementById('admin-home-btn');
 
     if (role === 'user') {
         // Redirect to homePage.html if not already there
@@ -98,7 +98,7 @@ function showInitialPage() {
     } else if (role === 'admin') {
         // If the role is admin and not already on homePage.html
         if (currentPage !== '/homePage.html') {
-            adminHomeBtn.style.display = 'block'; // Show admin-specific button
+            //adminHomeBtn.style.display = 'block'; // Show admin-specific button
             window.location.href = 'homePage.html';
         }
     } else {
