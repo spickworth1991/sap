@@ -64,16 +64,22 @@ function showInitialPage() {
     const role = localStorage.getItem('role');
     console.log(`User role: ${role}`);
 
-    if (role === 'admin') {
-        console.log('Admin tools are enabled.');
-        // Load admin-specific logic here
-    } else if (role) {
-        console.log('User-specific tools are enabled.');
-        // Load user-specific logic here
+    // Check the current page URL
+    const currentPage = window.location.pathname;
+    const adminHomeBtn = document.getElementById('admin-home-btn');
+
+    if (role) {
+        // Redirect to homePage.html if not already there
+        if (currentPage !== '/homePage.html') {
+            window.location.href = 'homePage.html';
+        } else if (role === 'admin' && adminHomeBtn) {
+            adminHomeBtn.style.display = 'inline-block';
+        }
     } else {
-        console.log('No role defined, redirecting to login page.');
-        // Redirect to login or show an error
-        window.location.href = '/login';
+        // Redirect to index.html for non-admin users
+        if (currentPage !== '/index.html' && currentPage !== '/') {
+            window.location.href = 'index.html';
+        }
     }
 }
 
