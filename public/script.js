@@ -22,6 +22,7 @@ export function navigateTo(pageId) {
         console.log(`Page not found: ${pageId}`);
     }
 }
+window.navigateTo = navigateTo;
 
 export const adminHomeBtn = document.getElementById('admin-home-btn');
 
