@@ -10,6 +10,8 @@ async function handleLogin(event) {
 
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
+    console.log('username' = username )
+    console.log('password' = password )
 
     try {
         const response = await fetch(`${apiBaseUrl}/login`, {
@@ -37,7 +39,7 @@ async function handleLogin(event) {
 }
 
 // Attach login form event listener
-document.getElementById('loginButton').addEventListener('submit', handleLogin);
+document.getElementById('loginButton').addEventListener('enter', handleLogin);
 
 async function fetchUserDetails() {
     try {
