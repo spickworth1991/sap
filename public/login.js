@@ -95,7 +95,7 @@ function showInitialPage() {
         if (currentPage !== '/homePage.html') {
             window.location.href = 'homePage.html';
         } else if (role === 'admin' && adminHomeBtn) {
-            adminHomeBtn.style.display = 'inline-block';
+            adminHomeBtn.style.display = 'block';
         }
     } else {
         // Redirect to index.html for non-admin users
