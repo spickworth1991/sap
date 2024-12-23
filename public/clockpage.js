@@ -1,7 +1,6 @@
-// Updated login.js with enhanced logging
 const apiBaseUrl = window.location.hostname === 'localhost'
     ? 'http://localhost:3000/api'
-    : '/api/auth'; // For production deployment on Vercel
+    : '/api'; // For production deployment on Vercel
 
 document.addEventListener('DOMContentLoaded', () => {
     const punchIn = document.getElementById('punchInButton');
@@ -17,14 +16,10 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
         console.error('Punch Out button not found.');
     }
-
-
 });
 
-
-
 // Punch In function
-export async function punchInHandler(button, event) {
+export async function punchInHandler(button) {
     button.style.backgroundColor = "#555";
 
     try {
@@ -49,21 +44,20 @@ export async function punchInHandler(button, event) {
         const result = await response.json();
 
         if (response.ok) {
-            updateStatus(result, "success");
+            updateStatus(result.message, "success");
         } else {
-            updateStatus(result, "error");
+            updateStatus(result.message, "error");
         }
     } catch (error) {
         console.error('Error in Punch In:', error);
-        updateStatus({ code: 9999, message: "Network error or server is unavailable." }, "error");
+        updateStatus("Network error or server is unavailable.", "error");
     } finally {
         button.style.backgroundColor = "";
     }
 }
-window.punchInHandler = punchInHandler;
 
 // Punch Out function
-async function punchOutHandler(button) {
+export async function punchOutHandler(button) {
     button.style.backgroundColor = "#555";
 
     try {
@@ -76,7 +70,7 @@ async function punchOutHandler(button) {
             return (window.location.href = 'index.html');
         }
 
-        const response = await fetch('/api/punch/out', {
+        const response = await fetch(`${apiBaseUrl}/punch/out`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${token}`,
@@ -88,13 +82,13 @@ async function punchOutHandler(button) {
         const result = await response.json();
 
         if (response.ok) {
-            updateStatus(result, "success");
+            updateStatus(result.message, "success");
         } else {
-            updateStatus(result, "error");
+            updateStatus(result.message, "error");
         }
     } catch (error) {
         console.error('Error in Punch Out:', error);
-        updateStatus({ code: 9999, message: "Network error or server is unavailable." }, "error");
+        updateStatus("Network error or server is unavailable.", "error");
     } finally {
         button.style.backgroundColor = "";
     }
