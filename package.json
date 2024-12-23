@@ -9,10 +9,11 @@
     },
     "dependencies": {
         "bcrypt": "^5.0.1",
-        "cors": "^2.x",
+        "cors": "^2.8.5",
         "dotenv": "^16.4.7",
         "express": "^4.x",
         "googleapis": "^123.x",
+        "helmet": "^8.0.0",
         "jsonwebtoken": "^9.0.2",
         "moment-timezone": "^0.5.46",
         "morgan": "^1.10.0"
