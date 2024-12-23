@@ -65,5 +65,6 @@ export async function logAction(req, res, next) {
 
     next();
 }
+console.log('Headers in logAction:', req.headers);
 
 export default logAction;

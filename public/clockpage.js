@@ -33,26 +33,28 @@ export async function punchInHandler(button) {
             alert('You are not logged in!');
             return (window.location.href = 'index.html');
         }
-
+        
         const response = await fetch(`${apiBaseUrl}/punch/in`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'spreadsheet-id': spreadsheetId,
                 'username': username,
+                'Content-Type': 'application/json'
             },
+            body: JSON.stringify({ spreadsheetId }) // Username is not needed if it’s already in the token
         });
 
-        const result = await response.json();
+        //const result = await response.json();
 
         if (response.ok) {
-            updateStatus(result.message, "success");
+            //updateStatus(result.message, "success");
         } else {
-            updateStatus(result.message, "error");
+            //updateStatus(result.message, "error");
         }
     } catch (error) {
         console.error('Error in Punch In:', error);
-        updateStatus("Network error or server is unavailable.", "error");
+        //updateStatus("Network error or server is unavailable.", "error");
     } finally {
         button.style.backgroundColor = "";
     }
@@ -78,19 +80,20 @@ export async function punchOutHandler(button) {
                 'Authorization': `Bearer ${token}`,
                 'spreadsheet-id': spreadsheetId,
                 'username': username,
+                'Content-Type': 'application/json'
             },
         });
 
-        const result = await response.json();
+        //const result = await response.json();
 
         if (response.ok) {
-            updateStatus(result.message, "success");
+            //updateStatus(result.message, "success");
         } else {
-            updateStatus(result.message, "error");
+            //updateStatus(result.message, "error");
         }
     } catch (error) {
         console.error('Error in Punch Out:', error);
-        updateStatus("Network error or server is unavailable.", "error");
+        //updateStatus("Network error or server is unavailable.", "error");
     } finally {
         button.style.backgroundColor = "";
     }

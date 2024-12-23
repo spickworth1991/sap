@@ -8,14 +8,20 @@ export const validateSpreadsheetId = (req, res, next) => {
 };
 
 export const ensureAuthenticated = (req, res, next) => {
-    const spreadsheetId = req.headers['spreadsheet-id'];
-    const userToken = req.headers['authorization'];
-
-    if (!spreadsheetId || !userToken) {
-        return res.status(401).json({ error: 'Unauthorized: Missing spreadsheet ID or user token' });
+    const authHeader = req.headers['authorization'];
+    if (!authHeader) {
+        return res.status(401).json({ error: 'Unauthorized: Missing Authorization header' });
     }
 
-    req.spreadsheetId = spreadsheetId;
-    req.userToken = userToken;
-    next();
+    const token = authHeader.split(' ')[1]; // Extract the token
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET); // Verify the token
+        req.user = decoded; // Attach user details to the request object
+        req.spreadsheetId = decoded.spreadsheetId; // Extract spreadsheet ID
+        req.username = decoded.username; // Extract username
+        next(); // Proceed to the next middleware
+    } catch (err) {
+        console.error('Token validation error:', err);
+        res.status(401).json({ error: 'Unauthorized: Invalid token' });
+    }
 };
