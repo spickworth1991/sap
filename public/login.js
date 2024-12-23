@@ -1,4 +1,4 @@
-async function handleLogin(event, button) {
+async function handleLogin(event) {
     event.preventDefault(); // Prevent default form submission
 
     const username = document.getElementById('username').value;
@@ -29,7 +29,7 @@ async function handleLogin(event, button) {
 }
 
 // Attach login form event listener
-document.getElementById('login-form').addEventListener('submit', handleLogin);
+document.getElementById('loginButton').addEventListener('submit', handleLogin);
 
 async function fetchUserDetails() {
     try {
