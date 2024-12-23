@@ -6,6 +6,8 @@ import cors from 'cors';
 import helmet from 'helmet';
 import { fileURLToPath, pathToFileURL } from 'url';
 import { logAction } from '../middleware/log.js'; // Adjust the path based on your project structure
+import authRoute from './routes/auth.js';
+app.use('/api/auth', authRoute);
 
 dotenv.config();
 
