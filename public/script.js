@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
             localStorage.clear();
             console.log('LocalStorage has been cleared:', localStorage);
             window.location.href = 'index.html';
-            adminHomeBtn.style.display = 'none';
+            //adminHomeBtn.style.display = 'none';
         });
     }
 
