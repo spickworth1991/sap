@@ -3,7 +3,7 @@
 
 
 // Navigation function to show the selected page
-function navigateTo(pageId) {
+export function navigateTo(pageId) {
     const pageMap = {
         homePage: 'homePage.html',
         manageUsersPage: 'manage_users.html',
@@ -23,7 +23,7 @@ function navigateTo(pageId) {
     }
 }
 
-const adminHomeBtn = document.getElementById('admin-home-btn');
+export const adminHomeBtn = document.getElementById('admin-home-btn');
 
 document.addEventListener('DOMContentLoaded', (event) => {
     event.preventDefault(); // Prevent default form submission

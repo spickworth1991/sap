@@ -91,7 +91,8 @@ function showInitialPage() {
      else if (role === 'admin' && (currentPage === '/' || currentPage.startsWith('/index.html'))) {
         console.log(`User role: ${role}`);
         window.location.href = 'homePage.html';
-        //adminHomeBtn.style.display = 'block'; // Show admin-specific button
+        const adminHomeBtn = document.getElementById('admin-home-btn');
+        adminHomeBtn.style.display = 'block'; // Show admin-specific button
         }
      else {
         // Redirect to index.html for non-role users
@@ -108,11 +109,14 @@ export function checkLogin() {
 
     // Check the current page URL
     const currentPage = window.location.pathname;
-    //const adminHomeBtn = document.getElementById('admin-home-btn');
+    const adminHomeBtn = document.getElementById('admin-home-btn');
 
     if (!role && currentPage !== '/index.html') {
         window.location.href = 'index.html';
     }
+    else if (role === 'admin' && adminHomeBtn) {
+        adminHomeBtn.style.display = 'block'; // Show admin-specific button
+        }
     
     
 }    
