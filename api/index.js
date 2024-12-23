@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import helmet from 'helmet';
 import { fileURLToPath, pathToFileURL } from 'url';
+import { logAction } from '../middleware/log.js'; // Adjust the path based on your project structure
 
 dotenv.config();
 
