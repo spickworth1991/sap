@@ -110,3 +110,4 @@ document.addEventListener('DOMContentLoaded', () => {
         fetchUserDetails(); // Fetch details if token already exists
     }
 });
+
