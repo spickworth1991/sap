@@ -1,14 +1,23 @@
-
 const jwt = require('jsonwebtoken');
+
+const SECRET_KEY = process.env.SECRET_KEY || 'default_secret_key';
 
 function decodeToken(token) {
     try {
-        const decoded = jwt.decode(token);
-        return decoded;
+        return jwt.decode(token);
     } catch (error) {
         console.error('Error decoding token:', error);
         return null;
     }
 }
 
-module.exports = { decodeToken };
+function verifyToken(token) {
+    try {
+        return jwt.verify(token, SECRET_KEY);
+    } catch (error) {
+        console.error('Error verifying token:', error);
+        return null;
+    }
+}
+
+module.exports = { decodeToken, verifyToken };
