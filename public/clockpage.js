@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 // Punch In function
-async function punchInHandler(button) {
+export async function punchInHandler(button) {
     button.style.backgroundColor = "#555";
 
     try {
@@ -57,6 +57,7 @@ async function punchInHandler(button) {
         button.style.backgroundColor = "";
     }
 }
+window.navigateTo = punchIn;
 
 // Punch Out function
 async function punchOutHandler(button) {
