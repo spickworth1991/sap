@@ -1,3 +1,5 @@
+import { updateStatus } from '../utils/googleSheetsUtils.js';
+
 const apiBaseUrl = window.location.hostname === 'localhost'
     ? 'http://localhost:3000/api'
     : '/api'; // For production deployment on Vercel
