@@ -1,7 +1,7 @@
 import { google } from 'googleapis';
 import moment from 'moment-timezone';
 import { getGoogleSheetsService, ensureLogSheetExists } from '../utils/googleSheetsUtils.js';
-import { getCurrentDate, getCurrentTime, getCurrentMonthName } from '../utils/dateUtils.js';
+import { getCurrentDate, getCurrentTime, getCurrentMonthName } from '../utils/googleSheetsUtils.js';
 
 export async function logAction(req, res, next) {
     try {
