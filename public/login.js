@@ -44,7 +44,7 @@ const apiBaseUrl = window.location.hostname === 'localhost'
                 const data = await response.json();
                 localStorage.setItem('authToken', data.token); // Store the token
                 localStorage.setItem('username', username); // Store the username
-                console.log('Login successful, token stored');
+                console.log('username/token stored');
                 fetchUserDetails(); // Fetch user details after successful login
             } else {
                 console.error('Login failed');
@@ -61,7 +61,7 @@ const apiBaseUrl = window.location.hostname === 'localhost'
 
 async function fetchUserDetails() {
     try {
-        const response = await fetch('/api/users', {
+        const response = await fetch('../api/users', {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('authToken')}`
             }
