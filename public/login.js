@@ -90,12 +90,13 @@ function showInitialPage() {
     const currentPage = window.location.pathname;
     const adminHomeBtn = document.getElementById('admin-home-btn');
 
-    if (role) {
+    if (role === 'user') {
         // Redirect to homePage.html if not already there
         if (currentPage !== '/homePage.html') {
             window.location.href = 'homePage.html';
-        } else if (role === 'admin' && adminHomeBtn) {
+        } else if (role === 'admin' && adminHomeBtn && currentPage !== '/homePage.html') {
             adminHomeBtn.style.display = 'block';
+            window.location.href = 'homePage.html';
         }
     } else {
         // Redirect to index.html for non-admin users
