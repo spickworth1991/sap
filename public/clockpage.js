@@ -1,20 +1,19 @@
 import { fetchUserDetails } from './login.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-
     const punchIn = document.getElementById('punchInButton');
-        if (punchIn) {
-            punchIn.addEventListener('submit', punchIn);
-        } else {
-            console.error('Punch In Failed at advent.');
-        }
+    if (punchIn) {
+        punchIn.addEventListener('click', () => punchInHandler(punchIn)); // Attach click event
+    } else {
+        console.error('Punch In button not found.');
+    }
 
     const punchOut = document.getElementById('punchOutButton');
-        if (punchOut) {
-            punchOut.addEventListener('submit', punchOut);
-        } else {
-            console.error('Punch In Failed at advent.');
-        }
+    if (punchOut) {
+        punchOut.addEventListener('click', () => punchOutHandler(punchOut)); // Attach click event
+    } else {
+        console.error('Punch Out button not found.');
+    }
 
     const token = localStorage.getItem('authToken');
     if (token) {
@@ -25,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 // Punch In function
-async function punchIn(button) {
+async function punchInHandler(button) {
     button.style.backgroundColor = "#555";
 
     try {
@@ -63,7 +62,7 @@ async function punchIn(button) {
 }
 
 // Punch Out function
-async function punchOut(button) {
+async function punchOutHandler(button) {
     button.style.backgroundColor = "#555";
 
     try {
