@@ -1,4 +1,4 @@
-import { fetchUserDetails } from './login.js';
+import { checkLogin } from './login.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     const punchIn = document.getElementById('punchInButton');
@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const token = localStorage.getItem('authToken');
     if (token) {
-        fetchUserDetails(); // Fetch details if token already exists
+        checkLogin(); // Fetch details if token already exists
     }
 });
 

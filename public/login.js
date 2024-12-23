@@ -7,14 +7,12 @@ const apiBaseUrl = window.location.hostname === 'localhost'
         // Ensure DOM is ready before attaching event listeners
         const loginForm = document.getElementById('login-form');
         if (loginForm) {
-            loginForm.addEventListener('submit', handleLogin);
-        } else {
-            console.error('Login form not found. Ensure the form ID is "login-form".');
+            loginForm.addEventListener('submit', handleLogin);    
         }
     
         const token = localStorage.getItem('authToken');
         if (token) {
-            fetchUserDetails(); // Fetch details if token already exists
+            showInitialPage(); // Show Intial Page
         }
     });
     
@@ -107,5 +105,20 @@ function showInitialPage() {
             window.location.href = 'index.html';
         }
     }
+}    
+
+export function checkLogin() {
+    const role = localStorage.getItem('role');
+    console.log(`User role: ${role}`);
+
+    // Check the current page URL
+    const currentPage = window.location.pathname;
+    //const adminHomeBtn = document.getElementById('admin-home-btn');
+
+    if (!role && currentPage !== '/index.html') {
+        window.location.href = 'index.html';
+    }
+    
+    
 }    
 
