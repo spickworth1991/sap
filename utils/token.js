@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 
 const SECRET_KEY = process.env.SECRET_KEY || 'default_secret_key';
 
-function decodeToken(token) {
+export function decodeToken(token) {
     try {
         return jwt.decode(token);
     } catch (error) {
@@ -11,7 +11,7 @@ function decodeToken(token) {
     }
 }
 
-function verifyToken(token) {
+export function verifyToken(token) {
     try {
         return jwt.verify(token, SECRET_KEY);
     } catch (error) {
@@ -20,4 +20,4 @@ function verifyToken(token) {
     }
 }
 
-module.exports = { decodeToken, verifyToken };
+export default  decodeToken, verifyToken ;

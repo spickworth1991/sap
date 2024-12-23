@@ -240,6 +240,5 @@ export {
     editEntry,
     sapInput,
     fetchLogs,
-    updateStatus,
 
 };
