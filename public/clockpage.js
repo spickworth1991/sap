@@ -1,6 +1,21 @@
 import { fetchUserDetails } from './login.js';
 
 document.addEventListener('DOMContentLoaded', () => {
+
+    const punchIn = document.getElementById('punchInButton');
+        if (punchIn) {
+            punchIn.addEventListener('submit', punchIn);
+        } else {
+            console.error('Punch In Failed at advent.');
+        }
+
+    const punchOut = document.getElementById('punchOutButton');
+        if (punchOut) {
+            punchOut.addEventListener('submit', punchOut);
+        } else {
+            console.error('Punch In Failed at advent.');
+        }
+
     const token = localStorage.getItem('authToken');
     if (token) {
         fetchUserDetails(); // Fetch details if token already exists
@@ -8,8 +23,9 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
+
 // Punch In function
-export async function punchIn(button) {
+async function punchIn(button) {
     button.style.backgroundColor = "#555";
 
     try {
@@ -47,7 +63,7 @@ export async function punchIn(button) {
 }
 
 // Punch Out function
-export async function punchOut(button) {
+async function punchOut(button) {
     button.style.backgroundColor = "#555";
 
     try {
