@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 // Punch In function
-async function punchIn(button) {
+export async function punchIn(button) {
     button.style.backgroundColor = "#555";
 
     try {
@@ -47,7 +47,7 @@ async function punchIn(button) {
 }
 
 // Punch Out function
-async function punchOut(button) {
+export async function punchOut(button) {
     button.style.backgroundColor = "#555";
 
     try {
