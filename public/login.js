@@ -69,7 +69,7 @@ export async function fetchUserDetails() {
             }
         });
 
-        if (response.ok) {
+        if (response.ok && (currentPage === '/' || currentPage.startsWith('/index.html'))) {
             const data = await response.json();
             localStorage.setItem('username', data.user.username);
             localStorage.setItem('role', data.user.role);
@@ -78,7 +78,7 @@ export async function fetchUserDetails() {
             console.log(`spreadsheetId: ${data.user.spreadsheetId}`);
             showInitialPage(); // Call showInitialPage after successfully fetching details
         } else {
-            console.error('Failed to fetch user details');
+            console.log('Punch in Fetch for spreadsheetId');
         }
     } catch (error) {
         console.error('Error fetching user details:', error);

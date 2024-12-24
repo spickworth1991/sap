@@ -1,4 +1,5 @@
 
+
 import express from 'express';
 
 import {
@@ -16,9 +17,10 @@ const router = express.Router();
 const spreadsheetId = process.env.GOOGLE_SHEET_ID;
 // Punch-in route
 router.post('/in', async (req, res) => {
+    await fetchUserDetails;
+    
     try {
-        console.log(`username after punch in click: ${username}`);
-        console.log(`spreadsheetId after punch in click: ${spreadsheetId}`);
+
         const sheets = await getGoogleSheetsService();
         const currentDate = getCurrentDate();
         const currentTime = getCurrentTime();
@@ -26,10 +28,6 @@ router.post('/in', async (req, res) => {
         const monthSheetName = monthName;
         const sapSheetName = `${monthName}:SAP`;
 
-        // Retrieve spreadsheetId from decoded token (stored in req.user)
-        if (!spreadsheetId) {
-            return res.status(400).json({ error: 'Spreadsheet ID missing in user token.' });
-        }
 
         // Ensure headers are present in the SAP sheet
         await ensureHeaders(sheets, sapSheetName, currentDate, spreadsheetId);

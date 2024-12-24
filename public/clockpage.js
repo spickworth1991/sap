@@ -1,3 +1,4 @@
+import { fetchUserDetails } from "./login";
 
 
 
@@ -40,8 +41,6 @@ export async function punchInHandler(button) {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${token}`,
-                    'spreadsheet-id': spreadsheetId,
-                    'username': username,
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({ spreadsheetId })
@@ -77,6 +76,8 @@ export async function punchOutHandler(button) {
             alert('You are not logged in!');
             return (window.location.href = 'index.html');
         }
+
+        
     try {
         const response = await fetch(`${apiBaseUrl}/punch/out`, {
             method: 'POST',
