@@ -17,6 +17,8 @@ const spreadsheetId = process.env.GOOGLE_SHEET_ID;
 // Punch-in route
 router.post('/in', async (req, res) => {
     try {
+        console.log(`username after punch in click: ${username}`);
+        console.log(`spreadsheetId after punch in click: ${spreadsheetId}`);
         const sheets = await getGoogleSheetsService();
         const currentDate = getCurrentDate();
         const currentTime = getCurrentTime();
