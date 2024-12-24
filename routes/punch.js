@@ -1,4 +1,4 @@
-
+import { fetchUserDetails } from "../login";
 
 import express from 'express';
 
