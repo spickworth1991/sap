@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Punch In function
-export async function punchInHandler(button) {
+export async function punchInHandler(button, localStorage) {
     button.style.backgroundColor = "#555";
 
     
@@ -62,7 +62,7 @@ export async function punchInHandler(button) {
 }
 
 // Punch Out function
-export async function punchOutHandler(button, localStorage) {
+export async function punchOutHandler(button) {
     button.style.backgroundColor = "#555";
 
     
