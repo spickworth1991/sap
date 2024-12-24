@@ -89,20 +89,21 @@ export async function ensureLogSheetExists(sheets, spreadsheetId) {
 }
 
 export async function findDateRow(sheets, monthSheetName, currentDate, spreadsheetId ) {
-  const response = await sheets.spreadsheets.values.get({
+    const response = await sheets.spreadsheets.values.get({
       spreadsheetId,
       range: `${monthSheetName}!A:A`,
-  });
+    });
   
-  const rows = response.data.values || [];
-
-  for (let i = 0; i < rows.length; i++) {
+    const rows = response.data.values || [];
+    console.log(`rows: ${rows}`);
+    for (let i = 0; i < rows.length; i++) {
       if (rows[i][0] === currentDate) {
       return i + 1; // Google Sheets uses 1-based indexing
       }
+    }
+    return null;
 }
-return null;
-}
+
 
 export function formatElapsedTime(milliseconds) {
     const totalSeconds = Math.floor(milliseconds / 1000);
