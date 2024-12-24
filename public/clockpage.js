@@ -40,6 +40,7 @@ export async function punchInHandler(button, localStorage) {
                 method: 'POST',
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem('authToken')}`,
+                    spreadsheetId: `${localStorage.getItem('spreadsheetId')}`,
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ spreadsheetId })
