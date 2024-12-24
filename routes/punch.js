@@ -27,7 +27,10 @@ router.post('/in', async (req, res) => {
         const currentTime = getCurrentTime();
         const monthName = getCurrentMonthName();
         const monthSheetName = monthName;
+        console.log(`monthSheetName: ${monthSheetName}`);
+        console.log(`monthName: ${monthName}`);
         const sapSheetName = `${monthName}:SAP`;
+        console.log(`sapSheetName: ${sapSheetName}`);
 
 
         // Ensure headers are present in the SAP sheet
@@ -80,7 +83,7 @@ router.post('/out',  async (req, res) => {
         const monthName = getCurrentMonthName();
         const monthSheetName = monthName;
         const sapSheetName = `${monthName}:SAP`;
-        const spreadsheetId = localStorage.getItem('spreadsheetId');
+    
 
         // Find the row with the current date on the month sheet
         const rowIndex = await findDateRow(sheets, monthSheetName, currentDate, spreadsheetId);
