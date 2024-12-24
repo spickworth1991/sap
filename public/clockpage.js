@@ -28,8 +28,8 @@ export async function punchInHandler(button) {
     
         const token = localStorage.getItem('authToken');
         const username = localStorage.getItem('username');
-        console.log(`username: ${username}`);
-        console.log(`spreadsheetId: ${spreadsheetId}`);
+        console.log(`username: ${data.user.username}`);
+        console.log(`spreadsheetId: ${data.user.spreadsheetId}`);
 
         if (!token || !spreadsheetId || !username) {
             alert('You are not logged in!');
