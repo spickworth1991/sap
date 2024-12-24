@@ -60,7 +60,6 @@ const apiBaseUrl = window.location.hostname === 'localhost'
     
 
 
-
 export async function fetchUserDetails() {
     try {
         const response = await fetch(`${apiBaseUrl}/user-details`, {
