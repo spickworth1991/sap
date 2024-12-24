@@ -47,7 +47,7 @@ const apiBaseUrl = window.location.hostname === 'localhost'
                 localStorage.setItem('authToken', data.token); // Store the token
                 localStorage.setItem('username', username); // Store the username
                 console.log('username/token stored');
-                grabFunction(); // Fetch user details after successful login
+                fetchUserDetails(); // Fetch user details after successful login
             } else {
                 console.error('Login failed');
                 document.getElementById('statusBox').textContent = 'Invalid username or password';
@@ -58,9 +58,7 @@ const apiBaseUrl = window.location.hostname === 'localhost'
         }
     }
     
-async function grabFunction() {
-    showInitialPage;
-}
+
 
 
 export async function fetchUserDetails() {
