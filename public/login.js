@@ -62,6 +62,7 @@ const apiBaseUrl = window.location.hostname === 'localhost'
 
 
 export async function fetchUserDetails() {
+    const currentPage = window.location.pathname;
     try {
         const response = await fetch(`${apiBaseUrl}/user-details`, {
             headers: {
