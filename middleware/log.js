@@ -11,6 +11,7 @@ import {
 
 export async function logAction(req, res, next) {
     try {
+        const spreadsheetId = process.env.GOOGLE_SHEET_ID;
         const sheets = await getGoogleSheetsService();
         const username = req.headers['username'] || 'Unknown User';
         const action = `${req.method} ${req.originalUrl}`;
