@@ -1,5 +1,6 @@
 
 import express from 'express';
+
 import {
     getGoogleSheetsService,
     ensureHeaders,
@@ -12,7 +13,7 @@ import {
 } from '../utils/googleSheetsUtils.js';
 
 const router = express.Router();
-
+const spreadsheetId = process.env.GOOGLE_SHEET_ID;
 // Punch-in route
 router.post('/in', async (req, res) => {
     try {
@@ -24,7 +25,6 @@ router.post('/in', async (req, res) => {
         const sapSheetName = `${monthName}:SAP`;
 
         // Retrieve spreadsheetId from decoded token (stored in req.user)
-        const spreadsheetId = localStorage.getItem('spreadsheetId');
         if (!spreadsheetId) {
             return res.status(400).json({ error: 'Spreadsheet ID missing in user token.' });
         }

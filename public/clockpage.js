@@ -1,5 +1,6 @@
 
 
+
 const apiBaseUrl = window.location.hostname === 'localhost'
     ? 'http://localhost:3000/api'
     : '/api'; // For production deployment on Vercel
@@ -27,7 +28,6 @@ export async function punchInHandler(button) {
     
         const token = localStorage.getItem('authToken');
         const username = localStorage.getItem('username');
-        const spreadsheetId = localStorage.getItem('spreadsheetId');
         console.log(`username: ${username}`);
         console.log(`spreadsheetId: ${spreadsheetId}`);
 
@@ -46,8 +46,7 @@ export async function punchInHandler(button) {
                 },
                 body: JSON.stringify({ spreadsheetId })
             });
-            console.log("Headers:", req.headers);
-            console.log("Body:", req.body);
+
     
 
         //const result = await response.json();
