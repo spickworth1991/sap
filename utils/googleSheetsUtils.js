@@ -88,17 +88,18 @@ export async function ensureLogSheetExists(sheets, spreadsheetId) {
     }
 }
 
-export async function findDateRow(sheets, monthSheetName, currentDate, spreadsheetId) {
-const response = await sheets.spreadsheets.values.get({
-    spreadsheetId,
-    range: `${monthSheetName}!B:B`,
-});
-const rows = response.data.values || [];
+export async function findDateRow(sheets, monthSheetName, currentDate, spreadsheetId ) {
+  const response = await sheets.spreadsheets.values.get({
+      spreadsheetId,
+      range: `${monthSheetName}!A:A`,
+  });
+  
+  const rows = response.data.values || [];
 
-for (let i = 0; i < rows.length; i++) {
-    if (rows[i][0] === currentDate) {
-    return i + 1; // Google Sheets uses 1-based indexing
-    }
+  for (let i = 0; i < rows.length; i++) {
+      if (rows[i][0] === currentDate) {
+      return i + 1; // Google Sheets uses 1-based indexing
+      }
 }
 return null;
 }
