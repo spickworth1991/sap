@@ -49,7 +49,7 @@ export async function logAction(req, res, next) {
         }
 
         // Ensure the Logs sheet exists
-        await ensureLogSheetExists(sheets);
+        await ensureLogSheetExists(sheets, spreadsheetId);
 
         // Append log entry to the Logs sheet
         await sheets.spreadsheets.values.append({
