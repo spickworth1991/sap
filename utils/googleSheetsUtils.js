@@ -251,3 +251,27 @@ export async function updateStatus(message, type) {
 }
 
 
+export async function fetchSpreadsheetId() {
+      // Updated login.js with enhanced logging
+    const apiBaseUrl = window.location.hostname === 'localhost'
+    ? 'http://localhost:3000/api/auth'
+    : '/api/auth'; // For production deployment on Vercel
+    try {
+        const response = await fetch(`${apiBaseUrl}/user-details`, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('authToken')}`
+            }
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            localStorage.setItem('spreadsheetId', data.user.spreadsheetId);
+            console.log(`spreadsheetId At fetchSpreadsheetId: ${data.user.spreadsheetId}`);
+        } else {
+            console.error('Failed to fetch user details');
+        }
+    } catch (error) {
+        console.error('Error fetching user details:', error);
+    }
+}
+

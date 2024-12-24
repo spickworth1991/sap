@@ -62,7 +62,6 @@ const apiBaseUrl = window.location.hostname === 'localhost'
 
 
 export async function fetchUserDetails() {
-    const currentPage = window.location.pathname;
     try {
         const response = await fetch(`${apiBaseUrl}/user-details`, {
             headers: {
@@ -70,7 +69,7 @@ export async function fetchUserDetails() {
             }
         });
 
-        if (response.ok && (currentPage === '/' || currentPage.startsWith('/index.html'))) {
+        if (response.ok) {
             const data = await response.json();
             localStorage.setItem('username', data.user.username);
             localStorage.setItem('role', data.user.role);
@@ -79,7 +78,7 @@ export async function fetchUserDetails() {
             console.log(`spreadsheetId: ${data.user.spreadsheetId}`);
             showInitialPage(); // Call showInitialPage after successfully fetching details
         } else {
-            console.log('Punch in Fetch for spreadsheetId');
+            console.error('Failed to fetch user details');
         }
     } catch (error) {
         console.error('Error fetching user details:', error);
@@ -99,9 +98,9 @@ function showInitialPage() {
         localStorage.setItem('adminNavigate', 'true'); // Set flag for admin-specific setup
     } else {
         // Redirect to index.html for non-role users
-        //if (!role) {
-            //console.log(`User role: ${role}`);
-            //window.location.href = 'index.html';
-        //}
+        if (!role) {
+            console.log(`User role: ${role}`);
+            window.location.href = 'index.html';
+        }
     }
 }

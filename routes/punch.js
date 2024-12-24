@@ -1,4 +1,4 @@
-//import { fetchUserDetails } from ".../login";
+
 
 import express from 'express';
 
@@ -11,13 +11,14 @@ import {
     calculateElapsedTimeDecimal,
     formatElapsedTime,
     getCurrentMonthName,
+    fetchSpreadsheetId,
 } from '../utils/googleSheetsUtils.js';
 
 const router = express.Router();
 const spreadsheetId = process.env.GOOGLE_SHEET_ID;
 // Punch-in route
 router.post('/in', async (req, res) => {
-    await fetchUserDetails;
+    await fetchSpreadsheetId;
     
     try {
 
