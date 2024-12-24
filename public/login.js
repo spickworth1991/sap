@@ -74,8 +74,8 @@ export async function fetchUserDetails() {
             localStorage.setItem('username', data.user.username);
             localStorage.setItem('role', data.user.role);
             localStorage.setItem('spreadsheetId', data.user.spreadsheetId);
-            console.log(`username: ${user.username}`);
-            console.log(`spreadsheetId: ${user.spreadsheetId}`);
+            console.log(`username: ${data.user.username}`);
+            console.log(`spreadsheetId: ${data.user.spreadsheetId}`);
             showInitialPage(); // Call showInitialPage after successfully fetching details
         } else {
             console.error('Failed to fetch user details');
