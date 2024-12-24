@@ -1,6 +1,3 @@
-const apiBaseUrl = window.location.hostname === 'localhost'
-    ? 'http://localhost:3000/api'
-    : '/api'; // For production deployment on Vercel
 
 import express from 'express';
 
@@ -21,7 +18,7 @@ const router = express.Router();
 // Punch-in route
 router.post('/in', async (req, res) => {
     try {
-        const response = await fetch(`${apiBaseUrl}/user-details`, {
+        const response = await fetch(`/api/user-details`, {
             headers: {
                 Authorization: `Bearer ${localStorage.getItem('authToken')}`
             }
