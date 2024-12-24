@@ -10,8 +10,8 @@ const router = express.Router();
 
 router.get('/', fetchLogs, async (req, res) => {
     try {
+      const spreadsheetId = localStorage.getItem('spreadsheetId');
       const sheets = await getGoogleSheetsService();
-      const spreadsheetId = req.headers['spreadsheet-id']; // Get the spreadsheet ID from headers
       const { date, search } = req.query;
   
       if (!spreadsheetId) {

@@ -1,3 +1,4 @@
+
 import { google } from 'googleapis';
 import moment from 'moment-timezone';
 import {
@@ -11,7 +12,6 @@ import {
 export async function logAction(req, res, next) {
     try {
         const sheets = await getGoogleSheetsService();
-        const spreadsheetId = req.headers['spreadsheet-id'];
         const username = req.headers['username'] || 'Unknown User';
         const action = `${req.method} ${req.originalUrl}`;
 
