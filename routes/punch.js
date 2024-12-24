@@ -27,10 +27,7 @@ router.post('/in', async (req, res) => {
         const currentTime = getCurrentTime();
         const monthName = getCurrentMonthName();
         const monthSheetName = monthName;
-        console.log(`monthSheetName: ${monthSheetName}`);
-        console.log(`monthName: ${monthName}`);
         const sapSheetName = `${monthName}:SAP`;
-        console.log(`sapSheetName: ${sapSheetName}`);
 
 
         // Ensure headers are present in the SAP sheet
@@ -38,6 +35,7 @@ router.post('/in', async (req, res) => {
 
         // Find the row with the current date on the month sheet
         const rowIndex = await findDateRow(sheets, monthSheetName, currentDate, spreadsheetId);
+        console.log(`rowIndex: ${rowIndex}`);
         if (!rowIndex) {
             return res.status(400).json({ message: 'No entry found for the current date.' });
         }
@@ -47,12 +45,13 @@ router.post('/in', async (req, res) => {
             spreadsheetId: req.spreadsheetId,
             range: `${monthSheetName}!C${rowIndex}`,
         });
+        console.log(`punchInRespons: ${punchInRespons}`);
         if (punchInResponse.data.values?.[0]?.[0]) {
             return res.status(400).json({ message: 'Punch In time already exists.' });
         }
 
         // Update the Punch In time in Column C on the month sheet
-        await sheets.spreadsheets.values.update({
+        await sheets.spreadsheets.values.append({
             spreadsheetId: req.spreadsheetId,
             range: `${monthSheetName}!C${rowIndex}`,
             valueInputOption: 'USER_ENTERED',
