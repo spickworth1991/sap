@@ -99,9 +99,9 @@ function showInitialPage() {
         localStorage.setItem('adminNavigate', 'true'); // Set flag for admin-specific setup
     } else {
         // Redirect to index.html for non-role users
-        if (!role) {
-            console.log(`User role: ${role}`);
-            window.location.href = 'index.html';
-        }
+        //if (!role) {
+            //console.log(`User role: ${role}`);
+            //window.location.href = 'index.html';
+        //}
     }
 }
