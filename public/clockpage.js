@@ -62,7 +62,7 @@ export async function punchInHandler(button) {
 }
 
 // Punch Out function
-export async function punchOutHandler(button) {
+export async function punchOutHandler(button, localStorage) {
     button.style.backgroundColor = "#555";
 
     
@@ -99,3 +99,4 @@ export async function punchOutHandler(button) {
         button.style.backgroundColor = "";
     }
 }
+
