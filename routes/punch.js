@@ -71,7 +71,7 @@ router.post('/in', async (req, res) => {
 });
 
 // Punch-out route
-router.post('/out', localStorage,  async (req, res) => {
+router.post('/out',  async (req, res) => {
     try {
         const sheets = await getGoogleSheetsService();
         const currentDate = getCurrentDate();
