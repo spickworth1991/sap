@@ -15,7 +15,7 @@ import {
 } from '../utils/googleSheetsUtils.js';
 
 const router = express.Router();
-const spreadsheetId = localStorage.getItem('spreadsheetId', data.user.spreadsheetId);
+
 // Punch-in route
 router.post('/in', async (req, res) => {
     await fetchSpreadsheetId;
