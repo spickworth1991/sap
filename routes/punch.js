@@ -1,3 +1,4 @@
+
 import express from 'express';
 import { ensureAuthenticated } from '../middleware/validate.js';
 import { logAction } from '../middleware/log.js';
@@ -24,10 +25,10 @@ router.post('/in', ensureAuthenticated, async (req, res) => {
         const monthSheetName = monthName;
         const sapSheetName = `${monthName}:SAP`;
 
-        // Retrieve spreadsheetId from the request
-        const { spreadsheetId } = req.body;
+        // Retrieve spreadsheetId from decoded token (stored in req.user)
+        const { spreadsheetId } = req.user;
         if (!spreadsheetId) {
-            return res.status(400).json({ error: 'Missing spreadsheetId in request body.' });
+            return res.status(400).json({ error: 'Spreadsheet ID missing in user token.' });
         }
 
         // Ensure headers are present in the SAP sheet
@@ -64,10 +65,10 @@ router.post('/in', ensureAuthenticated, async (req, res) => {
             requestBody: { values: [[currentDate, currentTime, 'Punch In', '', '']] },
         });
 
-        res.status(200).json({ message: 'Punch In successful.' });
+        return res.status(200).json({ message: 'Punch-in successful.' });
     } catch (error) {
         console.error('Error in Punch In:', error);
-        res.status(500).json({ message: 'Failed to Punch In. Please try again.' });
+        return res.status(500).json({ error: 'An error occurred during Punch In.' });
     }
 });
 
