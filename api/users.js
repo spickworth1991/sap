@@ -7,8 +7,8 @@ import bcrypt from 'bcrypt';
 // User data with hashed passwords
 export const users = [
     {
-        username: 'spickworth',
-        password: bcrypt.hashSync('admin123', 10),
+        username: 'pick',
+        password: bcrypt.hashSync('123', 10),
         role: 'admin',
         spreadsheetId: '19ernax6WLojBLh1OOBaU6IcDuKFxwLB4FL6pNVpqrGI',
     },
