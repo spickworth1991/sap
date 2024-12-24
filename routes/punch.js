@@ -11,15 +11,32 @@ import {
     calculateElapsedTimeDecimal,
     formatElapsedTime,
     getCurrentMonthName,
-    fetchSpreadsheetId,
 } from '../utils/googleSheetsUtils.js';
 
 const router = express.Router();
 
 // Punch-in route
 router.post('/in', async (req, res) => {
-    await fetchSpreadsheetId;
-    const spreadsheetId = localStorage.getItem('spreadsheetId', data.user.spreadsheetId);
+    try {
+        const response = await fetch(`${apiBaseUrl}/user-details`, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('authToken')}`
+            }
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            localStorage.setItem('spreadsheetId', data.user.spreadsheetId);
+            console.log(`spreadsheetId At /in: ${data.user.spreadsheetId}`);
+        } else {
+            console.error('Failed to fetch user details');
+        }
+    } catch (error) {
+        console.error('Error fetching user details:', error);
+    }
+
+
+    
     try {
 
         const sheets = await getGoogleSheetsService();
