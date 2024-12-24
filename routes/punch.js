@@ -41,7 +41,7 @@ fetchSpreadsheetId;
             spreadsheetId,
             range: `${monthName}!C${rowIndex}`,
         });
-        console.log(`punchInRespons: ${punchInRespons}`);
+        console.log(`punchInResponse: ${punchInResponse}`);
         if (punchInResponse.data.values?.[0]?.[0]) {
             return res.status(400).json({ message: 'Punch In time already exists.' });
         }
