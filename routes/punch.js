@@ -1,7 +1,6 @@
 
 import express from 'express';
-import { ensureAuthenticated } from '../middleware/validate.js';
-import { logAction } from '../middleware/log.js';
+import { localStorage } from '../public/clockpage.js';
 import {
     getGoogleSheetsService,
     ensureHeaders,
@@ -16,7 +15,7 @@ import {
 const router = express.Router();
 
 // Punch-in route
-router.post('/in', ensureAuthenticated, async (req, res) => {
+router.post('/in', localStorage, async (req, res) => {
     try {
         const sheets = await getGoogleSheetsService();
         const currentDate = getCurrentDate();
@@ -26,7 +25,7 @@ router.post('/in', ensureAuthenticated, async (req, res) => {
         const sapSheetName = `${monthName}:SAP`;
 
         // Retrieve spreadsheetId from decoded token (stored in req.user)
-        
+        const spreadsheetId = localStorage.getItem('spreadsheetId');
         if (!spreadsheetId) {
             return res.status(400).json({ error: 'Spreadsheet ID missing in user token.' });
         }
@@ -73,7 +72,7 @@ router.post('/in', ensureAuthenticated, async (req, res) => {
 });
 
 // Punch-out route
-router.post('/out',  async (req, res) => {
+router.post('/out', localStorage,  async (req, res) => {
     try {
         const sheets = await getGoogleSheetsService();
         const currentDate = getCurrentDate();
@@ -81,6 +80,7 @@ router.post('/out',  async (req, res) => {
         const monthName = getCurrentMonthName();
         const monthSheetName = monthName;
         const sapSheetName = `${monthName}:SAP`;
+        const spreadsheetId = localStorage.getItem('spreadsheetId');
 
         // Find the row with the current date on the month sheet
         const rowIndex = await findDateRow(sheets, monthSheetName, currentDate, spreadsheetId);
