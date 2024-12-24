@@ -18,8 +18,8 @@ const router = express.Router();
 const spreadsheetId = process.env.GOOGLE_SHEET_ID;
 // Punch-in route
 router.post('/in', async (req, res) => {
-fetchSpreadsheetId;
-    
+    fetchSpreadsheetId;
+
     try {
 
         const sheets = await getGoogleSheetsService();
@@ -32,7 +32,7 @@ fetchSpreadsheetId;
         // Find the row with the current date on the month sheet
         const rowIndex = await findDateRow(sheets, monthName, currentDate, spreadsheetId);
         console.log(`rowIndex: ${rowIndex}`);
-        if (rowIndex ===null ) {
+        if (rowIndex === null) {
             return res.status(400).json({ message: 'No entry found for the current date.' });
         }
 
@@ -72,14 +72,16 @@ fetchSpreadsheetId;
 });
 
 // Punch-out route
-router.post('/out',  async (req, res) => {
+router.post('/out', async (req, res) => {
+    fetchSpreadsheetId;
+
     try {
         const sheets = await getGoogleSheetsService();
         const currentDate = getCurrentDate();
         const currentTime = getCurrentTime();
         const monthName = getCurrentMonthName();
         const sapSheetName = `${monthName}:SAP`;
-    
+
 
         // Find the row with the current date on the month sheet
         const rowIndex = await findDateRow(sheets, monthName, currentDate, spreadsheetId);
