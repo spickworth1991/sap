@@ -1,6 +1,5 @@
 
 import express from 'express';
-import { localStorage } from '../public/clockpage.js';
 import {
     getGoogleSheetsService,
     ensureHeaders,
