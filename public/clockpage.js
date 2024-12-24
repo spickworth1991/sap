@@ -39,12 +39,15 @@ export async function punchInHandler(button) {
             const response = await fetch(`${apiBaseUrl}/punch/in`, {
                 method: 'POST',
                 headers: {
-                    Authorization: `Bearer ${localStorage.getItem('authToken')}`,
-                    spreadsheetId: `${localStorage.getItem('spreadsheetId')}`,
-                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                    'spreadsheet-id': spreadsheetId,
+                    'username': username,
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({ spreadsheetId })
             });
+            console.log("Headers:", req.headers);
+            console.log("Body:", req.body);
     
 
         //const result = await response.json();
