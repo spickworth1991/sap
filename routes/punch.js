@@ -24,11 +24,17 @@ router.post('/in', ensureAuthenticated, async (req, res) => {
         const monthSheetName = monthName;
         const sapSheetName = `${monthName}:SAP`;
 
+        // Retrieve spreadsheetId from the request
+        const { spreadsheetId } = req.body;
+        if (!spreadsheetId) {
+            return res.status(400).json({ error: 'Missing spreadsheetId in request body.' });
+        }
+
         // Ensure headers are present in the SAP sheet
-        await ensureHeaders(sheets, sapSheetName, currentDate);
+        await ensureHeaders(sheets, sapSheetName, currentDate, spreadsheetId);
 
         // Find the row with the current date on the month sheet
-        const rowIndex = await findDateRow(sheets, monthSheetName, currentDate);
+        const rowIndex = await findDateRow(sheets, monthSheetName, currentDate, spreadsheetId);
         if (!rowIndex) {
             return res.status(400).json({ message: 'No entry found for the current date.' });
         }
