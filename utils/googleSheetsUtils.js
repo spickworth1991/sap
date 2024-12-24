@@ -88,10 +88,10 @@ export async function ensureLogSheetExists(sheets, spreadsheetId) {
     }
 }
 
-export async function findDateRow(sheets, monthSheetName, currentDate, spreadsheetId ) {
+export async function findDateRow(sheets, monthName, currentDate, spreadsheetId ) {
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId,
-      range: `${monthSheetName}!A:A`,
+      range: `${monthName}!A:A`,
     });
   
     const rows = response.data.values || [];

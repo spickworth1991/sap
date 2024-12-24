@@ -26,8 +26,6 @@ router.post('/in', async (req, res) => {
         const currentDate = getCurrentDate();
         const currentTime = getCurrentTime();
         const monthName = getCurrentMonthName();
-        const monthSheetName = monthName;
-        console.log(`monthSheetName: ${monthSheetName}`);
         const sapSheetName = `${monthName}:SAP`;
 
 
