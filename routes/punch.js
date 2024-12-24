@@ -15,11 +15,11 @@ import {
 } from '../utils/googleSheetsUtils.js';
 
 const router = express.Router();
-const spreadsheetId = process.env.GOOGLE_SHEET_ID;
+const spreadsheetId = localStorage.getItem('spreadsheetId', data.user.spreadsheetId);
 // Punch-in route
 router.post('/in', async (req, res) => {
     await fetchSpreadsheetId;
-    
+    const spreadsheetId = localStorage.getItem('spreadsheetId', data.user.spreadsheetId);
     try {
 
         const sheets = await getGoogleSheetsService();
@@ -27,18 +27,18 @@ router.post('/in', async (req, res) => {
         const currentTime = getCurrentTime();
         const monthName = getCurrentMonthName();
         const sapSheetName = `${monthName}:SAP`;
-
+        
 
         // Find the row with the current date on the month sheet
         const rowIndex = await findDateRow(sheets, monthName, currentDate, spreadsheetId);
         console.log(`rowIndex: ${rowIndex}`);
-        if (!rowIndex) {
+        if (rowIndex ===null ) {
             return res.status(400).json({ message: 'No entry found for the current date.' });
         }
 
         // Check if Punch In time already exists in Column C
         const punchInResponse = await sheets.spreadsheets.values.get({
-            spreadsheetId: req.spreadsheetId,
+            spreadsheetId,
             range: `${monthName}!C${rowIndex}`,
         });
         console.log(`punchInRespons: ${punchInRespons}`);
@@ -48,7 +48,7 @@ router.post('/in', async (req, res) => {
 
         // Update the Punch In time in Column C on the month sheet
         await sheets.spreadsheets.values.append({
-            spreadsheetId: req.spreadsheetId,
+            spreadsheetId,
             range: `${monthName}!C${rowIndex}`,
             valueInputOption: 'USER_ENTERED',
             requestBody: { values: [[currentTime]] },
@@ -58,7 +58,7 @@ router.post('/in', async (req, res) => {
 
         // Add Punch In entry to the SAP sheet
         await sheets.spreadsheets.values.append({
-            spreadsheetId: req.spreadsheetId,
+            spreadsheetId,
             range: `${sapSheetName}!A:E`,
             valueInputOption: 'USER_ENTERED',
             requestBody: { values: [[currentDate, currentTime, 'Punch In', '', '']] },
@@ -78,7 +78,6 @@ router.post('/out',  async (req, res) => {
         const currentDate = getCurrentDate();
         const currentTime = getCurrentTime();
         const monthName = getCurrentMonthName();
-        const monthSheetName = monthName;
         const sapSheetName = `${monthName}:SAP`;
     
 
