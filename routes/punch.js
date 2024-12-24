@@ -1,4 +1,5 @@
 
+
 import express from 'express';
 
 import {
@@ -10,32 +11,14 @@ import {
     calculateElapsedTimeDecimal,
     formatElapsedTime,
     getCurrentMonthName,
+    fetchSpreadsheetId,
 } from '../utils/googleSheetsUtils.js';
 
 const router = express.Router();
-
-
+const spreadsheetId = process.env.GOOGLE_SHEET_ID;
 // Punch-in route
 router.post('/in', async (req, res) => {
-    try {
-        const response = await fetch(`/api/user-details`, {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem('authToken')}`
-            }
-        });
-
-        if (response.ok) {
-            const data = await response.json();
-            localStorage.setItem('spreadsheetId', data.user.spreadsheetId);
-            console.log(`spreadsheetId At /in: ${data.user.spreadsheetId}`);
-        } else {
-            console.error('Failed to fetch user details');
-        }
-    } catch (error) {
-        console.error('Error fetching user details:', error);
-    }
-
-
+    await fetchSpreadsheetId;
     
     try {
 
@@ -44,7 +27,7 @@ router.post('/in', async (req, res) => {
         const currentTime = getCurrentTime();
         const monthName = getCurrentMonthName();
         const sapSheetName = `${monthName}:SAP`;
-        
+
 
         // Find the row with the current date on the month sheet
         const rowIndex = await findDateRow(sheets, monthName, currentDate, spreadsheetId);
