@@ -258,7 +258,7 @@ export async function fetchSpreadsheetId() {
     try {
         const response = await fetch(`/api/auth/user-details`, {
             headers: {
-                Authorization: `Bearer ${localStorage.getItem('authToken')}`
+                'Authorization': `Bearer ${token}`,
             }
         });
 
