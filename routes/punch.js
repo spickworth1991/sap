@@ -16,7 +16,22 @@ import {
 
 const router = express.Router();
 
+// Punch-in route
+router.post('/in', async (req, res) => {
+fetchSpreadsheetId;
+try {
+    const spreadsheetId = await fetchSpreadsheetId();
+    if (!spreadsheetId ) {
+        return res.status(401).json({ error: 'missing spreadsheetID' });
+    }
 
+    res.json({ spreadsheetId });
+} catch (error) {
+    console.error('Error during login:', error);
+    res.status(500).json({ error: 'Internal server error' });
+}
+
+});
 
 // Punch-out route
 router.post('/out',  async (req, res) => {
