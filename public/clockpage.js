@@ -30,23 +30,8 @@ export async function punchInHandler(button) {
             alert('You are not logged in!');
             return (window.location.href = 'index.html');
         }
-        try {
-            const response = await fetch(`${apiBaseUrl}/punch/in`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ spreadsheetId })
-            });
 
-    
-
-        //const result = await response.json();
-
-        if (response.ok) {
             try {
-                const spreadsheetId = localStorage.getItem('spreadsheetId');
                 const sheets = await getGoogleSheetsService();
                 const currentDate = getCurrentDate();
                 const currentTime = getCurrentTime();
@@ -98,13 +83,11 @@ export async function punchInHandler(button) {
         } else {
             //updateStatus(result.message, "error");
         }
-    } catch (error) {
-        console.error('Error in Punch In:', error);
-        //updateStatus("Network error or server is unavailable.", "error");
-    } finally {
+    
+        finally {
         button.style.backgroundColor = "";
     }
-}
+
 
 // Punch Out function
 export async function punchOutHandler(button) {
@@ -146,4 +129,27 @@ export async function punchOutHandler(button) {
         button.style.backgroundColor = "";
     }
 }
+
+
+export async function fetchSpreadsheetId() {
+
+    try {
+        const response = await fetch(`/api/auth/user-details`, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('authToken')}`
+            }
+        });
+
+        if (response.ok) {
+            const spreadsheetID = await response.json();
+            res.json({ spreadsheetID });
+        } else {
+            console.error('Failed to fetch user details');
+        }
+    } catch (error) {
+        console.error('Error fetching user details:', error);
+    }
+}
+
+
 

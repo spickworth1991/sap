@@ -251,25 +251,3 @@ export async function updateStatus(message, type) {
       console.error('Status box not found.');
   }
 }
-
-
-export async function fetchSpreadsheetId() {
-
-    try {
-        const response = await fetch(`/api/auth/user-details`, {
-            headers: {
-                'Authorization': `Bearer ${token}`,
-            }
-        });
-
-        if (response.ok) {
-            const spreadsheetID = await response.json();
-            res.json({ spreadsheetID });
-        } else {
-            console.error('Failed to fetch user details');
-        }
-    } catch (error) {
-        console.error('Error fetching user details:', error);
-    }
-}
-
