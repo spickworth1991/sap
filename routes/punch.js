@@ -18,7 +18,6 @@ const router = express.Router();
 
 // Punch-in route
 router.post('/in', async (req, res) => {
-fetchSpreadsheetId;
 try {
     const spreadsheetId = await fetchSpreadsheetId();
     if (!spreadsheetId ) {

@@ -263,9 +263,8 @@ export async function fetchSpreadsheetId() {
         });
 
         if (response.ok) {
-            const data = await response.json();
-            localStorage.setItem('spreadsheetId', data.user.spreadsheetId);
-            console.log(`spreadsheetId At fetchSpreadsheetId: ${data.user.spreadsheetId}`);
+            const spreadsheetID = await response.json();
+            res.json({ spreadsheetID });
         } else {
             console.error('Failed to fetch user details');
         }
