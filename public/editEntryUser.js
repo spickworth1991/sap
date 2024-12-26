@@ -37,6 +37,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     
         try {
+            showLoading()
             const response = await fetch(`/api/entries/date`, {
                 method: "POST",
                 headers: { 
@@ -50,14 +51,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const errorText = data.error || 'Failed to fetch entries.';
                 throw new Error(`Server Error: ${response.status} - ${errorText}`);
             }
-            const loadingContainer = document.getElementById('loadingContainer');
-            if (!loadingContainer) {
-                updateStatus("loadingContainer not found.", "error");
-                return;
-            }
-
             
-
             const entriesContainer = document.getElementById('entriesContainer');
             if (!entriesContainer) {
                 updateStatus("entriesContainer not found.", "error");
@@ -97,7 +91,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     }).join('')}
                 </tbody>
             `;
-
+            hideLoading()
             entriesContainer.appendChild(table);
 
         } catch (error) {
