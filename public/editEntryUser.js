@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     
         try {
-            const response = await fetch(`/api/entries/${encodeURIComponent(date)}`, {
+            const response = await fetch(`/api/entries/date`, {
                 method: "POST",
                 headers: { 
                     'Content-Type': 'application/json',
@@ -98,7 +98,7 @@ async function editEntry(date, rowIndex) {
     }
     
     try {
-        const response = await fetch('/api/editEntry', {
+        const response = await fetch('/api/routes/edit', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

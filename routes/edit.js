@@ -8,7 +8,7 @@ import { logAction } from '../middleware/log.js';
 const router = express.Router();
 
 
-router.post('/', editEntry, logAction, async (req, res) => {
+router.post('/edit',  async (req, res) => {
     try {
       const { date, rowIndex, time, projectActivity } = req.body;
       const sheets = await getGoogleSheetsService();
