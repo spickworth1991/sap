@@ -13,20 +13,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         const username = localStorage.getItem('username');
         const role = localStorage.getItem('role');
         const spreadsheetId = localStorage.getItem('spreadsheetId');
-        const tempLoad = document.querySelector('divLoad'); // Adjust the selector for your nav
-        const loadingElement = document.createElement('div');
-            loadingElement.id = 'loading';
-            loadingElement.innerText = 'Loading...';
-            loadingElement.style.position = 'fixed';
-            loadingElement.style.top = '50%';
-            loadingElement.style.left = '50%';
-            loadingElement.style.transform = 'translate(-50%, -50%)';
-            loadingElement.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
-            loadingElement.style.color = 'white';
-            loadingElement.style.padding = '10px 20px';
-            loadingElement.style.borderRadius = '5px';
-            loadingElement.style.zIndex = '1000';
-
 
 
         if (!token || !spreadsheetId || !username) {
@@ -136,6 +122,19 @@ async function editEntry(date, rowIndex) {
     }
 }
 
+const tempLoad = document.querySelector('divLoad'); // Adjust the selector for your nav
+const loadingElement = document.createElement('div');
+    loadingElement.id = 'loading';
+    loadingElement.innerText = 'Loading...';
+    loadingElement.style.position = 'fixed';
+    loadingElement.style.top = '50%';
+    loadingElement.style.left = '50%';
+    loadingElement.style.transform = 'translate(-50%, -50%)';
+    loadingElement.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+    loadingElement.style.color = 'white';
+    loadingElement.style.padding = '10px 20px';
+    loadingElement.style.borderRadius = '5px';
+    loadingElement.style.zIndex = '1000';
 
 function showLoading() {
     tempLoad.body.appendChild(loadingElement);
