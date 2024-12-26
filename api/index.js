@@ -36,7 +36,7 @@ app.use('/api/punch', punchRoute);
 console.log("Mounted /api/punch route explicitly");
 import sapInputRoute from '../routes/sap.js';
 app.use('/api/sap', sapInputRoute);
-console.log("Mounted /api/punch route explicitly");
+console.log("Mounted /api/sap route explicitly");
 
 // Dynamically load other routes from 'routes' directory
 const routesPath = path.join(__dirname, '../routes');
