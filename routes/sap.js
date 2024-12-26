@@ -13,21 +13,20 @@ import {
 const router = express.Router();
 
 router.post('/input', async (req, res) => {
+  // Extract headers
+  const { spreadsheetId, username, role } = req.body;
+  const authHeader = req.headers.authorization;
+  console.log(`spreadsheetId: ${spreadsheetId}`);
     try {
       const { input } = req.body;
       if (!input) {
         return res.status(401).json({error : "NO_INPUT_PROVIDED" });
       }
-      
-      // Extract headers
-      const { spreadsheetId, username, role } = req.body;
-      //const authHeader = req.headers.authorization;
-      console.log(`spreadsheetId: ${spreadsheetId}`);
 
       // Validate data
-      //if (!authHeader) {
-          //return res.status(401).json({ error: 'Authorization header missing' });
-      //}
+      if (!authHeader) {
+          return res.status(401).json({ error: 'Authorization header missing' });
+      }
       if (!spreadsheetId || !username || !role) {
           return res.status(400).json({ error: 'Required data missing in request body' });
       }

@@ -26,7 +26,7 @@ const apiBaseUrl = window.location.hostname === 'localhost'
         const username = document.getElementById('username').value;
         const password = document.getElementById('password').value;
         console.log(`username: ${username}`);
-        console.log(`password: ${password}`);
+        //console.log(`password: ${password}`);
     
         const loginButton = document.getElementById('login-button');
         if (loginButton) {
@@ -73,8 +73,8 @@ export async function fetchUserDetails() {
             localStorage.setItem('username', data.user.username);
             localStorage.setItem('role', data.user.role);
             localStorage.setItem('spreadsheetId', data.user.spreadsheetId);
-            console.log(`username: ${data.user.username}`);
-            console.log(`spreadsheetId: ${data.user.spreadsheetId}`);
+            //console.log(`username: ${data.user.username}`);
+            //console.log(`spreadsheetId: ${data.user.spreadsheetId}`);
             showInitialPage(); // Call showInitialPage after successfully fetching details
         } else {
             console.error('Failed to fetch user details');
