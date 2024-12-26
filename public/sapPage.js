@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const punchIn = document.getElementById('sapButton');
-    if (punchIn) {
-        punchIn.addEventListener('click', () => punchInHandler(punchIn)); // Attach click event
+    const sapInput = document.getElementById('sapButton');
+    if (sapInput) {
+      sapInput.addEventListener('click', () => sapInput(sapInput)); // Attach click event
     } else {
         console.error('Sap Input Error at button.');
     }
