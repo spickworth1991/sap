@@ -18,3 +18,6 @@ export function navigateTo(pageId) {
         console.log(`Page not found: ${pageId}`);
     }
 }
+
+
+export default navigateTo;
