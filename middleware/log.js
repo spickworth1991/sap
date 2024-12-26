@@ -11,15 +11,15 @@ import {
 
 export async function logAction(req, res, next) {
     try {
-        const spreadsheetId = process.env.GOOGLE_SHEET_ID;
+        const { spreadsheetId, role } = req.body;
         const sheets = await getGoogleSheetsService();
-        const username = req.headers['username'] || 'Unknown User';
+        const username = req.body['username'] || 'Unknown User';
         const action = `${req.method} ${req.originalUrl}`;
 
         let details;
 
         // Determine details based on the route
-        if (req.originalUrl === '/api/punchIn') {
+        if (req.originalUrl === '/api/punch/in') {
             details = 'Punch In';
         } else if (req.originalUrl === '/api/punchOut') {
             details = 'Punch Out';
