@@ -1,6 +1,3 @@
-const apiBaseUrl = window.location.hostname === 'localhost'
-    ? 'http://localhost:3000/api'
-    : '/api'; // For production deployment on Vercel
 
 document.addEventListener('DOMContentLoaded', () => {
     const punchIn = document.getElementById('punchInButton');
@@ -33,7 +30,7 @@ export async function punchInHandler(button) {
         return (window.location.href = 'index.html');
     }
     try {
-        const response = await fetch(`${apiBaseUrl}/punch/in`, {
+        const response = await fetch(`/api/punch/in`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -72,7 +69,7 @@ export async function punchOutHandler(button) {
 
 
     try {
-        const response = await fetch(`${apiBaseUrl}/punch/out`, {
+        const response = await fetch(`/api/punch/out`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
