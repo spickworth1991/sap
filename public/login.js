@@ -47,14 +47,15 @@ const apiBaseUrl = window.location.hostname === 'localhost'
                 localStorage.setItem('authToken', data.token); // Store the token
                 localStorage.setItem('username', username); // Store the username
                 console.log('username/token stored');
+                updateStatus(response.message, "success");
                 fetchUserDetails(); // Fetch user details after successful login
             } else {
                 console.error('Login failed');
-                document.getElementById('statusBox').textContent = 'Invalid username or password';
+                updateStatus(response.message, "error");
             }
         } catch (error) {
             console.error('Error during login:', error);
-            document.getElementById('statusBox').textContent = 'An error occurred during login';
+            updateStatus("Network error or server is unavailable.", "error");
         }
     }
     
