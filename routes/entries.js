@@ -9,7 +9,7 @@ const router = express.Router();
 
 
 
-router.get('/date', async (req, res) => {
+router.post('/date', async (req, res) => {
   // Extract headers
   const { spreadsheetId, username, role, date } = req.body;
   const authHeader = req.headers.authorization;
@@ -46,7 +46,7 @@ router.get('/date', async (req, res) => {
       }
 });
 
-router.get('/api/entries/:date', async (req, res) => {
+router.post('/edit', async (req, res) => {
   const { date, rowIndex, time: newTime, projectActivity: newProjectActivity } = req.body;
   const authHeader = req.headers.authorization;
   //console.log(`spreadsheetId: ${spreadsheetId}`);

@@ -98,7 +98,7 @@ async function editEntry(date, rowIndex) {
     }
     
     try {
-        const response = await fetch('/api/routes/edit', {
+        const response = await fetch('/api/entries/edit', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
