@@ -16,7 +16,6 @@ import {
 } from '../utils/googleSheetsUtils.js';
 
 const router = express.Router();
-const spreadsheetId = process.env.GOOGLE_SHEET_ID;
 // Punch-in route
 router.post('/in', async (req, res) => {
     // Extract headers
