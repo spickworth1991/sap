@@ -18,10 +18,10 @@ router.post('/input', async (req, res) => {
   const authHeader = req.headers.authorization;
   console.log(`spreadsheetId: ${spreadsheetId}`);
     try {
-      const { input } = req.body;
-      if (!input) {
-        return res.status(401).json({error : "NO_INPUT_PROVIDED" });
-      }
+      //const { input } = req.body;
+      //if (!input) {
+        //return res.status(401).json({error : "NO_INPUT_PROVIDED" });
+      //}
 
       // Validate data
       if (!authHeader) {
