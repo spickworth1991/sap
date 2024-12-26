@@ -154,7 +154,7 @@ function hideLoading() {
 function initializeEditEntryButton() {
     const editEntry = document.getElementById('editEntry');
     if (editEntry) {
-        editEntry.addEventListener('click', () => editEntryHandler(editEntry)); // Attach click event
+        editEntry.addEventListener('click', () => editEntry(editEntry)); // Attach click event
     } else {
         console.error('editEntry button not found.');
     }
