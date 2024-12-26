@@ -142,8 +142,6 @@ function showLoading() {
         loadingElement.style.zIndex = '1000';
         };
         tempLoad.body.appendChild(loadingElement);
-    } else {
-        console.error('Loading container not found.');
 }
 
 
