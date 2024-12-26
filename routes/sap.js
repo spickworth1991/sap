@@ -20,6 +20,11 @@ router.post('/input', async (req, res) => {
   const authHeader = req.headers.authorization;
   console.log(`spreadsheetId: ${spreadsheetId}`);
     try {
+      const { input } = { intputText } = req.body;
+      if (!input) {
+        return res.status(401).json({error : "Text not sent from client side" });
+      }
+
       // Validate data
       if (!authHeader) {
           return res.status(401).json({ error: 'Authorization header missing' });

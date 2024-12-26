@@ -39,7 +39,7 @@ async function sapInputHandler(button) {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`, // Optional
       },
-      body: JSON.stringify({ spreadsheetId, username, role }),
+      body: JSON.stringify({ spreadsheetId, username, role, inputText }),
   });
       await response.json();
       if (response.ok) {
