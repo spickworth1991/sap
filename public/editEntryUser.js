@@ -9,21 +9,34 @@ document.addEventListener('DOMContentLoaded', async () => {
             return;
         }
 
+        const token = localStorage.getItem('authToken');
+        const username = localStorage.getItem('username');
+        const role = localStorage.getItem('role');
+        const spreadsheetId = localStorage.getItem('spreadsheetId');
+
+        if (!token || !spreadsheetId || !username) {
+            alert('You are not logged in!');
+            return (window.location.href = 'index.html');
+        }
+
+        button.style.backgroundColor = "#555";
+    
         try {
             const response = await fetch(`/api/entries/${encodeURIComponent(date)}`, {
+                method: "POST",
                 headers: { 
-                    "Content-Type": "application/json",
-                    "spreadsheet-id": localStorage.getItem('spreadsheetId'),  // Add spreadsheetId header
-                    "username": localStorage.getItem('username'), // Send username in headers
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`, // Optional
                 },
+                body: JSON.stringify({ spreadsheetId, username, role, inputText }),
             });
-
+            const data = await response.json();
             if (!response.ok) {
                 const errorText = await response.text();
                 throw new Error(`Server Error: ${response.status} - ${errorText}`);
             }
 
-            const data = await response.json();
+            
 
             const entriesContainer = document.getElementById('entriesContainer');
             if (!entriesContainer) {
