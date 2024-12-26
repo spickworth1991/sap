@@ -13,6 +13,21 @@ document.addEventListener('DOMContentLoaded', async () => {
         const username = localStorage.getItem('username');
         const role = localStorage.getItem('role');
         const spreadsheetId = localStorage.getItem('spreadsheetId');
+        const tempLoad = document.querySelector('divLoad'); // Adjust the selector for your nav
+        const loadingElement = document.createElement('div');
+            loadingElement.id = 'loading';
+            loadingElement.innerText = 'Loading...';
+            loadingElement.style.position = 'fixed';
+            loadingElement.style.top = '50%';
+            loadingElement.style.left = '50%';
+            loadingElement.style.transform = 'translate(-50%, -50%)';
+            loadingElement.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+            loadingElement.style.color = 'white';
+            loadingElement.style.padding = '10px 20px';
+            loadingElement.style.borderRadius = '5px';
+            loadingElement.style.zIndex = '1000';
+
+
 
         if (!token || !spreadsheetId || !username) {
             alert('You are not logged in!');
@@ -34,6 +49,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (!response.ok) {
                 const errorText = data.error || 'Failed to fetch entries.';
                 throw new Error(`Server Error: ${response.status} - ${errorText}`);
+            }
+            const loadingContainer = document.getElementById('loadingContainer');
+            if (!loadingContainer) {
+                updateStatus("loadingContainer not found.", "error");
+                return;
             }
 
             
@@ -119,5 +139,18 @@ async function editEntry(date, rowIndex) {
     } catch (error) {
         console.error('Error editing entry:', error);
         alert('Error editing entry.');
+    }
+}
+
+
+function showLoading() {
+    tempLoad.body.appendChild(loadingElement);
+}
+
+// Function to hide the loading element
+function hideLoading() {
+    const loadingElement = document.getElementById('loading');
+    if (loadingElement) {
+        document.body.removeChild(loadingElement);
     }
 }
