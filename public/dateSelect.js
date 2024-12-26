@@ -3,9 +3,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const dateInput = document.getElementById('fetchUserEntries');
     if (dateInput) {
       dateInput.addEventListener('click', () => fetchEntriesByDate(dateInput)); // Attach click event
-    } else {
-        console.error('Sap Input Error at button. See Sean');
+    if (!dateInput) {
+        return res.status(401).json({ error: 'No date selected.' });
     }
+}
 });
 
 
