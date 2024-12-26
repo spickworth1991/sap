@@ -22,6 +22,7 @@ router.post('/input', async (req, res) => {
       // Extract headers
       const { spreadsheetId, username, role } = req.body;
       const authHeader = req.headers.authorization;
+      console.log(`spreadsheetId: ${spreadsheetId}`);
 
       // Validate data
       if (!authHeader) {
@@ -37,6 +38,7 @@ router.post('/input', async (req, res) => {
       const currentTime = getCurrentTime();
       const monthName = getCurrentMonthName();
       const sapSheetName = `${monthName}:SAP`;
+      console.log(`sapSheetName: ${sapSheetName}`);
       
   
       // Fetch the last row to calculate elapsed time
@@ -49,9 +51,9 @@ router.post('/input', async (req, res) => {
         spreadsheetId,
         range: `${sapSheetName}!B${lastRow}`,
       });
-  
+      
       const previousTime = previousTimeResponse.data.values?.[0]?.[0];
-  
+      console.log(`previousTime: ${previousTime}`);
       if (previousTime) {
         const previousDateTime = moment.tz(`${currentDate} ${previousTime}`, 'MM/DD/YYYY HH:mm:ss', 'America/New_York');
         const now = moment.tz(`${currentDate} ${currentTime}`, 'MM/DD/YYYY HH:mm:ss', 'America/New_York');
