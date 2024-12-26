@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
             const data = await response.json();
             if (!response.ok) {
-                const errorText = await response.text();
+                const errorText = data.error || 'Failed to fetch entries.';
                 throw new Error(`Server Error: ${response.status} - ${errorText}`);
             }
 
