@@ -33,7 +33,7 @@ router.post('/date', async (req, res) => {
       if (!spreadsheetId || !username || !role) {
           return res.status(400).json({ error: 'Required data missing in request body' });
       }
-
+        const sheets = await getGoogleSheetsService();
         const selectedDate = date; // Date in MM/DD/YYYY format
         const monthName = moment(selectedDate, 'MM/DD/YYYY').tz('America/New_York').format('MMMM');
         const sapSheetName = `${monthName}:SAP`;
