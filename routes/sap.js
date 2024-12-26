@@ -16,7 +16,7 @@ router.post('/input', async (req, res) => {
     try {
       const { input } = req.body;
       if (!input) {
-        return res.status(400).json(errors.NO_INPUT_PROVIDED );
+        return res.status(401).json({error : "NO_INPUT_PROVIDED" });
       }
       
       // Extract headers
@@ -33,11 +33,6 @@ router.post('/input', async (req, res) => {
 
 
       const sheets = await getGoogleSheetsService();
-      
-  
-      if (!spreadsheetId) {
-        return res.status(400).json({ error: 'Spreadsheet ID is missing in request headers' });
-      }
       const currentDate = getCurrentDate();
       const currentTime = getCurrentTime();
       const monthName = getCurrentMonthName();
@@ -83,7 +78,7 @@ router.post('/input', async (req, res) => {
       res.status(200).json(success.SAP_INPUT_SUCCESS);
     } catch (error) {
       console.error('Error in SAP Input:', error);
-      res.status(500).json(errors.SAP_FAIL);
+      res.status(500).json({error : "SAP Input Failed" });
     }
   });
   
