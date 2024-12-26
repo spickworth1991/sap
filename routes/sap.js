@@ -12,7 +12,7 @@ import {
 // Create the router instance
 const router = express.Router();
 
-router.get('/input', async (req, res) => {
+router.post('/input', async (req, res) => {
     try {
       const { input } = req.body;
       if (!input) {

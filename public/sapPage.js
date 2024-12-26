@@ -21,7 +21,6 @@ async function sapInputHandler(button) {
     }
     
     const token = localStorage.getItem('authToken');
-    console.log(`token: ${token}`);
     const username = localStorage.getItem('username');
     const role = localStorage.getItem('role');
     const spreadsheetId = localStorage.getItem('spreadsheetId');
