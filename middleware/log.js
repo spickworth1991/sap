@@ -24,10 +24,10 @@ export async function logAction(req, res, next) {
         } else if (req.originalUrl === '/api/punch/out') {
             details = 'Punch Out';
         } else if (req.originalUrl === '/api/sap/input') {
-            const { input } = req.body;
-            details = `Project/Activity = ${input}`;
+            const { inputText } = req.body;
+            details = `Project/Activity = ${inputText}`;
         } else if (req.originalUrl === '/api/editEntry') {
-            const { date, rowIndex, time, projectActivity } = req.body;
+            const { rowIndex, time, projectActivity } = req.body;
 
             // Fetch existing data from the SAP sheet
             const monthName = getCurrentMonthName();

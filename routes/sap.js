@@ -18,7 +18,7 @@ router.post('/input', async (req, res) => {
   // Extract headers
   const { spreadsheetId, username, role, inputText } = req.body;
   const authHeader = req.headers.authorization;
-  console.log(`spreadsheetId: ${spreadsheetId}`);
+  //console.log(`spreadsheetId: ${spreadsheetId}`);
     try {
     
       if (!inputText) {
@@ -39,7 +39,7 @@ router.post('/input', async (req, res) => {
       const currentTime = getCurrentTime();
       const monthName = getCurrentMonthName();
       const sapSheetName = `${monthName}:SAP`;
-      console.log(`sapSheetName: ${sapSheetName}`);
+      //console.log(`sapSheetName: ${sapSheetName}`);
       
   
       // Fetch the last row to calculate elapsed time
@@ -54,7 +54,7 @@ router.post('/input', async (req, res) => {
       });
       
       const previousTime = previousTimeResponse.data.values?.[0]?.[0];
-      console.log(`previousTime: ${previousTime}`);
+      //console.log(`previousTime: ${previousTime}`);
       if (previousTime) {
         const previousDateTime = moment.tz(`${currentDate} ${previousTime}`, 'MM/DD/YYYY HH:mm:ss', 'America/New_York');
         const now = moment.tz(`${currentDate} ${currentTime}`, 'MM/DD/YYYY HH:mm:ss', 'America/New_York');
@@ -78,7 +78,7 @@ router.post('/input', async (req, res) => {
         requestBody: { values: [[currentDate, currentTime, inputText, '', '']] },
       });
   
-      res.status(200).json(success.SAP_INPUT_SUCCESS);
+      res.status(200).json({success : SAP_INPUT_SUCCESS});
     } catch (error) {
       console.error('Error in SAP Input:', error);
       res.status(500).json({error : "SAP Input Failed" });
