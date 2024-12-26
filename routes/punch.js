@@ -1,4 +1,8 @@
+// Import modules (using ES Modules syntax)
 import express from 'express';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import { findUserByUsername } from '../api/users.js';
 
 import {
     getGoogleSheetsService,
@@ -9,18 +13,27 @@ import {
     calculateElapsedTimeDecimal,
     formatElapsedTime,
     getCurrentMonthName,
-    fetchSpreadsheetId,
 } from '../utils/googleSheetsUtils.js';
 
 const router = express.Router();
 const spreadsheetId = process.env.GOOGLE_SHEET_ID;
 // Punch-in route
 router.post('/in', async (req, res) => {
-fetchSpreadsheetId;
-    
-    try {
+    // Extract headers
+    const { spreadsheetId, username, role } = req.body;
+    const authHeader = req.headers.authorization;
 
-        const sheets = await getGoogleSheetsService();
+    // Validate data
+    if (!authHeader) {
+        return res.status(401).json({ error: 'Authorization header missing' });
+    }
+    if (!spreadsheetId || !username || !role) {
+        return res.status(400).json({ error: 'Required data missing in request body' });
+    }
+
+    try {
+        // Assuming you have these utility functions available
+        const sheets = await getGoogleSheetsService(); // Your method to connect to Google Sheets
         const currentDate = getCurrentDate();
         const currentTime = getCurrentTime();
         const monthName = getCurrentMonthName();

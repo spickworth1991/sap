@@ -25,6 +25,7 @@ export async function punchInHandler(button) {
     
         const token = localStorage.getItem('authToken');
         const username = localStorage.getItem('username');
+        const role = localStorage.getItem('role');
         const spreadsheetId = localStorage.getItem('spreadsheetId');
         if (!token || !spreadsheetId || !username) {
             alert('You are not logged in!');
@@ -34,13 +35,11 @@ export async function punchInHandler(button) {
             const response = await fetch(`${apiBaseUrl}/punch/in`, {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authToken}`, // Optional
                 },
-                body: JSON.stringify({ spreadsheetId })
+                body: JSON.stringify({ spreadsheetId, username, role }),
             });
-
-    
 
         const result = await response.json();
 
@@ -96,28 +95,4 @@ export async function punchOutHandler(button) {
     } finally {
         button.style.backgroundColor = "";
     }
-}
-
-export async function fetchSpreadsheetId() {
-    // Updated login.js with enhanced logging
-  const apiBaseUrl = window.location.hostname === 'localhost'
-  ? 'http://localhost:3000/api/auth'
-  : '/api/auth'; // For production deployment on Vercel
-  try {
-      const response = await fetch(`${apiBaseUrl}/user-details`, {
-          headers: {
-              Authorization: `Bearer ${localStorage.getItem('authToken')}`
-          }
-      });
-
-      if (response.ok) {
-          const data = await response.json();
-          localStorage.setItem('spreadsheetId', data.user.spreadsheetId);
-          console.log(`spreadsheetId At fetchSpreadsheetId: ${data.user.spreadsheetId}`);
-      } else {
-          console.error('Failed to fetch user details');
-      }
-  } catch (error) {
-      console.error('Error fetching user details:', error);
-  }
 }
