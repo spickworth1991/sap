@@ -1,14 +1,14 @@
 document.addEventListener('DOMContentLoaded', () => {
     const sapInput = document.getElementById('sapButton');
     if (sapInput) {
-      sapInput.addEventListener('click', () => sapInput(sapInput)); // Attach click event
+      sapInput.addEventListener('click', () => sapInputHandler(sapInput)); // Attach click event
     } else {
         console.error('Sap Input Error at button.');
     }
 });
 
 // SAP Input function
-async function sapInput(button) {
+async function sapInputHandler(button) {
     const inputBox = document.getElementById("inputBox");
     const inputText = inputBox?.value.trim();
   
