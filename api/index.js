@@ -32,7 +32,6 @@ const __dirname = path.dirname(__filename);
 
 // Explicitly load the Punch route
 import punchRoute from '../routes/punch.js';
-import { navigateTo } from '../middleware/navigateTo.js';
 app.use('/api/punch', punchRoute);
 console.log("Mounted /api/punch route explicitly");
 //import sapInputRoute from '../routes/sap.js';
