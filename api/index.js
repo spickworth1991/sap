@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import helmet from 'helmet';
 import { fileURLToPath, pathToFileURL } from 'url';
-import { logAction } from '../middleware/log.js';
+import { logAction, navigateTo } from '../middleware/log.js';
 import authRoute from '../routes/auth.js';
 
 dotenv.config();
@@ -25,13 +25,14 @@ app.use('/api/auth', authRoute);
 
 // Global middleware for logging actions
 app.use(logAction); // This makes logAction run for all requests except for /api/auth
-
+app.use(navigateTo);
 // Resolve __dirname for ES Modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Explicitly load the Punch route
 import punchRoute from '../routes/punch.js';
+import { navigateTo } from '../middleware/navigateTo.js';
 app.use('/api/punch', punchRoute);
 console.log("Mounted /api/punch route explicitly");
 //import sapInputRoute from '../routes/sap.js';
