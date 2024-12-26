@@ -23,23 +23,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     
         try {
-            const tempLoad = document.querySelector('navLoad'); // Adjust the selector for your nav
-            if (tempLoad) {
-                const loadingElement = document.createElement('div');
-                loadingElement.id = 'loading';
-                loadingElement.innerText = 'Loading...';
-                loadingElement.style.position = 'fixed';
-                loadingElement.style.top = '50%';
-                loadingElement.style.left = '50%';
-                loadingElement.style.transform = 'translate(-50%, -50%)';
-                loadingElement.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
-                loadingElement.style.color = 'white';
-                loadingElement.style.padding = '10px 20px';
-                loadingElement.style.borderRadius = '5px';
-                loadingElement.style.zIndex = '1000';
-                };
-                tempLoad.body.appendChild(loadingElement);
-}
+            showLoading()
             const response = await fetch(`/api/entries/date`, {
                 method: "POST",
                 headers: { 
@@ -93,12 +77,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                     }).join('')}
                 </tbody>
             `;
-            hideLoading()
             entriesContainer.appendChild(table);
 
         } catch (error) {
             console.error('Error fetching entries:', error);
             updateStatus({ code: 9999, message: "Network error or server is unavailable." }, "error");
+        } finally {
+            hideLoading();
         }
     }
 });
@@ -114,6 +99,7 @@ async function editEntry(date, rowIndex) {
     }
     
     try {
+        showLoading();
         const response = await fetch('/api/entries/edit', {
             method: 'POST',
             headers: {
@@ -135,12 +121,28 @@ async function editEntry(date, rowIndex) {
     } catch (error) {
         console.error('Error editing entry:', error);
         alert('Error editing entry.');
-    }
+    } finally {
+        hideLoading();
+    }   
 }
 
+const loadingElement = document.createElement('div');
+loadingElement.id = 'loading';
+loadingElement.innerText = 'Loading...';
+loadingElement.style.position = 'fixed';
+loadingElement.style.top = '50%';
+loadingElement.style.left = '50%';
+loadingElement.style.transform = 'translate(-50%, -50%)';
+loadingElement.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+loadingElement.style.color = 'white';
+loadingElement.style.padding = '10px 20px';
+loadingElement.style.borderRadius = '5px';
+loadingElement.style.zIndex = '1000';
 
+function showLoading() {
+    document.body.appendChild(loadingElement);
+}
 
-// Function to hide the loading element
 function hideLoading() {
     const loadingElement = document.getElementById('loading');
     if (loadingElement) {
