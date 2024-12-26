@@ -1,6 +1,3 @@
-const apiBaseUrl = window.location.hostname === 'localhost'
-    ? 'http://localhost:3000/api'
-    : '/api'; // For production deployment on Vercel
 
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -37,7 +34,7 @@ async function sapInputHandler(button) {
     button.style.backgroundColor = "#555";
   
     try {
-      const response = await fetch(`${apiBaseUrl}/sap/input`, {
+      const response = await fetch("/api/sap/input", {
         method: "POST",
         headers: {
           'Content-Type': 'application/json',
