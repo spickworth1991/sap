@@ -78,7 +78,7 @@ router.post('/input', async (req, res) => {
         requestBody: { values: [[currentDate, currentTime, inputText, '', '']] },
       });
   
-      res.status(200).json({success : SAP_INPUT_SUCCESS});
+      res.status(200).json({success : "SAP Input Successful!"});
     } catch (error) {
       console.error('Error in SAP Input:', error);
       res.status(500).json({error : "SAP Input Failed" });
