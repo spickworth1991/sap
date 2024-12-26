@@ -36,7 +36,7 @@ export async function punchInHandler(button) {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${authToken}`, // Optional
+                    'Authorization': `Bearer ${token}`, // Optional
                 },
                 body: JSON.stringify({ spreadsheetId, username, role }),
             });
