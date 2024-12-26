@@ -152,7 +152,7 @@ function hideLoading() {
 
 // Function to check for all editEntry buttons and attach the event listener
 function initializeEditEntryButtons() {
-    const editEntries = document.querySelectorAll('editEntry'); // Adjust the selector for your buttons
+    const editEntries = document.querySelectorAll('.editEntry'); // Adjust the selector for your buttons
     if (editEntries.length > 0) {
         editEntries.forEach(editEntry => {
             editEntry.addEventListener('click', () => editEntry(editEntry)); // Attach click event
