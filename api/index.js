@@ -6,7 +6,6 @@ import cors from 'cors';
 import helmet from 'helmet';
 import { fileURLToPath, pathToFileURL } from 'url';
 import { logAction } from '../middleware/log.js';
-import { statusBox } from '../middleware/navigateTo.js';
 import authRoute from '../routes/auth.js';
 
 dotenv.config();
@@ -24,7 +23,7 @@ console.log("Starting server...");
 
 // Global middleware for logging actions
 app.use(logAction); // This makes logAction run for all requests except for /api/auth
-app.use(statusBox);
+
 // Resolve __dirname for ES Modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
