@@ -140,12 +140,12 @@ function showLoading() {
         loadingElement.style.padding = '10px 20px';
         loadingElement.style.borderRadius = '5px';
         loadingElement.style.zIndex = '1000';
-        });
+        };
         tempLoad.body.appendChild(loadingElement);
     } else {
         console.error('Loading container not found.');
-    }
 }
+
 
 // Function to hide the loading element
 function hideLoading() {
