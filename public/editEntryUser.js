@@ -122,8 +122,11 @@ async function editEntry(date, rowIndex) {
     }
 }
 
-const tempLoad = document.querySelector('divLoad'); // Adjust the selector for your nav
-const loadingElement = document.createElement('div');
+
+
+function showLoading() {
+    const tempLoad = document.querySelector('divLoad'); // Adjust the selector for your nav
+    const loadingElement = document.createElement('div');
     loadingElement.id = 'loading';
     loadingElement.innerText = 'Loading...';
     loadingElement.style.position = 'fixed';
@@ -135,8 +138,7 @@ const loadingElement = document.createElement('div');
     loadingElement.style.padding = '10px 20px';
     loadingElement.style.borderRadius = '5px';
     loadingElement.style.zIndex = '1000';
-
-function showLoading() {
+    
     tempLoad.body.appendChild(loadingElement);
 }
 
