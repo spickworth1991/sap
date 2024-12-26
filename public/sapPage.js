@@ -1,3 +1,12 @@
+document.addEventListener('DOMContentLoaded', () => {
+    const punchIn = document.getElementById('sapButton');
+    if (punchIn) {
+        punchIn.addEventListener('click', () => punchInHandler(punchIn)); // Attach click event
+    } else {
+        console.error('Sap Input Error at button.');
+    }
+});
+
 // SAP Input function
 async function sapInput(button) {
     const inputBox = document.getElementById("inputBox");

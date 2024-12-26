@@ -1,21 +1,39 @@
 // Import modules (using ES Modules syntax)
 import express from 'express';
-import { getGoogleSheetsService } from '../utils/googleSheetsUtils.js';
-import { sapInput } from '../utils/googleSheetsUtils.js';
-import { logAction } from '../middleware/log.js';
+import {
+    getGoogleSheetsService,
+    getCurrentTime,
+    getCurrentDate,
+    calculateElapsedTimeDecimal,
+    formatElapsedTime,
+    getCurrentMonthName,
+} from '../utils/googleSheetsUtils.js';
 
 // Create the router instance
 const router = express.Router();
 
-router.post('/input', sapInput, logAction, async (req, res) => {
+router.post('/input', async (req, res) => {
     try {
       const { input } = req.body;
       if (!input) {
         return res.status(400).json(errors.NO_INPUT_PROVIDED );
       }
-  
+      
+      // Extract headers
+      const { spreadsheetId, username, role } = req.body;
+      const authHeader = req.headers.authorization;
+
+      // Validate data
+      if (!authHeader) {
+          return res.status(401).json({ error: 'Authorization header missing' });
+      }
+      if (!spreadsheetId || !username || !role) {
+          return res.status(400).json({ error: 'Required data missing in request body' });
+      }
+
+
       const sheets = await getGoogleSheetsService();
-      const spreadsheetId = req.headers['spreadsheet-id']; // Extract spreadsheetId from request headers
+      
   
       if (!spreadsheetId) {
         return res.status(400).json({ error: 'Spreadsheet ID is missing in request headers' });

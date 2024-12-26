@@ -1,9 +1,5 @@
 // Import modules (using ES Modules syntax)
 import express from 'express';
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
-import { findUserByUsername } from '../api/users.js';
-
 import {
     getGoogleSheetsService,
     ensureHeaders,
