@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 </tbody>
             `;
             entriesContainer.appendChild(table);
-            initializeEditEntryButton()
+            initializeEditEntryButtons()
 
         } catch (error) {
             console.error('Error fetching entries:', error);
