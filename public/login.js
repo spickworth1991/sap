@@ -41,17 +41,15 @@ const apiBaseUrl = window.location.hostname === 'localhost'
                 },
                 body: JSON.stringify({ username, password })
             });
+            const data = await response.json();
     
             if (response.ok) {
-                const data = await response.json();
                 localStorage.setItem('authToken', data.token); // Store the token
                 localStorage.setItem('username', username); // Store the username
                 console.log('username/token stored');
-                updateStatus(response.message, "success");
                 fetchUserDetails(); // Fetch user details after successful login
             } else {
                 console.error('Login failed');
-                updateStatus(response.message, "error");
             }
         } catch (error) {
             console.error('Error during login:', error);
