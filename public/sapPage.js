@@ -19,6 +19,7 @@ async function sapInputHandler(button) {
     }
     
     const token = localStorage.getItem('authToken');
+    console.log(`token: ${token}`);
     const username = localStorage.getItem('username');
     const role = localStorage.getItem('role');
     const spreadsheetId = localStorage.getItem('spreadsheetId');
@@ -39,7 +40,7 @@ async function sapInputHandler(button) {
       },
       body: JSON.stringify({ spreadsheetId, username, role }),
   });
-  
+      await response.json();
       if (response.ok) {
         updateStatus("SAP Input submitted successfully!", "success");
         inputBox.value = "";
