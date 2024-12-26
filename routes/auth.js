@@ -17,7 +17,7 @@ router.post('/login', async (req, res) => {
     try {
         const user = await findUserByUsername(username);
         if (!user || !(await bcrypt.compare(password, user.password))) {
-            return res.status(401).json({ error: 'Invalid username or password' });
+            return res.status(401).json({ message: 'Invalid username or password' });
         }
 
         // Generate JWT
