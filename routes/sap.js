@@ -16,12 +16,12 @@ const router = express.Router();
 
 router.post('/input', async (req, res) => {
   // Extract headers
-  const { spreadsheetId, username, role } = req.body;
+  const { spreadsheetId, username, role, inputText } = req.body;
   const authHeader = req.headers.authorization;
   console.log(`spreadsheetId: ${spreadsheetId}`);
     try {
-      const { input } = { intputText } = req.body;
-      if (!input) {
+    
+      if (!inputText) {
         return res.status(401).json({error : "Text not sent from client side" });
       }
 
@@ -75,7 +75,7 @@ router.post('/input', async (req, res) => {
         spreadsheetId,
         range: `${sapSheetName}!A:E`,
         valueInputOption: 'USER_ENTERED',
-        requestBody: { values: [[currentDate, currentTime, input, '', '']] },
+        requestBody: { values: [[currentDate, currentTime, inputText, '', '']] },
       });
   
       res.status(200).json(success.SAP_INPUT_SUCCESS);
