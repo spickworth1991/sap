@@ -59,8 +59,10 @@ export async function punchInHandler(button) {
 // Punch Out function
 export async function punchOutHandler(button) {
     button.style.backgroundColor = "#555";
+    const token = localStorage.getItem('authToken');
 
-    if (!token || !spreadsheetId || !username) {
+
+    if (!token ) {
         alert('You are not logged in!');
         return (window.location.href = 'index.html');
     }
