@@ -11,7 +11,7 @@ const router = express.Router();
 
 router.get('/:date', async (req, res) => {
   // Extract headers
-  const { spreadsheetId, username, role, inputText } = req.body;
+  const { spreadsheetId, username, role, date } = req.body;
   const authHeader = req.headers.authorization;
   //console.log(`spreadsheetId: ${spreadsheetId}`);
     try {

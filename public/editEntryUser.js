@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`, // Optional
                 },
-                body: JSON.stringify({ spreadsheetId, username, role, inputText }),
+                body: JSON.stringify({ spreadsheetId, username, role, date }),
             });
             const data = await response.json();
             if (!response.ok) {
