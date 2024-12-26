@@ -44,13 +44,13 @@ export async function punchInHandler(button) {
         const result = await response.json();
 
         if (response.ok) {
-            //updateStatus(result.message, "success");
+            updateStatus(result.message, "success");
         } else {
-            //updateStatus(result.message, "error");
+            updateStatus(result.message, "error");
         }
     } catch (error) {
         console.error('Error in Punch In:', error);
-        //updateStatus("Network error or server is unavailable.", "error");
+        updateStatus("Network error or server is unavailable.", "error");
     } finally {
         button.style.backgroundColor = "";
     }
@@ -81,16 +81,16 @@ export async function punchOutHandler(button) {
         });
 
 
-        //const result = await response.json();
+        const result = await response.json();
 
         if (response.ok) {
-            //updateStatus(result.message, "success");
+            updateStatus(result.message, "success");
         } else {
-            //updateStatus(result.message, "error");
+            updateStatus(result.message, "error");
         }
     } catch (error) {
         console.error('Error in Punch Out:', error);
-        //updateStatus("Network error or server is unavailable.", "error");
+        updateStatus("Network error or server is unavailable.", "error");
     } finally {
         button.style.backgroundColor = "";
     }

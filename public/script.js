@@ -125,4 +125,4 @@ export async function updateStatus(message, type) {
         console.error('Status box not found.');
     }
   }
-  window.navigateTo = updateStatus;
+  window.updateStatus = updateStatus;
