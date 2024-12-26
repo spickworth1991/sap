@@ -22,24 +22,24 @@ document.addEventListener('DOMContentLoaded', () => {
 export async function punchInHandler(button) {
     button.style.backgroundColor = "#555";
 
-    
-        const token = localStorage.getItem('authToken');
-        const username = localStorage.getItem('username');
-        const role = localStorage.getItem('role');
-        const spreadsheetId = localStorage.getItem('spreadsheetId');
-        if (!token || !spreadsheetId || !username) {
-            alert('You are not logged in!');
-            return (window.location.href = 'index.html');
-        }
-        try {
-            const response = await fetch(`${apiBaseUrl}/punch/in`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`, // Optional
-                },
-                body: JSON.stringify({ spreadsheetId, username, role }),
-            });
+
+    const token = localStorage.getItem('authToken');
+    const username = localStorage.getItem('username');
+    const role = localStorage.getItem('role');
+    const spreadsheetId = localStorage.getItem('spreadsheetId');
+    if (!token || !spreadsheetId || !username) {
+        alert('You are not logged in!');
+        return (window.location.href = 'index.html');
+    }
+    try {
+        const response = await fetch(`${apiBaseUrl}/punch/in`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`, // Optional
+            },
+            body: JSON.stringify({ spreadsheetId, username, role }),
+        });
 
         const result = await response.json();
 
@@ -60,27 +60,22 @@ export async function punchInHandler(button) {
 export async function punchOutHandler(button) {
     button.style.backgroundColor = "#555";
 
-    
-        const token = localStorage.getItem('authToken');
-        const username = localStorage.getItem('username');
-        const spreadsheetId = localStorage.getItem('spreadsheetId');
+    if (!token || !spreadsheetId || !username) {
+        alert('You are not logged in!');
+        return (window.location.href = 'index.html');
+    }
 
-        if (!token || !spreadsheetId || !username) {
-            alert('You are not logged in!');
-            return (window.location.href = 'index.html');
-        }
 
-        
     try {
-        const response = await fetch(`${apiBaseUrl}/punch/out`, {
+        const response = await fetch(`${apiBaseUrl}/punch/in`, {
             method: 'POST',
             headers: {
-                'Authorization': `Bearer ${token}`,
-                'spreadsheet-id': spreadsheetId,
-                'username': username,
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`, // Optional
             },
+            body: JSON.stringify({ spreadsheetId, username, role }),
         });
+
 
         //const result = await response.json();
 

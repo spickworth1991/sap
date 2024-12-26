@@ -83,6 +83,18 @@ router.post('/in', async (req, res) => {
 
 // Punch-out route
 router.post('/out',  async (req, res) => {
+    // Extract headers
+    const { spreadsheetId, username, role } = req.body;
+    const authHeader = req.headers.authorization;
+
+    // Validate data
+    if (!authHeader) {
+        return res.status(401).json({ error: 'Authorization header missing' });
+    }
+    if (!spreadsheetId || !username || !role) {
+        return res.status(400).json({ error: 'Required data missing in request body' });
+    }
+    
     try {
         const sheets = await getGoogleSheetsService();
         const currentDate = getCurrentDate();
