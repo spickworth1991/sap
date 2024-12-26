@@ -4,12 +4,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (dateInput) {
       dateInput.addEventListener('click', () => fetchEntriesByDate(dateInput)); // Attach click event
     } else {
-        console.error('Sap Input Error at button.');
+        console.error('Sap Input Error at button. See Sean');
     }
 });
 
 
 async function fetchEntriesByDate(button) {
+    button.style.backgroundColor = "#555";
     const dateInput = document.getElementById('datePicker').value;
     if (!dateInput) {
         updateStatus("Please select a date.", "error");

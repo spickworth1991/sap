@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             return (window.location.href = 'index.html');
         }
 
-        button.style.backgroundColor = "#555";
+    
     
         try {
             const response = await fetch(`/api/entries/${encodeURIComponent(date)}`, {
