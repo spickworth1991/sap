@@ -111,7 +111,7 @@ router.post('/out',  async (req, res) => {
 
         // Check if Punch Out time already exists in Column E
         const punchOutResponse = await sheets.spreadsheets.values.get({
-            spreadsheetId: req.spreadsheetId,
+            spreadsheetId,
             range: `${monthName}!E${rowIndex}`,
         });
         if (punchOutResponse.data.values?.[0]?.[0]) {
@@ -120,7 +120,7 @@ router.post('/out',  async (req, res) => {
 
         // Check if Punch In time exists in Column C
         const punchInResponse = await sheets.spreadsheets.values.get({
-            spreadsheetId: req.spreadsheetId,
+            spreadsheetId,
             range: `${monthName}!C${rowIndex}`,
         });
         const punchInTime = punchInResponse.data.values?.[0]?.[0];
@@ -130,7 +130,7 @@ router.post('/out',  async (req, res) => {
 
         // Update the Punch Out time in Column E on the month sheet
         await sheets.spreadsheets.values.update({
-            spreadsheetId: req.spreadsheetId,
+            spreadsheetId,
             range: `${monthName}!E${rowIndex}`,
             valueInputOption: 'USER_ENTERED',
             requestBody: { values: [[currentTime]] },
@@ -142,7 +142,7 @@ router.post('/out',  async (req, res) => {
 
         // Append totals and Punch Out entry to the SAP sheet
         await sheets.spreadsheets.values.append({
-            spreadsheetId: req.spreadsheetId,
+            spreadsheetId,
             range: `${sapSheetName}!A:E`,
             valueInputOption: 'USER_ENTERED',
             requestBody: { values: [[currentDate, currentTime, 'Punch Out', elapsedFormatted, elapsed]] },

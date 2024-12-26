@@ -8,19 +8,28 @@ async function sapInput(button) {
       updateStatus("Please enter some text.", "error");
       return;
     }
-  
+    
+    const token = localStorage.getItem('authToken');
+    const username = localStorage.getItem('username');
+    const role = localStorage.getItem('role');
+    const spreadsheetId = localStorage.getItem('spreadsheetId');
+
+    if (!token || !spreadsheetId || !username) {
+        alert('You are not logged in!');
+        return (window.location.href = 'index.html');
+    }
+
     button.style.backgroundColor = "#555";
   
     try {
-      const response = await fetch("/api/sapInput", {
+      const response = await fetch("/api/sap/input", {
         method: "POST",
-        headers: { 
-            "Content-Type": "application/json",
-            "spreadsheet-id": localStorage.getItem('spreadsheetId'),  // Add spreadsheetId header
-            "username": localStorage.getItem('username'), // Send username in headers
-        },
-        body: JSON.stringify({ input: inputText }),
-      });
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`, // Optional
+      },
+      body: JSON.stringify({ spreadsheetId, username, role }),
+  });
   
       if (response.ok) {
         updateStatus("SAP Input submitted successfully!", "success");

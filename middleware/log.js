@@ -21,9 +21,9 @@ export async function logAction(req, res, next) {
         // Determine details based on the route
         if (req.originalUrl === '/api/punch/in') {
             details = 'Punch In';
-        } else if (req.originalUrl === '/api/punchOut') {
+        } else if (req.originalUrl === '/api/punch/out') {
             details = 'Punch Out';
-        } else if (req.originalUrl === '/api/sapInput') {
+        } else if (req.originalUrl === '/api/sap/input') {
             const { input } = req.body;
             details = `Project/Activity = ${input}`;
         } else if (req.originalUrl === '/api/editEntry') {
