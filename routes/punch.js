@@ -132,16 +132,72 @@ router.post('/out',  async (req, res) => {
             requestBody: { values: [[currentTime]] },
         });
 
-        // Calculate elapsed time and SAP time, then update the SAP sheet
-        const elapsed = calculateElapsedTimeDecimal(punchInTime, currentTime);
-        const elapsedFormatted = formatElapsedTime(elapsed);
-
-        // Append totals and Punch Out entry to the SAP sheet
+         // Fetch the last row number on the SAP sheet
+        const sapDataResponse = await sheets.spreadsheets.values.get({
+            spreadsheetId,
+            range: `${sapSheetName}!B:B`,
+        });
+        const lastRow = sapDataResponse.data.values ? sapDataResponse.data.values.length : 1;
+    
+        // Get the previous row's time
+        const previousTimeResponse = await sheets.spreadsheets.values.get({
+            spreadsheetId,
+            range: `${sapSheetName}!B${lastRow}`,
+        });
+        const previousTime = previousTimeResponse.data.values?.[0]?.[0];
+    
+        // Calculate elapsed time and SAP time
+        if (previousTime) {
+            const previousDateTime = moment.tz(`${currentDate} ${previousTime}`, 'MM/DD/YYYY HH:mm:ss', 'America/New_York');
+            const now = moment.tz(`${currentDate} ${currentTime}`, 'MM/DD/YYYY HH:mm:ss', 'America/New_York');
+            const elapsedMilliseconds = now.diff(previousDateTime);
+            const elapsedFormatted = formatElapsedTime(elapsedMilliseconds);
+            const elapsedDecimal = calculateElapsedTimeDecimal(elapsedMilliseconds);
+    
+            // Update the previous row with elapsed time and SAP time
+            await sheets.spreadsheets.values.update({
+            spreadsheetId,
+            range: `${sapSheetName}!D${lastRow}:E${lastRow}`,
+            valueInputOption: 'USER_ENTERED',
+            requestBody: { values: [[elapsedFormatted, elapsedDecimal]] },
+            });
+        }
+    
+        // Add Punch Out entry to the SAP sheet
         await sheets.spreadsheets.values.append({
             spreadsheetId,
             range: `${sapSheetName}!A:E`,
             valueInputOption: 'USER_ENTERED',
-            requestBody: { values: [[currentDate, currentTime, 'Punch Out', elapsedFormatted, elapsed]] },
+            requestBody: { values: [[currentDate, currentTime, 'Punch Out', '', '']] },
+        });
+    
+        // Calculate totals for the current date
+        const updatedSapDataResponse = await sheets.spreadsheets.values.get({
+            spreadsheetId,
+            range: `${sapSheetName}!A:E`,
+        });
+    
+        const sapData = updatedSapDataResponse.data.values || [];
+        let totalElapsedTime = 0;
+        let totalSapTime = 0;
+    
+        for (const row of sapData) {
+            if (row[0] === currentDate && row[3] && row[4]) {
+            const [hours, minutes, seconds] = row[3].split(':').map(Number);
+            totalElapsedTime += hours * 3600 + minutes * 60 + seconds;
+            totalSapTime += parseFloat(row[4]);
+            }
+        }
+    
+        const totalElapsedFormatted = formatElapsedTime(totalElapsedTime * 1000);
+        const totalSapTimeFormatted = totalSapTime.toFixed(4);
+    
+        // Append Totals row to the SAP sheet
+        await sheets.spreadsheets.values.append({
+            spreadsheetId,
+            range: `${sapSheetName}!A:E`,
+            valueInputOption: 'USER_ENTERED',
+            requestBody: { values: [['', '', 'Totals', totalElapsedFormatted, totalSapTimeFormatted]] },
         });
 
         res.status(200).json({ message: 'Punch Out successful.' });
