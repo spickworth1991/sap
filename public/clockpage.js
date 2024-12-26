@@ -42,58 +42,9 @@ export async function punchInHandler(button) {
 
     
 
-        //const result = await response.json();
+        const result = await response.json();
 
         if (response.ok) {
-            try {
-                const spreadsheetId = localStorage.getItem('spreadsheetId');
-                const sheets = await getGoogleSheetsService();
-                const currentDate = getCurrentDate();
-                const currentTime = getCurrentTime();
-                const monthName = getCurrentMonthName();
-                const sapSheetName = `${monthName}:SAP`;
-        
-        
-                // Find the row with the current date on the month sheet
-                const rowIndex = await findDateRow(sheets, monthName, currentDate, spreadsheetId);
-                console.log(`rowIndex: ${rowIndex}`);
-                if (rowIndex ===null ) {
-                    return res.status(400).json({ message: 'No entry found for the current date.' });
-                }
-        
-                // Check if Punch In time already exists in Column C
-                const punchInResponse = await sheets.spreadsheets.values.get({
-                    spreadsheetId,
-                    range: `${monthName}!C${rowIndex}`,
-                });
-                console.log(`punchInResponse: ${punchInResponse}`);
-                if (punchInResponse.data.values?.[0]?.[0]) {
-                    return res.status(400).json({ message: 'Punch In time already exists.' });
-                }
-        
-                // Update the Punch In time in Column C on the month sheet
-                await sheets.spreadsheets.values.append({
-                    spreadsheetId,
-                    range: `${monthName}!C${rowIndex}`,
-                    valueInputOption: 'USER_ENTERED',
-                    requestBody: { values: [[currentTime]] },
-                });
-                // Ensure headers are present in the SAP sheet
-                await ensureHeaders(sheets, sapSheetName, currentDate, spreadsheetId);
-        
-                // Add Punch In entry to the SAP sheet
-                await sheets.spreadsheets.values.append({
-                    spreadsheetId,
-                    range: `${sapSheetName}!A:E`,
-                    valueInputOption: 'USER_ENTERED',
-                    requestBody: { values: [[currentDate, currentTime, 'Punch In', '', '']] },
-                });
-        
-                return res.status(200).json({ message: 'Punch-in successful.' });
-            } catch (error) {
-                console.error('Error in Punch In:', error);
-                return res.status(500).json({ error: 'An error occurred during Punch In.' });
-            }
             //updateStatus(result.message, "success");
         } else {
             //updateStatus(result.message, "error");
@@ -147,26 +98,26 @@ export async function punchOutHandler(button) {
     }
 }
 
-
 export async function fetchSpreadsheetId() {
+    // Updated login.js with enhanced logging
+  const apiBaseUrl = window.location.hostname === 'localhost'
+  ? 'http://localhost:3000/api/auth'
+  : '/api/auth'; // For production deployment on Vercel
+  try {
+      const response = await fetch(`${apiBaseUrl}/user-details`, {
+          headers: {
+              Authorization: `Bearer ${localStorage.getItem('authToken')}`
+          }
+      });
 
-    try {
-        const response = await fetch(`/api/auth/user-details`, {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem('authToken')}`
-            }
-        });
-
-        if (response.ok) {
-            const spreadsheetID = await response.json();
-            res.json({ spreadsheetID });
-        } else {
-            console.error('Failed to fetch user details');
-        }
-    } catch (error) {
-        console.error('Error fetching user details:', error);
-    }
+      if (response.ok) {
+          const data = await response.json();
+          localStorage.setItem('spreadsheetId', data.user.spreadsheetId);
+          console.log(`spreadsheetId At fetchSpreadsheetId: ${data.user.spreadsheetId}`);
+      } else {
+          console.error('Failed to fetch user details');
+      }
+  } catch (error) {
+      console.error('Error fetching user details:', error);
+  }
 }
-
-
-
