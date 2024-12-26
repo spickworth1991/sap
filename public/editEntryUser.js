@@ -1,10 +1,5 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    const editEntry = document.getElementById('editEntry');
-    if (editEntry) {
-        editEntry.addEventListener('click', () => editEntry(editEntry)); // Attach click event
-    } else {
-        console.error('Punch In button not found.');
-    }
+
     // Only run this code if the current page is editentryuser.html
     if (window.location.pathname.includes('editentryuser.html')) {
         const urlParams = new URLSearchParams(window.location.search);
@@ -84,6 +79,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 </tbody>
             `;
             entriesContainer.appendChild(table);
+            initializeEditEntryButton()
 
         } catch (error) {
             console.error('Error fetching entries:', error);
@@ -153,3 +149,14 @@ function hideLoading() {
         document.body.removeChild(loadingElement);
     }
 }
+
+// Function to check for the editEntry button and attach the event listener
+function initializeEditEntryButton() {
+    const editEntry = document.getElementById('editEntry');
+    if (editEntry) {
+        editEntry.addEventListener('click', () => editEntryHandler(editEntry)); // Attach click event
+    } else {
+        console.error('editEntry button not found.');
+    }
+}
+
