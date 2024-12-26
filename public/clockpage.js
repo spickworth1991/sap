@@ -60,16 +60,18 @@ export async function punchInHandler(button) {
 export async function punchOutHandler(button) {
     button.style.backgroundColor = "#555";
     const token = localStorage.getItem('authToken');
+    const username = localStorage.getItem('username');
+    const role = localStorage.getItem('role');
+    const spreadsheetId = localStorage.getItem('spreadsheetId');
 
-
-    if (!token ) {
+    if (!token || !spreadsheetId || !username) {
         alert('You are not logged in!');
         return (window.location.href = 'index.html');
     }
 
 
     try {
-        const response = await fetch(`${apiBaseUrl}/punch/in`, {
+        const response = await fetch(`${apiBaseUrl}/punch/out`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
