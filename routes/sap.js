@@ -1,3 +1,5 @@
+import moment from 'moment-timezone';
+
 // Import modules (using ES Modules syntax)
 import express from 'express';
 import {
@@ -18,11 +20,6 @@ router.post('/input', async (req, res) => {
   const authHeader = req.headers.authorization;
   console.log(`spreadsheetId: ${spreadsheetId}`);
     try {
-      //const { input } = req.body;
-      //if (!input) {
-        //return res.status(401).json({error : "NO_INPUT_PROVIDED" });
-      //}
-
       // Validate data
       if (!authHeader) {
           return res.status(401).json({ error: 'Authorization header missing' });
