@@ -1,4 +1,10 @@
 document.addEventListener('DOMContentLoaded', async () => {
+    const editEntry = document.getElementById('editEntry');
+    if (editEntry) {
+        editEntry.addEventListener('click', () => editEntry(editEntry)); // Attach click event
+    } else {
+        console.error('Punch In button not found.');
+    }
     // Only run this code if the current page is editentryuser.html
     if (window.location.pathname.includes('editentryuser.html')) {
         const urlParams = new URLSearchParams(window.location.search);
@@ -71,7 +77,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                                 <td>${values[2] || ''}</td>
                                 <td>${values[3] || ''}</td>
                                 <td>${values[4] || ''}</td>
-                                <td><button class="button edit-button" onclick="editEntry('${date}', ${rowNumber})">Edit</button></td>
+                                <td><button class="button edit-button" id="editEntry">Edit</button></td>
                             </tr>
                         `;
                     }).join('')}
@@ -101,14 +107,12 @@ async function editEntry(date, rowIndex) {
     try {
         showLoading();
         const response = await fetch('/api/entries/edit', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                "spreadsheet-id": localStorage.getItem('spreadsheetId'),  // Add spreadsheetId header
-                "username": localStorage.getItem('username'), // Send username in headers
-            
-            },
-            body: JSON.stringify({ date, rowIndex, time: newTime, projectActivity: newProjectActivity }),
+            method: "POST",
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`, // Optional
+                },
+                body: JSON.stringify({ date, rowIndex, time: newTime, projectActivity: newProjectActivity }),
         });
 
         const result = await response.json();
