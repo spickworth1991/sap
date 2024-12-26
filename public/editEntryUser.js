@@ -23,7 +23,23 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     
         try {
-            showLoading()
+            const tempLoad = document.querySelector('navLoad'); // Adjust the selector for your nav
+            if (tempLoad) {
+                const loadingElement = document.createElement('div');
+                loadingElement.id = 'loading';
+                loadingElement.innerText = 'Loading...';
+                loadingElement.style.position = 'fixed';
+                loadingElement.style.top = '50%';
+                loadingElement.style.left = '50%';
+                loadingElement.style.transform = 'translate(-50%, -50%)';
+                loadingElement.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+                loadingElement.style.color = 'white';
+                loadingElement.style.padding = '10px 20px';
+                loadingElement.style.borderRadius = '5px';
+                loadingElement.style.zIndex = '1000';
+                };
+                tempLoad.body.appendChild(loadingElement);
+}
             const response = await fetch(`/api/entries/date`, {
                 method: "POST",
                 headers: { 
@@ -122,27 +138,6 @@ async function editEntry(date, rowIndex) {
     }
 }
 
-
-
-function showLoading() {
-    
-    const tempLoad = document.querySelector('navLoad'); // Adjust the selector for your nav
-    if (tempLoad) {
-        const loadingElement = document.createElement('div');
-        loadingElement.id = 'loading';
-        loadingElement.innerText = 'Loading...';
-        loadingElement.style.position = 'fixed';
-        loadingElement.style.top = '50%';
-        loadingElement.style.left = '50%';
-        loadingElement.style.transform = 'translate(-50%, -50%)';
-        loadingElement.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
-        loadingElement.style.color = 'white';
-        loadingElement.style.padding = '10px 20px';
-        loadingElement.style.borderRadius = '5px';
-        loadingElement.style.zIndex = '1000';
-        };
-        tempLoad.body.appendChild(loadingElement);
-}
 
 
 // Function to hide the loading element
