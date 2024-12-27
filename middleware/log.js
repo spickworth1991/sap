@@ -12,6 +12,11 @@ export async function logAction(req, res, next) {
     const originalSend = res.send;
     let responseStatus;
 
+    if (!spreadsheetId) {
+        console.error('Missing spreadsheetId in the request body. Logging aborted.');
+        return;
+    }
+    
     res.send = function (body) {
         responseStatus = res.statusCode;
         originalSend.call(this, body);
@@ -23,6 +28,7 @@ export async function logAction(req, res, next) {
             const sheets = await getGoogleSheetsService();
             const username = req.body['username'] || 'Unknown User';
             const action = `${req.method} ${req.originalUrl}`;
+            console.log(spreadsheetId)
 
             let details;
 

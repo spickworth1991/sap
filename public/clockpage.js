@@ -38,7 +38,7 @@ export async function punchInHandler(button) {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`, // Optional
             },
-            body: JSON.stringify({ spreadsheetId, username, role }),
+            body: JSON.stringify({ username, role, spreadsheetId }),
         });
 
         const result = await response.json();
@@ -77,7 +77,8 @@ export async function punchOutHandler(button) {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`, // Optional
             },
-            body: JSON.stringify({ spreadsheetId, username, role }),
+            body: JSON.stringify({ username, role, spreadsheetId }),
+
         });
 
 
