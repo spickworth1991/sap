@@ -69,13 +69,14 @@ export async function logAction(req, res, next) {
             await ensureLogSheetExists(sheets, spreadsheetId);
 
             // Append log entry to the Logs sheet
-            await sheets.spreadsheets.values.update({
+            await sheets.spreadsheets.values.append({
                 spreadsheetId,
                 range: 'Logs!A:E',
                 valueInputOption: 'USER_ENTERED',
                 requestBody: {
                     values: [[getCurrentDate(), getCurrentTime(), username, action, details]],
                 },
+                console.log(`Appended log entry: ${getCurrentDate()}, ${getCurrentTime()}, ${username}, ${action}, ${details}`);
             });
         } catch (error) {
             console.error('Error logging action:', error);
