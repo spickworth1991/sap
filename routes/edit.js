@@ -27,28 +27,7 @@ router.post('/edit',  async (req, res) => {
       const sapSheetName = `${monthName}:SAP`;
       
 
-      let grabCurrentData = await sheets.spreadsheets.values.get({
-        spreadsheetId,
-        range: `${sapSheetName}!A:E`,
-      });
-
-      let currentData = grabCurrentData.data.values || [];
-
-      // Find all rows with the same date
-      let currentDate = currentData
-        .map((row, index) => ({ index: index + 1, row }))
-        .filter(item => item.row[0] === date);
-        console.log(currentDate);
-
-
-      // Find the specific row using the row index
-      const selectedRow = currentDate.find(item => item.index === rowNumber)?.row;
-      console.log(selectedRow);
-      // Extract the values from columns B and C
-      const time = selectedRow[1]; // Column B
-      const projectActivity = selectedRow[2]; // Column C
-
-      console.log(`Time: ${time}, Project/Activity: ${projectActivity}`);
+      
 
    
 
