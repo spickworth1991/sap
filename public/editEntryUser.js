@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                                 <td>${values[2] || ''}</td>
                                 <td>${values[3] || ''}</td>
                                 <td>${values[4] || ''}</td>
-                                <td><button class="button edit-button" id="editEntry">Edit</button></td>
+                                <td><button class="button edit-button editEntry">Edit</button></td>
                             </tr>
                         `;
                     }).join('')}
