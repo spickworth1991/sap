@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 
-export async function editEntryHandler(editEntry, rowNumber) {
+export async function editEntryHandler(editEntry) {
     const button = event.target;
     const rowNumber = button.getAttribute('data-row-number');
     const newTime = prompt('Enter new time (HH:mm:ss):');
