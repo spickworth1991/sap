@@ -45,7 +45,7 @@ router.post('/edit',  async (req, res) => {
       let dateRows = sapData
         .map((row, index) => ({ index: index + 1, row }))
         .filter(item => item.row[0] === date);
-        console.log(dateRows);
+        //console.log(dateRows);
   
       // Recalculate elapsed times and SAP times for each row and update the previous row
       for (let i = 1; i < dateRows.length; i++) {
@@ -84,7 +84,7 @@ router.post('/edit',  async (req, res) => {
       let dateRowsNew = updatedSapData
         .map((row, index) => ({ index: index + 1, row }))
         .filter(item => item.row[0] === date);
-        console.log(dateRowsNew);
+        //console.log(dateRowsNew);
   
       // 4. Recalculate totals for the current date
       let lastRowWithDate = dateRowsNew[dateRowsNew.length - 1].index;
@@ -124,8 +124,8 @@ router.post('/edit',  async (req, res) => {
   
         const totalElapsedFormatted = formatElapsedTime(totalElapsedTime * 1000);
         const totalSapTimeFormatted = totalSapTime.toFixed(4);
-        console.log(`total elapsed formated: ${totalElapsedFormatted}`);
-        console.log(`total sap formatted: ${totalSapTimeFormatted}`);
+        //console.log(`total elapsed formated: ${totalElapsedFormatted}`);
+        //console.log(`total sap formatted: ${totalSapTimeFormatted}`);
   
         // Update the totals row with recalculated totals
         await sheets.spreadsheets.values.update({

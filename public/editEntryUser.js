@@ -65,6 +65,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <tbody>
                     ${data.entries.map(entry => {
                         const { rowNumber, values } = entry;
+                        const isTotalsRow = values[2] === 'Totals'; // Check if the "Project/Activity" column contains "Totals"
                         return `
                             <tr>
                                 <td>${values[0] || ''}</td>
