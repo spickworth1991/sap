@@ -19,7 +19,7 @@ router.post('/edit',  async (req, res) => {
     try {
       const { date, rowIndex, time, projectActivity } = req.body;
       const sheets = await getGoogleSheetsService();
-      const spreadsheetId = req.headers['spreadsheet-id']; // Extract spreadsheetId from request headers
+      const spreadsheetId = req.headers['spreadsheetId']; // Extract spreadsheetId from request headers
   
       if (!spreadsheetId) {
         return res.status(400).json({ error: 'Spreadsheet ID is missing in request headers' });

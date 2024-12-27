@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Only run this code if the current page is editentryuser.html
     if (window.location.pathname.includes('editentryuser.html')) {
         const urlParams = new URLSearchParams(window.location.search);
-        const date = urlParams.get('date');
+        let date = urlParams.get('date');
 
         if (!date) {
             updateStatus("No date provided.", "error");
@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                                 <td>${values[2] || ''}</td>
                                 <td>${values[3] || ''}</td>
                                 <td>${values[4] || ''}</td>
-                                <td><button class="button edit-button editEntry">Edit</button></td>
+                                <td><button class="button edit-button editEntry" data-row-number="${rowNumber}">Edit</button></td>
                             </tr>
                         `;
                     }).join('')}
@@ -91,10 +91,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 
-export async function editEntryHandler(editEntry) {
+export async function editEntryHandler(editEntry, rowNumber) {
+    const button = event.target;
+    const rowNumber = button.getAttribute('data-row-number');
     const newTime = prompt('Enter new time (HH:mm:ss):');
     const newProjectActivity = prompt('Enter new project/activity:');
-
+    
     if (!newTime || !newProjectActivity) {
         alert('Both time and project/activity are required.');
         return;
@@ -108,7 +110,7 @@ export async function editEntryHandler(editEntry) {
                     'Content-Type': 'application/json',
                     
                 },
-                body: JSON.stringify({ date, rowIndex, time: newTime, projectActivity: newProjectActivity }),
+                body: JSON.stringify({ date, rowNumber, time: newTime, projectActivity: newProjectActivity }),
         });
 
         const result = await response.json();
