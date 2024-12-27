@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                                 <td>${values[2] || ''}</td>
                                 <td>${values[3] || ''}</td>
                                 <td>${values[4] || ''}</td>
-                                <td><button class="button edit-button editEntry" data-row-number="${rowNumber}">Edit</button></td>
+                                <td>${isTotalsRow ? '' : `<button class="button edit-button editEntry" data-row-number="${rowNumber}">Edit</button>`}</td>
                             </tr>
                         `;
                     }).join('')}
