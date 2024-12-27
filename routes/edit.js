@@ -16,7 +16,7 @@ import {
 const router = express.Router();
 router.post('/edit',  async (req, res) => {
     try {
-      const { username, role, spreadsheetId, date, rowNumber, newTime, newProjectActivity } = req.body;
+      const { username, role, spreadsheetId, date, newTime, newProjectActivity, rowNumber } = req.body;
       const sheets = await getGoogleSheetsService();
       console.log(rowNumber);
 
@@ -25,11 +25,6 @@ router.post('/edit',  async (req, res) => {
       }
       const monthName = moment(date, 'MM/DD/YYYY').tz('America/New_York').format('MMMM');
       const sapSheetName = `${monthName}:SAP`;
-      
-
-      
-
-   
 
       // 1. Update the specified row with the new time and project/activity
       await sheets.spreadsheets.values.update({
