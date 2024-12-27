@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 export async function editEntryHandler(editEntry) {
     const button = event.target;
     const rowNumber = button.getAttribute('data-row-number');
-    const date = button.closest('td').querySelector('tr').innerText;
+    const date = button.closest('tr').querySelector('td').innerText;
     console.log(`date: ${date}`);
     const newTime = prompt('Enter new time (HH:mm:ss):');
     const newProjectActivity = prompt('Enter new project/activity:');
