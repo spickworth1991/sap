@@ -49,6 +49,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 entriesContainer.innerHTML = '<p>No entries found for this date.</p>';
                 return;
             }
+            
+            const tableContainer = document.createElement('div');
+            tableContainer.className = 'table-container';
 
             const table = document.createElement('table');
             table.innerHTML = `
@@ -68,18 +71,19 @@ document.addEventListener('DOMContentLoaded', async () => {
                         const isTotalsRow = values[2] === 'Totals'; // Check if the "Project/Activity" column contains "Totals"
                         return `
                             <tr>
-                                <td>${values[0] || ''}</td>
-                                <td>${values[1] || ''}</td>
-                                <td>${values[2] || ''}</td>
-                                <td>${values[3] || ''}</td>
-                                <td>${values[4] || ''}</td>
-                                <td>${isTotalsRow ? '' : `<button class="button edit-button editEntry" data-row-number="${rowNumber}">Edit</button>`}</td>
+                                <td data-label="Date">${values[0] || ''}</td>
+                                <td data-label="Time">${values[1] || ''}</td>
+                                <td data-label="Project/Activity">${values[2] || ''}</td>
+                                <td data-label="Elapsed Time">${values[3] || ''}</td>
+                                <td data-label="SAP Time">${values[4] || ''}</td>
+                                <td data-label="Action">${isTotalsRow ? '' : `<button class="button edit-button editEntry" data-row-number="${rowNumber}">Edit</button>`}</td>
                             </tr>
                         `;
                     }).join('')}
                 </tbody>
             `;
-            entriesContainer.appendChild(table);
+            tableContainer.appendChild(table);
+            entriesContainer.appendChild(tableContainer);
             initializeEditEntryButtons()
 
         } catch (error) {
