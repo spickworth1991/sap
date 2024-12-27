@@ -58,9 +58,6 @@ fs.readdirSync(routesPath).forEach((file) => {
     }
 });
 
-// Apply logAction middleware to all routes
-app.use(logAction);
-
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
