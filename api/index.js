@@ -7,6 +7,7 @@ import helmet from 'helmet';
 import { fileURLToPath, pathToFileURL } from 'url';
 import { logAction } from '../middleware/log.js';
 import authRoute from '../routes/auth.js';
+import entriesRoute from '../routes/entries.js';
 
 dotenv.config();
 
@@ -22,6 +23,7 @@ console.log("Starting server...");
 
 // Mount auth route explicitly (runs before dynamic routes)
 app.use('/api/auth', authRoute);
+app.use('/api/entries', entriesRoute);
 
 // Global middleware for logging actions
 app.use(logAction); // This makes logAction run for all requests except for /api/auth
@@ -39,7 +41,7 @@ console.log("Mounted /api/punch route explicitly");
 // Dynamically load other routes from 'routes' directory
 const routesPath = path.join(__dirname, '../routes');
 fs.readdirSync(routesPath).forEach((file) => {
-    if (file.endsWith('.js') && file !== 'auth.js' && file !== 'punch.js') { // Skip auth.js and punch.js to avoid duplicate loading
+    if (file.endsWith('.js') && file !== 'auth.js' && file !== 'punch.js' && file !== 'entries.js') { // Skip auth.js and punch.js to avoid duplicate loading
         const routeName = '/' + file.replace('.js', '');
         console.log(`Loading route: /api${routeName}`);
         const filePath = path.join(routesPath, file);
