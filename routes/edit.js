@@ -39,8 +39,9 @@ router.post('/edit',  async (req, res) => {
         .map((row, index) => ({ index: index + 1, row }))
         .filter(item => item.row[0] === date);
 
+
       // Find the specific row using the row index
-      const selectedRow = currentDate[rowNumber - 1]; // Google Sheets uses 1-based indexing
+      const selectedRow = currentDate.find(item => item.index === rowNumber)?.row;
       console.log(selectedRow);
       // Extract the values from columns B and C
       const time = selectedRow[1]; // Column B
