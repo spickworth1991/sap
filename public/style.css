@@ -123,14 +123,6 @@ body {
     margin: 10px 0;
 }
 
-/* Entries Container */
-#entriesContainer {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 20px;
-}
 
 #logsTable {
   width: 100%;
@@ -160,7 +152,7 @@ body {
   margin-top: 15px;
 }
 
-.entriesContainer {
+#entriesContainer {
     width: 100%;
     display: flex;
     justify-content: center;
@@ -276,6 +268,19 @@ tbody tr:nth-child(even) {
         font-weight: bold;
         text-align: left;
     }
-
+    .table-container {
+        max-height: 80vh; /* Adjust the height as needed */
+        overflow-y: auto;
+        border: 2px solid #ccc; /* Optional: Add a border for better visibility */
+        -webkit-overflow-scrolling: touch; /* Enable momentum scrolling on iOS */
+        border-radius: 8px;
+    }
+    #entriesContainer {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 20px;
+    }
   
 }
