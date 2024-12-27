@@ -8,6 +8,7 @@ import { fileURLToPath, pathToFileURL } from 'url';
 import { logAction } from '../middleware/log.js';
 import authRoute from '../routes/auth.js';
 import entriesRoute from '../routes/entries.js';
+import punchRoute from '../routes/punch.js';
 
 dotenv.config();
 
@@ -23,7 +24,7 @@ console.log("Starting server...");
 
 // Global middleware for logging actions
 app.use((req, res, next) => {
-    if (req.originalUrl.startsWith('/api/auth' || req.originalUrl.startsWith('/api/entries'))) {
+    if (req.originalUrl.startsWith('/api/auth') || req.originalUrl.startsWith('/api/entries')) {
         return next();
     }
     logAction(req, res, next);
@@ -33,17 +34,13 @@ app.use((req, res, next) => {
 app.use('/api/auth', authRoute);
 app.use('/api/entries', entriesRoute);
 
-// Resolve __dirname for ES Modules
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
 // Explicitly load the Punch route
-import punchRoute from '../routes/punch.js';
 app.use('/api/punch', punchRoute);
 console.log("Mounted /api/punch route explicitly");
 
-
 // Dynamically load other routes from 'routes' directory
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const routesPath = path.join(__dirname, '../routes');
 fs.readdirSync(routesPath).forEach((file) => {
     if (file.endsWith('.js') && file !== 'auth.js' && file !== 'punch.js' && file !== 'entries.js') { // Skip auth.js and punch.js to avoid duplicate loading
@@ -61,13 +58,11 @@ fs.readdirSync(routesPath).forEach((file) => {
     }
 });
 
-// Default route for API base
-app.get('/', (req, res) => res.json({ message: 'API is running' }));
+// Apply logAction middleware to all routes
+app.use(logAction);
 
-// Export the app for serverless functions or direct use
-export default app;
-//const PORT = process.env.PORT || 5000;
-// Start the Server
-//app.listen(PORT, () => {
-    //console.log(`Server is running on port ${PORT}`);
-  //});
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});

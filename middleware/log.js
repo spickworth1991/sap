@@ -30,23 +30,19 @@ export async function logAction(req, res, next) {
             if (req.originalUrl === '/api/punch/in') {
                 details = 'Punch In';
                 details += responseStatus === 200 ? ': Successful' : ': Failed';
-                console.log(`details: ${details}`);
             } else if (req.originalUrl === '/api/punch/out') {
                 details = 'Punch Out';
                 details += responseStatus === 200 ? ': Successful' : ': Failed';
-                console.log(`details: ${details}`);
             } else if (req.originalUrl === '/api/sap/input') {
                 const { inputText } = req.body;
                 details = `Project/Activity = ${inputText}`;
-                console.log(`details: ${details}`);
             } else if (req.originalUrl === '/api/edit/edit') {
                 const { rowNumber, newTime, newProjectActivity } = req.body;
-                console.log(`Row number: ${rowNumber}, New time: ${newTime}, New Project/Activity: ${newProjectActivity}`);
+
                 // Fetch existing data from the SAP sheet
                 const monthName = getCurrentMonthName();
                 const sapSheetName = `${monthName}:SAP`;
                 const range = `${sapSheetName}!A${rowNumber}:E${rowNumber}`;
-                console.log(`Fetching data from range: ${range}`);
                 const response = await sheets.spreadsheets.values.get({
                     spreadsheetId,
                     range,
@@ -54,13 +50,10 @@ export async function logAction(req, res, next) {
 
                 const rowData = response.data.values?.[0];
                 const previousTime = rowData ? rowData[1] : 'undefined'; // Column B
-                console.log(`Previous time: ${previousTime}`);
                 const previousProjectActivity = rowData ? rowData[2] : 'undefined'; // Column C
-                console.log(`Previous Project/Activity: ${previousProjectActivity}`);
 
                 details = `rowNumber=${rowNumber}, Previous time=${previousTime}, Updated time=${newTime}, ` +
                     `Previous Project/Activity=${previousProjectActivity}, Updated Project/Activity=${newProjectActivity}`;
-                    console.log(`details: ${details}`);
             } else {
                 details = JSON.stringify(req.body);
             }
@@ -77,7 +70,6 @@ export async function logAction(req, res, next) {
                     values: [[getCurrentDate(), getCurrentTime(), username, action, details]],
                 },
             });
-            console.log(`Appended log entry: ${getCurrentDate()}, ${getCurrentTime()}, ${username}, ${action}, ${details}`);
         } catch (error) {
             console.error('Error logging action:', error);
         }
