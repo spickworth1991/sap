@@ -45,6 +45,7 @@ router.post('/edit',  async (req, res) => {
       let dateRows = sapData
         .map((row, index) => ({ index: index + 1, row }))
         .filter(item => item.row[0] === date);
+        console.log(dateRows);
   
       // Recalculate elapsed times and SAP times for each row and update the previous row
       for (let i = 1; i < dateRows.length; i++) {
@@ -80,19 +81,22 @@ router.post('/edit',  async (req, res) => {
       let updatedSapData = updatedSapDataResponse.data.values || [];
   
       // Create fresh dateRows with the updated data
-      dateRows = updatedSapData
+      dateRowsNew = updatedSapData
         .map((row, index) => ({ index: index + 1, row }))
         .filter(item => item.row[0] === date);
+        console.log(dateRowsNew);
   
       // 4. Recalculate totals for the current date
-      let lastRowWithDate = dateRows[dateRows.length - 1].index;
+      let lastRowWithDate = dateRowsNew[dateRowsNew.length - 1].index;
       let totalsRowIndex = null;
+      console.log(lastRowWithDate);
   
       // Find the "Totals" row after the last row with the current date
-      for (let i = lastRowWithDate; i <= updatedSapData.length; i++) {
+      for (let i = lastRowWithDate + 1; i <= updatedSapData.length; i++) {
         const row = updatedSapData[i - 1];
         if (row && row[2] === 'Totals') {
           totalsRowIndex = i;
+          console.log(totalsRowIndex);  
           break;
         }
       }
@@ -102,7 +106,7 @@ router.post('/edit',  async (req, res) => {
         let totalElapsedTime = 0;
         let totalSapTime = 0;
   
-        dateRows.forEach(row => {
+        dateRowsNew.forEach(row => {
           const elapsedTime = row.row[3];
           const sapTime = row.row[4];
   
@@ -115,6 +119,8 @@ router.post('/edit',  async (req, res) => {
   
         const totalElapsedFormatted = formatElapsedTime(totalElapsedTime * 1000);
         const totalSapTimeFormatted = totalSapTime.toFixed(4);
+        condole.log(totalElapsedFormatted);
+        console.log(totalSapTimeFormatted);
   
         // Update the totals row with recalculated totals
         await sheets.spreadsheets.values.update({
