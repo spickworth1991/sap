@@ -89,7 +89,7 @@ router.post('/edit',  async (req, res) => {
       let totalsRowIndex = null;
   
       // Find the "Totals" row after the last row with the current date
-      for (let i = lastRowWithDate + 1; i <= updatedSapData.length; i++) {
+      for (let i = lastRowWithDate; i <= updatedSapData.length; i++) {
         const row = updatedSapData[i - 1];
         if (row && row[2] === 'Totals') {
           totalsRowIndex = i;
