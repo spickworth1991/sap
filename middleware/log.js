@@ -1,4 +1,3 @@
-
 import { google } from 'googleapis';
 import moment from 'moment-timezone';
 import {
@@ -40,44 +39,43 @@ export async function logAction(req, res, next) {
             } else if (req.originalUrl === '/api/edit/edit') {
                 const { rowNumber, newTime, newProjectActivity } = req.body;
 
-            // Fetch existing data from the SAP sheet
-            const monthName = getCurrentMonthName();
-            const sapSheetName = `${monthName}:SAP`;
-            const range = `${sapSheetName}!A${rowNumber}:E${rowNumber}`;
-            const response = await sheets.spreadsheets.values.get({
+                // Fetch existing data from the SAP sheet
+                const monthName = getCurrentMonthName();
+                const sapSheetName = `${monthName}:SAP`;
+                const range = `${sapSheetName}!A${rowNumber}:E${rowNumber}`;
+                const response = await sheets.spreadsheets.values.get({
+                    spreadsheetId,
+                    range,
+                });
+
+                const rowData = response.data.values?.[0];
+                const previousTime = rowData ? rowData[1] : 'undefined'; // Column B
+                const previousProjectActivity = rowData ? rowData[2] : 'undefined'; // Column C
+
+                details = `rowNumber=${rowNumber}, Previous time=${previousTime}, Updated time=${newTime}, ` +
+                    `Previous Project/Activity=${previousProjectActivity}, Updated Project/Activity=${newProjectActivity}`;
+            } else {
+                details = JSON.stringify(req.body);
+            }
+
+            // Ensure the Logs sheet exists
+            await ensureLogSheetExists(sheets, spreadsheetId);
+
+            // Append log entry to the Logs sheet
+            await sheets.spreadsheets.values.append({
                 spreadsheetId,
-                range,
+                range: 'Logs!A:E',
+                valueInputOption: 'USER_ENTERED',
+                requestBody: {
+                    values: [[getCurrentDate(), getCurrentTime(), username, action, details]],
+                },
             });
-
-            const rowData = response.data.values?.[0];
-            const previousTime = rowData ? rowData[1] : 'undefined'; // Column B
-            const previousProjectActivity = rowData ? rowData[2] : 'undefined'; // Column C
-
-            details = `rowNumber=${rowNumber}, Previous time=${previousTime}, Updated time=${newTime}, ` +
-                `Previous Project/Activity=${previousProjectActivity}, Updated Project/Activity=${newProjectActivity}`;
-        } else {
-            details = JSON.stringify(req.body);
+        } catch (error) {
+            console.error('Error logging action:', error);
         }
-
-        // Ensure the Logs sheet exists
-        await ensureLogSheetExists(sheets, spreadsheetId);
-
-        // Append log entry to the Logs sheet
-        await sheets.spreadsheets.values.append({
-            spreadsheetId,
-            range: 'Logs!A:E',
-            valueInputOption: 'USER_ENTERED',
-            requestBody: {
-                values: [[getCurrentDate(), getCurrentTime(), username, action, details]],
-            },
-        });
-    } catch (error) {
-        console.error('Error logging action:', error);
-    }
     });
 
     next();
 }
-
 
 export default logAction;
