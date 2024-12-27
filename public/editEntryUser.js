@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 
-export async function editEntry(date, rowIndex) {
+export async function editEntryHandler(editEntry) {
     const newTime = prompt('Enter new time (HH:mm:ss):');
     const newProjectActivity = prompt('Enter new project/activity:');
 
@@ -155,7 +155,7 @@ function initializeEditEntryButtons() {
     const editEntries = document.querySelectorAll('.editEntry'); // Adjust the selector for your buttons
     if (editEntries.length > 0) {
         editEntries.forEach(editEntry => {
-            editEntry.addEventListener('click', () => editEntry(editEntry)); // Attach click event
+            editEntry.addEventListener('click', () => editEntryHandler(editEntry)); // Attach click event
         });
     } else {
         console.error('No editEntry buttons found.');
