@@ -76,8 +76,8 @@ export async function logAction(req, res, next) {
                 requestBody: {
                     values: [[getCurrentDate(), getCurrentTime(), username, action, details]],
                 },
-                console.log(`Appended log entry: ${getCurrentDate()}, ${getCurrentTime()}, ${username}, ${action}, ${details}`);
             });
+            console.log(`Appended log entry: ${getCurrentDate()}, ${getCurrentTime()}, ${username}, ${action}, ${details}`);
         } catch (error) {
             console.error('Error logging action:', error);
         }
