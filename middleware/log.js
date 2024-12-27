@@ -7,7 +7,7 @@ import {
     getCurrentTime,
     getCurrentMonthName,
 } from '../utils/googleSheetsUtils.js';
-
+const { spreadsheetId, role } = req.body;
 export async function logAction(req, res, next) {
     const originalSend = res.send;
     let responseStatus;
@@ -24,7 +24,6 @@ export async function logAction(req, res, next) {
 
     res.on('finish', async () => {
         try {
-            const { spreadsheetId, role } = req.body;
             const sheets = await getGoogleSheetsService();
             const username = req.body['username'] || 'Unknown User';
             const action = `${req.method} ${req.originalUrl}`;
