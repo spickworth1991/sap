@@ -93,11 +93,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 export async function editEntryHandler(editEntry) {
     const button = event.target;
-    const rowNumber = button.getAttribute('data-row-number');
+    const rowIndex = button.getAttribute('data-row-number');
     const date = button.closest('tr').querySelector('td').innerText;
-    console.log(`date: ${date}`);
     const newTime = prompt('Enter new time (HH:mm:ss):');
     const newProjectActivity = prompt('Enter new project/activity:');
+    const username = localStorage.getItem('username');
+    const role = localStorage.getItem('role');
+    const spreadsheetId = localStorage.getItem('spreadsheetId');
     
     if (!newTime || !newProjectActivity) {
         alert('Both time and project/activity are required.');
@@ -106,13 +108,13 @@ export async function editEntryHandler(editEntry) {
     
     try {
         showLoading();
-        const response = await fetch('/api/entries/edit', {
+        const response = await fetch('/api/edit/edit', {
             method: "POST",
                 headers: { 
                     'Content-Type': 'application/json',
                     
                 },
-                body: JSON.stringify({ date, rowNumber, time: newTime, projectActivity: newProjectActivity }),
+                body: JSON.stringify({ username, role, spreadsheetId, date, rowIndex, time: newTime, projectActivity: newProjectActivity }),
         });
 
         const result = await response.json();

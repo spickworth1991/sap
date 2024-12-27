@@ -14,13 +14,11 @@ import {
 
 // Create the router instance
 const router = express.Router();
-
 router.post('/edit',  async (req, res) => {
     try {
-      const { date, rowIndex, time, projectActivity } = req.body;
+      const { username, role, spreadsheetId, date, rowIndex, time: newTime, projectActivity: newProjectActivity } = req.body;
       const sheets = await getGoogleSheetsService();
-      const spreadsheetId = req.headers['spreadsheetId']; // Extract spreadsheetId from request headers
-  
+      
       if (!spreadsheetId) {
         return res.status(400).json({ error: 'Spreadsheet ID is missing in request headers' });
       }
