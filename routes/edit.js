@@ -81,7 +81,7 @@ router.post('/edit',  async (req, res) => {
       let updatedSapData = updatedSapDataResponse.data.values || [];
   
       // Create fresh dateRows with the updated data
-      dateRowsNew = updatedSapData
+      let dateRowsNew = updatedSapData
         .map((row, index) => ({ index: index + 1, row }))
         .filter(item => item.row[0] === date);
         console.log(dateRowsNew);
