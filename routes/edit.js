@@ -84,19 +84,19 @@ router.post('/edit',  async (req, res) => {
       let dateRowsNew = updatedSapData
         .map((row, index) => ({ index: index + 1, row }))
         .filter(item => item.row[0] === date);
-        console.log(`dateRowsNew:${dateRowsNew}`);
+        console.log(dateRowsNew);
   
       // 4. Recalculate totals for the current date
       let lastRowWithDate = dateRowsNew[dateRowsNew.length - 1].index;
       let totalsRowIndex = null;
-      console.log(`last row with date:${lastRowWithDate}`);
+      //console.log(`last row with date:${lastRowWithDate}`);
   
       // Find the "Totals" row in the last row with the current date
       for (let i = lastRowWithDate; i >= 1; i--) {
         const row = updatedSapData[i - 1];
         if (row && row[2] === 'Totals') {
           totalsRowIndex = i;
-          console.log(`total row index: ${totalsRowIndex}`);  
+          //console.log(`total row index: ${totalsRowIndex}`);  
           break;
         }
       }
@@ -107,6 +107,11 @@ router.post('/edit',  async (req, res) => {
         let totalSapTime = 0;
   
         dateRowsNew.forEach(row => {
+          // Skip the "Totals" row
+          if (row.index === totalsRowIndex) {
+            return;
+          }
+
           const elapsedTime = row.row[3];
           const sapTime = row.row[4];
   
