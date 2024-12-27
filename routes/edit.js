@@ -16,7 +16,7 @@ import {
 const router = express.Router();
 router.post('/edit',  async (req, res) => {
     try {
-      const { username, role, spreadsheetId, date, rowIndex, time, projectActivity } = req.body;
+      const { username, role, spreadsheetId, date, rowIndex, rowNumber, newTime, newProjectActivity } = req.body;
       const sheets = await getGoogleSheetsService();
       
       if (!spreadsheetId) {
@@ -24,13 +24,47 @@ router.post('/edit',  async (req, res) => {
       }
       const monthName = moment(date, 'MM/DD/YYYY').tz('America/New_York').format('MMMM');
       const sapSheetName = `${monthName}:SAP`;
-  
+      
+
+      let grabCurrentData = await sheets.spreadsheets.values.get({
+        spreadsheetId,
+        range: `${sapSheetName}!A:E`,
+    });
+    
+    let currentData = grabCurrentData.data.values || [];
+    
+    // Find all rows with the same date
+    let currentDate = currentData
+        .map((row, index) => ({ index: index + 1, row }))
+        .filter(item => item.row[0] === date);
+    
+    // Ensure rowNumber is within the bounds of currentDate array
+    if (rowNumber < 1 || rowNumber > currentDate.length) {
+        return res.status(400).json({ error: 'Invalid row number' });
+    }
+    
+    // Find the specific row using the row index
+    const selectedRow = currentDate.find(item => item.index === rowNumber)?.row;
+    console.log(selectedRow);
+    if (!selectedRow) {
+        return res.status(400).json({ error: 'Row not found' });
+    }
+    
+      console.log(selectedRow);
+      // Extract the values from columns B and C
+      const time = selectedRow[1]; // Column B
+      const projectActivity = selectedRow[2]; // Column C
+
+      console.log(`Time: ${time}, Project/Activity: ${projectActivity}`);
+
+   
+
       // 1. Update the specified row with the new time and project/activity
       await sheets.spreadsheets.values.update({
         spreadsheetId,
         range: `${sapSheetName}!B${rowIndex}:C${rowIndex}`,
         valueInputOption: 'USER_ENTERED',
-        requestBody: { values: [[time, projectActivity]] },
+        requestBody: { values: [[newTime, newProjectActivity]] },
       });
   
       // 2. Fetch the updated sheet data to recalculate elapsed times and SAP times

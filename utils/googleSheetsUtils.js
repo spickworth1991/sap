@@ -2,14 +2,33 @@ import { google } from 'googleapis';
 import moment from 'moment-timezone';
 
 
+// Validate JSON format
+function isValidJSON(jsonString) {
+  try {
+      JSON.parse(jsonString);
+      return true;
+  } catch (error) {
+      return false;
+  }
+}
+
 // Authenticate with Google Sheets API
 export async function getGoogleSheetsService() {
-    const credentials = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY);
-    const auth = new google.auth.GoogleAuth({
-        credentials,
-        scopes: ['https://www.googleapis.com/auth/spreadsheets'],
-    });
-    return google.sheets({ version: 'v4', auth });
+  try {
+      const credentialsString = process.env.GOOGLE_SERVICE_ACCOUNT_KEY;
+      if (!isValidJSON(credentialsString)) {
+          throw new Error('Invalid JSON format for GOOGLE_SERVICE_ACCOUNT_KEY');
+      }
+      const credentials = JSON.parse(credentialsString);
+      const auth = new google.auth.GoogleAuth({
+          credentials,
+          scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+      });
+      return google.sheets({ version: 'v4', auth });
+  } catch (error) {
+      console.error('Error parsing GOOGLE_SERVICE_ACCOUNT_KEY:', error);
+      throw error;
+  }
 }
 
 // Date and Time Utilities
@@ -122,7 +141,7 @@ if (lastEntry !== currentDate) {
 export async function editEntry(req, res, next) {
   try {
       const sheets = await getGoogleSheetsService();
-      const { date, rowIndex, time, projectActivity } = req.body;
+      const { date, rowIndex, newTime, newProjectActivity } = req.body;
       const spreadsheetId = req.headers['spreadsheet-id'];
 
       if (!spreadsheetId) {
@@ -137,7 +156,7 @@ export async function editEntry(req, res, next) {
           spreadsheetId,
           range: `${sapSheetName}!B${rowIndex}:C${rowIndex}`,
           valueInputOption: 'USER_ENTERED',
-          requestBody: { values: [[time, projectActivity]] },
+          requestBody: { values: [[newTime, newProjectActivity]] },
       });
 
       next(); // Pass control to the next middleware or route handler

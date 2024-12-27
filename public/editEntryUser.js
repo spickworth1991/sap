@@ -98,9 +98,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 
-export async function editEntryHandler(editEntry) {
+export async function editEntryHandler(rowNumber) {
     const button = event.target;
-    const rowIndex = button.getAttribute('data-row-number');
+    const rowNumber = button.getAttribute('data-row-number');
     const date = button.closest('tr').querySelector('td').innerText;
     const newTime = prompt('Enter new time (HH:mm:ss):');
     const newProjectActivity = prompt('Enter new project/activity:');
@@ -123,7 +123,7 @@ export async function editEntryHandler(editEntry) {
                     'Content-Type': 'application/json',
                     
                 },
-                body: JSON.stringify({ username, role, spreadsheetId, date, rowIndex, time: newTime, projectActivity: newProjectActivity }),
+                body: JSON.stringify({ username, role, spreadsheetId, date, newTime, newProjectActivity, rowNumber }),
         });
 
         const result = await response.json();
@@ -170,7 +170,13 @@ function initializeEditEntryButtons() {
     const editEntries = document.querySelectorAll('.editEntry'); // Adjust the selector for your buttons
     if (editEntries.length > 0) {
         editEntries.forEach(editEntry => {
-            editEntry.addEventListener('click', () => editEntryHandler(editEntry)); // Attach click event
+            editEntry.addEventListener('click', (event) => {
+                const rowNumber = event.target.getAttribute('data-row-number');
+                console.log(`Row number: ${rowNumber}`);
+                // Perform the desired action with the rowNumber
+                // For example, make an API call to edit the entry
+                editEntryHandler(rowNumber);
+            }); // Attach click event
         });
     } else {
         console.error('No editEntry buttons found.');

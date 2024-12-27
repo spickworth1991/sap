@@ -1,6 +1,6 @@
 // Updated login.js with enhanced logging
 const apiBaseUrl = window.location.hostname === 'localhost'
-    ? 'http://localhost:3000/api/auth'
+    ? 'http://localhost:5000/api/auth'
     : '/api/auth'; // For production deployment on Vercel
 
     document.addEventListener('DOMContentLoaded', () => {
