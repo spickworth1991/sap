@@ -198,7 +198,7 @@ router.post('/out',  async (req, res) => {
             spreadsheetId,
             range: `${sapSheetName}!A:E`,
             valueInputOption: 'USER_ENTERED',
-            requestBody: { values: [['', '', 'Totals', totalElapsedFormatted, totalSapTimeFormatted]] },
+            requestBody: { values: [[currentDate, '', 'Totals', totalElapsedFormatted, totalSapTimeFormatted]] },
         });
 
         res.status(200).json({ message: 'Punch Out successful.' });

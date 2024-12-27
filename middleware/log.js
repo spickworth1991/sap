@@ -26,7 +26,7 @@ export async function logAction(req, res, next) {
         } else if (req.originalUrl === '/api/sap/input') {
             const { inputText } = req.body;
             details = `Project/Activity = ${inputText}`;
-        } else if (req.originalUrl === '/api/editEntry') {
+        } else if (req.originalUrl === '/api/edit/edit') {
             const { rowIndex, time, projectActivity } = req.body;
 
             // Fetch existing data from the SAP sheet
