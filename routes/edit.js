@@ -18,7 +18,8 @@ router.post('/edit',  async (req, res) => {
     try {
       const { username, role, spreadsheetId, date, rowIndex, rowNumber, newTime, newProjectActivity } = req.body;
       const sheets = await getGoogleSheetsService();
-      
+      console.log(rowNumber);
+      console.log(rowIndex);
       if (!spreadsheetId) {
         return res.status(400).json({ error: 'Spreadsheet ID is missing in request headers' });
       }
@@ -39,7 +40,7 @@ router.post('/edit',  async (req, res) => {
         .filter(item => item.row[0] === date);
 
       // Find the specific row using the row index
-      const selectedRow = currentDate[rowNumber]; // Google Sheets uses 1-based indexing
+      const selectedRow = currentDate[rowNumber - 1]; // Google Sheets uses 1-based indexing
       console.log(selectedRow);
       // Extract the values from columns B and C
       const time = selectedRow[1]; // Column B
