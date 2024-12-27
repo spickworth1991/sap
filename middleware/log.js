@@ -38,12 +38,12 @@ export async function logAction(req, res, next) {
                 const { inputText } = req.body;
                 details = `Project/Activity = ${inputText}`;
             } else if (req.originalUrl === '/api/edit/edit') {
-                const { rowNumber, newTime, newProjectActivity } = req.body;
+                const { rowIndex, newTime, newProjectActivity } = req.body;
 
             // Fetch existing data from the SAP sheet
             const monthName = getCurrentMonthName();
             const sapSheetName = `${monthName}:SAP`;
-            const range = `${sapSheetName}!A${rowNumber}:E${rowNumber}`;
+            const range = `${sapSheetName}!A${rowIndex}:E${rowIndex}`;
             const response = await sheets.spreadsheets.values.get({
                 spreadsheetId,
                 range,
@@ -53,7 +53,7 @@ export async function logAction(req, res, next) {
             const previousTime = rowData ? rowData[1] : 'undefined'; // Column B
             const previousProjectActivity = rowData ? rowData[2] : 'undefined'; // Column C
 
-            details = `rowNumber=${rowNumber}, Previous time=${previousTime}, Updated time=${newTime}, ` +
+            details = `rowIndex=${rowIndex}, Previous time=${previousTime}, Updated time=${newTime}, ` +
                 `Previous Project/Activity=${previousProjectActivity}, Updated Project/Activity=${newProjectActivity}`;
         } else {
             details = JSON.stringify(req.body);
