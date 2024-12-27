@@ -57,10 +57,10 @@ fs.readdirSync(routesPath).forEach((file) => {
 });
 
 // Default route for API base
-//app.get('/', (req, res) => res.json({ message: 'API is running' }));
+app.get('/', (req, res) => res.json({ message: 'API is running' }));
 
 // Export the app for serverless functions or direct use
-//export default app;
+export default app;
 const PORT = process.env.PORT || 5000;
 // Start the Server
 app.listen(PORT, () => {
