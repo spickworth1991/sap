@@ -21,12 +21,17 @@ app.use(helmet());       // Add security headers
 // Logging
 console.log("Starting server...");
 
+// Global middleware for logging actions
+app.use((req, res, next) => {
+    if (req.originalUrl.startsWith('/api/auth' || req.originalUrl.startsWith('/api/entries'))) {
+        return next();
+    }
+    logAction(req, res, next);
+});
+
 // Mount auth route explicitly (runs before dynamic routes)
 app.use('/api/auth', authRoute);
 app.use('/api/entries', entriesRoute);
-
-// Global middleware for logging actions
-app.use(logAction); // This makes logAction run for all requests except for /api/auth
 
 // Resolve __dirname for ES Modules
 const __filename = fileURLToPath(import.meta.url);
