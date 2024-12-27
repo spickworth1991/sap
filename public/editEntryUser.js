@@ -23,11 +23,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     
         const apiBaseUrl = window.location.hostname === 'localhost'
-            ? 'http://localhost:5000' // For local development
+            ? 'http://localhost:5000/api/entries' // For local development
             : '/api/entries'; // For production deployment on Vercel
         try {
             showLoading()
-            const response = await fetch(`${apiBaseUrl}/api/entries/date`, {
+            const response = await fetch(`${apiBaseUrl}/date`, {
                 method: "POST",
                 headers: { 
                     'Content-Type': 'application/json',
@@ -112,10 +112,12 @@ export async function editEntryHandler(editEntry) {
         alert('Both time and project/activity are required.');
         return;
     }
-    
+    const apiBaseUrl2 = window.location.hostname === 'localhost'
+            ? 'http://localhost:5000/api/edit' // For local development
+            : '/api/edit'; // For production deployment on Vercel
     try {
         showLoading();
-        const response = await fetch(`${apiBaseUrl}/api/edit/edit`, {
+        const response = await fetch(`${apiBaseUrl2}/edit`, {
             method: "POST",
                 headers: { 
                     'Content-Type': 'application/json',

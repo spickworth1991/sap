@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 const apiBaseUrl = window.location.hostname === 'localhost'
-            ? 'http://localhost:5000' // For local development
+            ? 'http://localhost:5000/api/sap' // For local development
             : '/api/sap'; // For production deployment on Vercel
 // SAP Input function
 async function sapInputHandler(button) {
@@ -35,7 +35,7 @@ async function sapInputHandler(button) {
     button.style.backgroundColor = "#555";
   
     try {
-      const response = await fetch(`${apiBaseUrl}/api/sap/input`, {
+      const response = await fetch(`${apiBaseUrl}/input`, {
         method: "POST",
         headers: {
           'Content-Type': 'application/json',

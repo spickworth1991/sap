@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 const apiBaseUrl = window.location.hostname === 'localhost'
-            ? 'http://localhost:5000' // For local development
+            ? 'http://localhost:5000/api/punch' // For local development
             : '/api/punch'; // For production deployment on Vercel
 // Punch In function
 export async function punchInHandler(button) {
@@ -32,7 +32,7 @@ export async function punchInHandler(button) {
         return (window.location.href = 'index.html');
     }
     try {
-        const response = await fetch(`${apiBaseUrl}/api/punch/in`, {
+        const response = await fetch(`${apiBaseUrl}/in`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -71,7 +71,7 @@ export async function punchOutHandler(button) {
 
 
     try {
-        const response = await fetch(`${apiBaseUrl}/api/punch/out`, {
+        const response = await fetch(`${apiBaseUrl}/out`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
