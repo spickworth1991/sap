@@ -16,10 +16,10 @@ import {
 const router = express.Router();
 router.post('/edit',  async (req, res) => {
     try {
-      const { username, role, spreadsheetId, date, rowIndex, rowNumber, newTime, newProjectActivity } = req.body;
+      const { username, role, spreadsheetId, date, rowNumber, newTime, newProjectActivity } = req.body;
       const sheets = await getGoogleSheetsService();
       console.log(rowNumber);
-      console.log(rowIndex);
+
       if (!spreadsheetId) {
         return res.status(400).json({ error: 'Spreadsheet ID is missing in request headers' });
       }
@@ -53,7 +53,7 @@ router.post('/edit',  async (req, res) => {
       // 1. Update the specified row with the new time and project/activity
       await sheets.spreadsheets.values.update({
         spreadsheetId,
-        range: `${sapSheetName}!B${rowIndex}:C${rowIndex}`,
+        range: `${sapSheetName}!B${rowNumber}:C${rowNumber}`,
         valueInputOption: 'USER_ENTERED',
         requestBody: { values: [[newTime, newProjectActivity]] },
       });
