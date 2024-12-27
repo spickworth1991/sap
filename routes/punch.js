@@ -34,8 +34,11 @@ router.post('/in', async (req, res) => {
         const currentTime = getCurrentTime();
         const monthName = getCurrentMonthName();
         const sapSheetName = `${monthName}:SAP`;
+        
+        // Ensure headers are present in the SAP sheet
+        await ensureHeaders(sheets, sapSheetName, currentDate, spreadsheetId);
 
-
+        
         // Find the row with the current date on the month sheet
         const rowIndex = await findDateRow(sheets, monthName, currentDate, spreadsheetId);
         console.log(`rowIndex: ${rowIndex}`);
@@ -60,9 +63,8 @@ router.post('/in', async (req, res) => {
             valueInputOption: 'USER_ENTERED',
             requestBody: { values: [[currentTime]] },
         });
-        // Ensure headers are present in the SAP sheet
-        await ensureHeaders(sheets, sapSheetName, currentDate, spreadsheetId);
-
+        
+        
         // Add Punch In entry to the SAP sheet
         await sheets.spreadsheets.values.append({
             spreadsheetId,
