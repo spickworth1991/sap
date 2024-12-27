@@ -172,8 +172,9 @@ body {
 .table-container {
     max-height: 80vh; /* Adjust the height as needed */
     overflow-y: auto;
-    border: 1px solid #ccc; /* Optional: Add a border for better visibility */
+    border: 2px solid #ccc; /* Optional: Add a border for better visibility */
     -webkit-overflow-scrolling: touch; /* Enable momentum scrolling on iOS */
+    border-radius: 8px;
 }
 
 /* Basic table styling */
@@ -259,13 +260,10 @@ tbody tr:nth-child(even) {
         width: 100%;
     }
 
-    th {
-        display: none; /* Hide table headers on small screens */
-    }
-
+  
     td {
         position: relative;
-        padding-left: 50%;
+        padding-left: 100%;
         text-align: right;
     }
 
@@ -273,7 +271,7 @@ tbody tr:nth-child(even) {
         content: attr(data-label);
         position: absolute;
         left: 0;
-        width: 50%;
+        width: 100%;
         padding-left: 10px;
         font-weight: bold;
         text-align: left;
