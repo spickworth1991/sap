@@ -16,7 +16,7 @@ import {
 const router = express.Router();
 router.post('/edit',  async (req, res) => {
     try {
-      const { username, role, spreadsheetId, date, rowIndex, time: newTime, projectActivity: newProjectActivity } = req.body;
+      const { username, role, spreadsheetId, date, rowIndex, time, projectActivity } = req.body;
       const sheets = await getGoogleSheetsService();
       
       if (!spreadsheetId) {
@@ -125,10 +125,10 @@ router.post('/edit',  async (req, res) => {
         });
       }
   
-      res.status(200).json(success.ENTRY_UPDATED_SUCCESS);
+      res.status(200).json({ message : "Edit successful"});
     } catch (error) {
       console.error('Error in editing entry:', error);
-      res.status(500).json(errors.UPDATE_FAILED);
+      res.status(500).json({message : "Edit failed"});
     }
   });
 
