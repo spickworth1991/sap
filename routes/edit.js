@@ -38,6 +38,7 @@ router.post('/edit',  async (req, res) => {
       let currentDate = currentData
         .map((row, index) => ({ index: index + 1, row }))
         .filter(item => item.row[0] === date);
+        console.log(currentDate);
 
 
       // Find the specific row using the row index
