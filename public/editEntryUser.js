@@ -106,7 +106,7 @@ export async function editEntryHandler(editEntry) {
             method: "POST",
                 headers: { 
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`, // Optional
+                    
                 },
                 body: JSON.stringify({ date, rowIndex, time: newTime, projectActivity: newProjectActivity }),
         });
