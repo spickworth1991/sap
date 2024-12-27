@@ -61,3 +61,8 @@ app.get('/', (req, res) => res.json({ message: 'API is running' }));
 
 // Export the app for serverless functions or direct use
 export default app;
+const PORT = process.env.PORT || 5000;
+// Start the Server
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });

@@ -14,7 +14,9 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('Punch Out button not found.');
     }
 });
-
+const apiBaseUrl = window.location.hostname === 'localhost'
+            ? 'http://localhost:5000' // For local development
+            : '/api/punch'; // For production deployment on Vercel
 // Punch In function
 export async function punchInHandler(button) {
     button.style.backgroundColor = "#555";
@@ -30,7 +32,7 @@ export async function punchInHandler(button) {
         return (window.location.href = 'index.html');
     }
     try {
-        const response = await fetch(`/api/punch/in`, {
+        const response = await fetch(`${apiBaseUrl}/api/punch/in`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -69,7 +71,7 @@ export async function punchOutHandler(button) {
 
 
     try {
-        const response = await fetch(`/api/punch/out`, {
+        const response = await fetch(`${apiBaseUrl}/api/punch/out`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

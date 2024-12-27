@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', async () => {
-
+    
     // Only run this code if the current page is editentryuser.html
     if (window.location.pathname.includes('editentryuser.html')) {
         const urlParams = new URLSearchParams(window.location.search);
@@ -22,10 +22,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
     
-    
+        const apiBaseUrl = window.location.hostname === 'localhost'
+            ? 'http://localhost:5000' // For local development
+            : '/api/entries'; // For production deployment on Vercel
         try {
             showLoading()
-            const response = await fetch(`/api/entries/date`, {
+            const response = await fetch(`${apiBaseUrl}/api/entries/date`, {
                 method: "POST",
                 headers: { 
                     'Content-Type': 'application/json',
@@ -113,7 +115,7 @@ export async function editEntryHandler(editEntry) {
     
     try {
         showLoading();
-        const response = await fetch('/api/edit/edit', {
+        const response = await fetch(`${apiBaseUrl}/api/edit/edit`, {
             method: "POST",
                 headers: { 
                     'Content-Type': 'application/json',

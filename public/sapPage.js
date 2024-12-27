@@ -8,7 +8,9 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('Sap Input Error at button.');
     }
 });
-
+const apiBaseUrl = window.location.hostname === 'localhost'
+            ? 'http://localhost:5000' // For local development
+            : '/api/sap'; // For production deployment on Vercel
 // SAP Input function
 async function sapInputHandler(button) {
     const inputBox = document.getElementById("inputBox");
@@ -33,7 +35,7 @@ async function sapInputHandler(button) {
     button.style.backgroundColor = "#555";
   
     try {
-      const response = await fetch("/api/sap/input", {
+      const response = await fetch(`${apiBaseUrl}/api/sap/input`, {
         method: "POST",
         headers: {
           'Content-Type': 'application/json',
