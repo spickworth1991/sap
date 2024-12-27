@@ -29,27 +29,17 @@ router.post('/edit',  async (req, res) => {
       let grabCurrentData = await sheets.spreadsheets.values.get({
         spreadsheetId,
         range: `${sapSheetName}!A:E`,
-    });
-    
-    let currentData = grabCurrentData.data.values || [];
-    
-    // Find all rows with the same date
-    let currentDate = currentData
+      });
+
+      let currentData = grabCurrentData.data.values || [];
+
+      // Find all rows with the same date
+      let currentDate = currentData
         .map((row, index) => ({ index: index + 1, row }))
         .filter(item => item.row[0] === date);
-    
-    // Ensure rowNumber is within the bounds of currentDate array
-    if (rowNumber < 1 || rowNumber > currentDate.length) {
-        return res.status(400).json({ error: 'Invalid row number' });
-    }
-    
-    // Find the specific row using the row index
-    const selectedRow = currentDate.find(item => item.index === rowNumber)?.row;
-    console.log(selectedRow);
-    if (!selectedRow) {
-        return res.status(400).json({ error: 'Row not found' });
-    }
-    
+
+      // Find the specific row using the row index
+      const selectedRow = currentDate[rowNumber]; // Google Sheets uses 1-based indexing
       console.log(selectedRow);
       // Extract the values from columns B and C
       const time = selectedRow[1]; // Column B

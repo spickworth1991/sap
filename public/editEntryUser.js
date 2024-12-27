@@ -171,7 +171,7 @@ function initializeEditEntryButtons() {
         editEntries.forEach(editEntry => {
             editEntry.addEventListener('click', (event) => {
                 const rowNumber = event.target.getAttribute('data-row-number');
-                console.log(`Row number: ${rowNumber}`);
+                console.log(`Row number at intialize: ${rowNumber}`);
                 // Perform the desired action with the rowNumber
                 // For example, make an API call to edit the entry
                 editEntryHandler(rowNumber);
