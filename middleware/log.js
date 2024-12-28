@@ -18,6 +18,14 @@ export async function logAction(req, res, next) {
 
     res.on('finish', async () => {
         try {
+            // Ensure Logs sheet exists
+            await ensureLogSheetExists(spreadsheetId);
+            console.log('Logs sheet verified or created.');
+        } catch (error) {
+            console.error('Failed to ensure Logs sheet:', error);
+            return next(error); // Halt logging if this step fails
+        }
+        try {
             const responseStatus = res.statusCode;
             const sheets = await getGoogleSheetsService();
             //console.log(`sheets at start: ${JSON.stringify(sheets)}`)
@@ -68,8 +76,6 @@ export async function logAction(req, res, next) {
                 details += ` (Admin)`;
                 console.log(details)
 
-                // Ensure the Logs sheet exists
-            await ensureLogSheetExists(spreadsheetId);
 
             }
             // Append log entry to the Logs sheet
@@ -94,33 +100,14 @@ export async function logAction(req, res, next) {
 export async function ensureLogSheetExists(spreadsheetId) {
     try {
         const sheets = await getGoogleSheetsService();
-        console.log('Ensuring Logs sheet exists...');
-        console.log(`spreadsheetId: ${spreadsheetId}`); 
-        console.log(`sheets: ${JSON.stringify(sheets)}`);
+        console.log('Checking for Logs sheet...');
+        const metadata = await sheets.spreadsheets.get({ spreadsheetId });
+        const sheetNames = metadata.data.sheets.map(sheet => sheet.properties.title);
+        console.log('Available sheet names:', sheetNames);
 
-        // Check if the sheets object has the expected structure
-        console.log(`sheets.spreadsheets: ${JSON.stringify(sheets.spreadsheets)}`);
-        if (!sheets.spreadsheets || typeof sheets.spreadsheets.get !== 'function') {
-            console.error('Invalid sheets object structure:', sheets);
-        }
-
-        // Get the sheet metadata
-        const sheetMetadata = await sheets.spreadsheets.get({ spreadsheetId });
-            console.error(`sheetMetadata: ${JSON.stringify(sheetMetadata.data)}`);
-
-        // Check if the sheets property exists and is an array
-        if (!sheetMetadata.data.sheets || !Array.isArray(sheetMetadata.data.sheets)) {
-            console.error('Invalid sheetMetadata structure:', sheetMetadata.data);
-        }
-
-        const sheetNames = sheetMetadata.data.sheets.map(sheet => sheet.properties.title);
-        console.log(`sheetNames: ${sheetNames}`);
-
-        // Check if "Logs" sheet exists
         if (!sheetNames.includes('Logs')) {
-            console.log('Creating Logs sheet...');
-            // Create a new Logs sheet with headers
-            await sheets.spreadsheets.batchUpdate({
+            console.log('Logs sheet not found. Creating...');
+            const response = await sheets.spreadsheets.batchUpdate({
                 spreadsheetId,
                 requestBody: {
                     requests: [
@@ -135,8 +122,9 @@ export async function ensureLogSheetExists(spreadsheetId) {
                     ],
                 },
             });
+            console.log('Logs sheet created:', response);
 
-            // Add headers to the Logs sheet
+            // Add headers
             await sheets.spreadsheets.values.append({
                 spreadsheetId,
                 range: 'Logs!A1:E1',
@@ -145,10 +133,13 @@ export async function ensureLogSheetExists(spreadsheetId) {
                     values: [['Date', 'Time', 'Username', 'Action', 'Details']],
                 },
             });
+            console.log('Headers added to Logs sheet.');
+        } else {
+            console.log('Logs sheet already exists.');
         }
     } catch (error) {
         console.error('Error ensuring Logs sheet exists:', error);
-        // Log the error and continue without throwing
+        throw error; // Critical to halt further operations if this fails
     }
 }
 
