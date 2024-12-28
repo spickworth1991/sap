@@ -45,7 +45,7 @@ export async function logAction(req, res, next) {
     next(); // Proceed to the next middleware or route handler
 }
 
-function generateDetails(req, res, role, sheets, spreadsheetId) {
+async function generateDetails(req, res, role) {
     let details = '';
     const responseStatus = res.statusCode;
 
@@ -61,11 +61,24 @@ function generateDetails(req, res, role, sheets, spreadsheetId) {
     } else if (req.originalUrl === '/api/edit/edit') {
         const { rowNumber, newTime, newProjectActivity } = req.body;
         details = `rowNumber=${rowNumber}, Updated time=${newTime}, Updated Project/Activity=${newProjectActivity}`;
-        generateDetailsEdit(req, res, role, rowNumber, newTime, newProjectActivity, sheets, spreadsheetId);
+        // Fetch existing data from the SAP sheet
+        const monthName = getCurrentMonthName();
+        const sapSheetName = `${monthName}:SAP`;
+        const range = `${sapSheetName}!A${rowNumber}:E${rowNumber}`;
+        const response = await sheets.spreadsheets.values.get({
+            spreadsheetId,
+            range,
+        });
+
+        const rowData = response.data.values?.[0];
+        const previousTime = rowData ? rowData[1] : 'undefined'; // Column B
+        const previousProjectActivity = rowData ? rowData[2] : 'undefined'; // Column C
+
+        details = `rowNumber=${rowNumber}, Previous time=${previousTime}, Updated time=${newTime}, ` +
+            `Previous Project/Activity=${previousProjectActivity}, Updated Project/Activity=${newProjectActivity}`;
     } else {
         details = `Unknown action: ${req.originalUrl}` + (responseStatus === 200 ? ': Successful' : ': Failed');
     }
-
     if (role === 'admin') {
         details += ' (Admin)';
     }
@@ -125,35 +138,6 @@ export async function ensureLogSheetExists(spreadsheetId) {
     }
 }
 
-
-
-function generateDetailsEdit(req, res, role, rowNumber, newTime, newProjectActivity, sheets, spreadsheetId) {
-    let details = '';
-
-// Fetch existing data from the SAP sheet
-    try {
-        
-        const monthName = getCurrentMonthName();
-        const sapSheetName = `${monthName}:SAP`;
-        const range = `${sapSheetName}!A${rowNumber}:E${rowNumber}`;
-        const response = sheets.spreadsheets.values.get({
-            spreadsheetId,
-            range,
-        });
-
-        const rowData = response.data.values?.[0];
-        const previousTime = rowData ? rowData[1] : 'undefined'; // Column B
-        const previousProjectActivity = rowData ? rowData[2] : 'undefined'; // Column C
-
-        details = `rowNumber=${rowNumber}, Previous time=${previousTime}, Updated time=${newTime}, ` +
-        `Previous Project/Activity=${previousProjectActivity}, Updated Project/Activity=${newProjectActivity}`;  
-    } catch (error) {
-    console.error('generating extra detailss:', error);
-    throw error; // Critical error halts further operations
-    }
-
-    return details;
-}
 
 
 
