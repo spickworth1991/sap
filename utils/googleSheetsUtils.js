@@ -45,83 +45,18 @@ export function getCurrentTime() {
     return moment().tz('America/New_York').format('HH:mm:ss');
 }
 
-// Helper function to ensure the Logs sheet exists
-export async function ensureLogSheetExists(spreadsheetId) {
-    const sheets = await getGoogleSheetsService();
-    console.log('Ensuring Logs sheet exists...');
-    console.log(`spreadsheetId: ${spreadsheetId}`); 
-    console.log(`sheets: ${JSON.stringify(sheets)}`);
-    try {
-        // Check if the sheets object has the expected structure
-        if (!sheets.spreadsheets || typeof sheets.spreadsheets.get !== 'function') {
-            console.error('Invalid sheets object structure:', sheets);
-            throw new Error('Invalid sheets object structure');
-        }
-
-        // Get the sheet metadata
-        const sheetMetadata = await sheets.spreadsheets.get({ spreadsheetId });
-        console.log(`sheetMetadata: ${JSON.stringify(sheetMetadata.data)}`);
-
-        // Check if the sheets property exists and is an array
-        if (!sheetMetadata.data.sheets || !Array.isArray(sheetMetadata.data.sheets)) {
-            throw new Error('Invalid sheet metadata format');
-        }
-
-        const sheetNames = sheetMetadata.data.sheets.map(sheet => sheet.properties.title);
-        console.log(`sheetNames: ${sheetNames}`);
-
-        // Check if "Logs" sheet exists
-        if (!sheetNames.includes('Logs')) {
-            console.log('Creating Logs sheet...');
-            // Create a new Logs sheet with headers
-            await sheets.spreadsheets.batchUpdate({
-                spreadsheetId,
-                requestBody: {
-                    requests: [
-                        {
-                            addSheet: {
-                                properties: {
-                                    title: 'Logs',
-                                    gridProperties: { rowCount: 1000, columnCount: 5 },
-                                },
-                            },
-                        },
-                    ],
-                },
-            });
-
-            // Add headers to the Logs sheet
-            await sheets.spreadsheets.values.append({
-                spreadsheetId,
-                range: 'Logs!A1:E1',
-                valueInputOption: 'USER_ENTERED',
-                requestBody: {
-                    values: [['Date', 'Time', 'Username', 'Action', 'Details']],
-                },
-            });
-        }
-    } catch (error) {
-        console.error('Error ensuring Logs sheet exists:', error);
-        throw error; // Re-throw the error to be handled by the calling function
-    }
+export function getCurrentDateTime() {
+    return moment().tz('America/New_York').format('MM/DD/YYYY HH:mm:ss');
 }
-  
 
-export async function findDateRow(sheets, monthName, currentDate, spreadsheetId ) {
-    const response = await sheets.spreadsheets.values.get({
-      spreadsheetId,
-      range: `${monthName}!B:B`,
-    });
-  
-    const rows = response.data.values || [];
-    //console.log(`rows: ${rows}`);
-    for (let i = 0; i < rows.length; i++) {
-      if (rows[i][0] === currentDate) {
-      return i + 1; // Google Sheets uses 1-based indexing
-      }
-    }
-    return null;
+export function getCurrentTimezone() { 
+    return moment.tz.guess();
 }
+
+export function formatTimezone(timezone) {
+    return timezone.replace(/_/g, ' ');
+}
+
 
 
 export function formatElapsedTime(milliseconds) {
