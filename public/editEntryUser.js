@@ -120,6 +120,7 @@ export async function editEntryHandler(rowNumber) {
             method: "POST",
                 headers: { 
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`, // Optional
                     
                 },
                 body: JSON.stringify({ username, role, spreadsheetId, date, newTime, newProjectActivity, rowNumber }),
