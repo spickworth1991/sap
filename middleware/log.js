@@ -9,7 +9,7 @@ import {
 } from '../utils/googleSheetsUtils.js';
 
 export async function logAction(req, res, next) {
-
+    const { spreadsheetId, role } = req.body;
     if (!spreadsheetId ) {
         console.error('Missing spreadsheetId in the request body. Logging aborted.');
         return;
