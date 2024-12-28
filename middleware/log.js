@@ -7,8 +7,9 @@ import {
     getCurrentTime,
     getCurrentMonthName,
 } from '../utils/googleSheetsUtils.js';
-const { spreadsheetId, role } = req.body;
+
 export async function logAction(req, res, next) {
+    const { spreadsheetId, role } = req.body;
     const originalSend = res.send;
     let responseStatus;
 
