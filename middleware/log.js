@@ -22,7 +22,7 @@ export async function logAction(req, res, next) {
         try {
             const { spreadsheetId, role } = req.body;
             const sheets = await getGoogleSheetsService();
-            console.log(`sheets at start: ${sheets}`)
+            console.log(`sheets at start: ${JSON.stringify(sheets)}`)
             const username = req.body['username'] || 'Unknown User';
             const action = `${req.method} ${req.originalUrl}`;
             console.log(spreadsheetId)
