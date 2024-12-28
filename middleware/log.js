@@ -25,6 +25,9 @@ export async function logAction(req, res, next) {
             const username = req.body['username'] || 'Unknown User';
             const action = `${req.method} ${req.originalUrl}`;
             console.log(`spreadsheetId: ${spreadsheetId}`);
+            // Ensure the Logs sheet exists
+            await ensureLogSheetExists(spreadsheetId);
+            console.log('Logs sheet exists');
 
             let details;
 
@@ -72,11 +75,6 @@ export async function logAction(req, res, next) {
                 details += ` (Admin)`;
                 console.log(details)
             }
-
-            // Ensure the Logs sheet exists
-            await ensureLogSheetExists(spreadsheetId);
-            console.log('Logs sheet exists');
-
             // Append log entry to the Logs sheet
             await sheets.spreadsheets.values.append({
                 spreadsheetId,
