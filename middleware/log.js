@@ -68,7 +68,7 @@ async function generateDetails(req, res, role) {
         console.log(`Fetching data from month: ${monthName}`);
         const sapSheetName = `${monthName}:SAP`;
         console.log(`Fetching data from range: ${sapSheetName}!A${rowNumber}:E${rowNumber}`);
-        const range = `${sapSheetName}!A${rowNumber}:C${rowNumber}`;
+        const range = `${sapSheetName}!A${rowNumber}:E${rowNumber}`;
         console.log(`Fetching data from range: ${range}`);
         const response = await sheets.spreadsheets.values.get({
             spreadsheetId,
@@ -83,9 +83,9 @@ async function generateDetails(req, res, role) {
         console.log(`previousProjectActivity: ${previousProjectActivity}`); 
 
         details = `rowNumber=${rowNumber}, Previous time=${previousTime}, Updated time=${newTime}, ` +
-            `Previous Project/Activity=${previousProjectActivity}, Updated Project/Activity=${newProjectActivity}`;
+              `Previous Project/Activity=${previousProjectActivity}, Updated Project/Activity=${newProjectActivity}`;
     } else {
-        details = `Unknown action: ${req.originalUrl}` + (responseStatus === 200 ? ': Successful' : ': Failed');
+        details = `Unknown action: ${req.originalUrl} - Response: ${res.statusCode}`;
     }
     if (role === 'admin') {
         details += ' (Admin)';
