@@ -48,6 +48,7 @@ export async function logAction(req, res, next) {
 async function generateDetails(req, res, role) {
     let details = '';
     const responseStatus = res.statusCode;
+    const sheets = await getGoogleSheetsService();
 
     if (req.originalUrl === '/api/punch/in') {
         details = 'Punch In';
