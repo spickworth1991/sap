@@ -45,18 +45,24 @@ export function getCurrentTime() {
     return moment().tz('America/New_York').format('HH:mm:ss');
 }
 
-export function getCurrentDateTime() {
-    return moment().tz('America/New_York').format('MM/DD/YYYY HH:mm:ss');
-}
 
-export function getCurrentTimezone() { 
-    return moment.tz.guess();
-}
+  
 
-export function formatTimezone(timezone) {
-    return timezone.replace(/_/g, ' ');
+export async function findDateRow(sheets, monthName, currentDate, spreadsheetId ) {
+    const response = await sheets.spreadsheets.values.get({
+      spreadsheetId,
+      range: `${monthName}!B:B`,
+    });
+  
+    const rows = response.data.values || [];
+    //console.log(`rows: ${rows}`);
+    for (let i = 0; i < rows.length; i++) {
+      if (rows[i][0] === currentDate) {
+      return i + 1; // Google Sheets uses 1-based indexing
+      }
+    }
+    return null;
 }
-
 
 
 export function formatElapsedTime(milliseconds) {
