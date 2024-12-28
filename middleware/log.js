@@ -33,35 +33,41 @@ export async function logAction(req, res, next) {
             let details;
 
             // Determine details based on the route
-            if (req.originalUrl === '/api/punch/in') {
-                details = 'Punch In';
-                details += responseStatus === 200 ? ': Successful' : ': Failed';
-            } else if (req.originalUrl === '/api/punch/out') {
-                details = 'Punch Out';
-                details += responseStatus === 200 ? ': Successful' : ': Failed';
-            } else if (req.originalUrl === '/api/sap/input') {
-                const { inputText } = req.body;
-                details = `Project/Activity = ${inputText}`;
-            } else if (req.originalUrl === '/api/edit/edit') {
-                const { rowNumber, newTime, newProjectActivity } = req.body;
+            switch (req.originalUrl) {
+                case '/api/punch/in':
+                    details = 'Punch In' + (responseStatus === 200 ? ': Successful' : ': Failed');
+                    break;
+                case '/api/punch/out':
+                    details = 'Punch Out' + (responseStatus === 200 ? ': Successful' : ': Failed');
+                    break; 
+                case '/api/sap/input': 
+                    const { inputText } = req.body;
+                    details = `Project/Activity = ${inputText}` + (responseStatus === 200 ? ': Successful' : ': Failed');
+                    break;
+                case '/api/edit/edit':
+                    const { rowNumber, newTime, newProjectActivity } = req.body;
 
-                // Fetch existing data from the SAP sheet
-                const monthName = getCurrentMonthName();
-                const sapSheetName = `${monthName}:SAP`;
-                const range = `${sapSheetName}!A${rowNumber}:E${rowNumber}`;
-                const response = await sheets.spreadsheets.values.get({
-                    spreadsheetId,
-                    range,
-                });
+                    // Fetch existing data from the SAP sheet
+                    const monthName = getCurrentMonthName();
+                    const sapSheetName = `${monthName}:SAP`;
+                    const range = `${sapSheetName}!A${rowNumber}:E${rowNumber}`;
+                    const response = await sheets.spreadsheets.values.get({
+                        spreadsheetId,
+                        range,
+                    });
 
-                const rowData = response.data.values?.[0];
-                const previousTime = rowData ? rowData[1] : 'undefined'; // Column B
-                const previousProjectActivity = rowData ? rowData[2] : 'undefined'; // Column C
+                    const rowData = response.data.values?.[0];
+                    const previousTime = rowData ? rowData[1] : 'undefined'; // Column B
+                    const previousProjectActivity = rowData ? rowData[2] : 'undefined'; // Column C
 
-                details = `rowNumber=${rowNumber}, Previous time=${previousTime}, Updated time=${newTime}, ` +
-                    `Previous Project/Activity=${previousProjectActivity}, Updated Project/Activity=${newProjectActivity}`;
-            } else {
-                details = JSON.stringify(req.body);
+                    details = `rowNumber=${rowNumber}, Previous time=${previousTime}, Updated time=${newTime}, Previous Project/Activity=${previousProjectActivity}, Updated Project/Activity=${newProjectActivity}`;
+                    break;
+
+                    default:   
+                        details = `Unknown action: ${req.originalUrl}` + (responseStatus === 200 ? ': Successful' : ': Failed'), JSON.stringify(req.body) ;
+                        break;}
+            if (role === 'admin') {
+                details += ` (Admin)`;
             }
 
             // Ensure the Logs sheet exists

@@ -22,21 +22,25 @@ app.use(helmet());       // Add security headers
 // Logging
 console.log("Starting server...");
 
+// Log all requests
+// Mount auth route explicitly (runs before dynamic routes)
+app.use('/api/auth', authRoute);
+app.use('/api/entries', entriesRoute);
+
+
+
 // Global middleware for logging actions
 app.use((req, res, next) => {
-    if (req.originalUrl.startsWith('/api/auth') || req.originalUrl.startsWith('/api/entries')) {
+    if (!req.headers['authorization']) {
+        console.warn('Missing Authorization header. Logging skipped.');
         return next();
     }
     logAction(req, res, next);
 });
 
-// Mount auth route explicitly (runs before dynamic routes)
-app.use('/api/auth', authRoute);
-app.use('/api/entries', entriesRoute);
 
-// Explicitly load the Punch route
 app.use('/api/punch', punchRoute);
-console.log("Mounted /api/punch route explicitly");
+
 
 // Dynamically load other routes from 'routes' directory
 const __filename = fileURLToPath(import.meta.url);
