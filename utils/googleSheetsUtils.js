@@ -58,6 +58,7 @@ export async function ensureLogSheetExists(spreadsheetId) {
         }
   
         // Get the sheet metadata
+        console.log("im here")
         const sheetMetadata = await sheets.spreadsheets.get({ spreadsheetId });
         console.log(`sheetMetadata: ${JSON.stringify(sheetMetadata.data)}`);
   

@@ -90,16 +90,16 @@ function showInitialPage() {
     const role = localStorage.getItem('role');
 
     if (role === 'user' && (currentPage === '/' || currentPage.startsWith('/index.html'))) {
-        console.log(`User role: ${role}`);
+        //console.log(`User role: ${role}`);
         window.location.href = 'homePage.html';
     } else if (role === 'admin' && (currentPage === '/' || currentPage.startsWith('/index.html'))) {
-        console.log(`User role: ${role}`);
+        //console.log(`User role: ${role}`);
         window.location.href = 'homePage.html';
         localStorage.setItem('adminNavigate', 'true'); // Set flag for admin-specific setup
     } else {
         // Redirect to index.html for non-role users
         if (!role) {
-            console.log(`User role: ${role}`);
+           // console.log(`User role: ${role}`);
             window.location.href = 'index.html';
         }
     }
