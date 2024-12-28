@@ -47,10 +47,16 @@ export function getCurrentTime() {
 
 // Helper function to ensure the Logs sheet exists
 export async function ensureLogSheetExists(spreadsheetId) {
-    const sheets = await getGoogleSheetsService();
-    console.log('Ensuring Logs sheet exists...');
-    console.log(`spreadsheetId: ${spreadsheetId}`); 
-    console.log(`sheets: ${JSON.stringify(sheets)}`);
+    let sheets;
+    try {
+        sheets = await getGoogleSheetsService();
+        console.log('Ensuring Logs sheet exists...');
+        console.log(`spreadsheetId: ${spreadsheetId}`); 
+        console.log(`sheets: ${JSON.stringify(sheets)}`);
+    } catch (error) {
+        console.error('Error getting Google Sheets service:', error);
+        throw error;
+    }
     try {
         // Check if the sheets object has the expected structure
         if (!sheets.spreadsheets || typeof sheets.spreadsheets.get !== 'function') {
@@ -59,7 +65,6 @@ export async function ensureLogSheetExists(spreadsheetId) {
         }
   
         // Get the sheet metadata
-        console.log("im here")
         const sheetMetadata = await sheets.spreadsheets.get({ spreadsheetId });
         console.log(`sheetMetadata: ${JSON.stringify(sheetMetadata.data)}`);
   
