@@ -24,7 +24,7 @@ export async function logAction(req, res, next) {
         const sheets = await getGoogleSheetsService();
         const username = req.body['username'] || 'Unknown User';
         const action = `${req.method} ${req.originalUrl}`;
-        const details = generateDetails(req, res, role);
+        const details = await generateDetails(req, res, role);
 
         // Append log entry to the Logs sheet
         console.log(`Appending log for action: ${action}`);
