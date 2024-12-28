@@ -74,6 +74,7 @@ export async function logAction(req, res, next) {
             }
 
             // Ensure the Logs sheet exists
+            console.log(`sheets before ensureLog: ${sheets}`)
             await ensureLogSheetExists(sheets, spreadsheetId);
             console.log('Logs sheet exists');
 
