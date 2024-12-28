@@ -50,44 +50,50 @@ export async function ensureLogSheetExists(spreadsheetId) {
   const sheets = await getGoogleSheetsService();
   console.log('Ensuring Logs sheet exists...');
   console.log(`spreadsheetId: ${spreadsheetId}`); 
-    try {
+  try {
       // Get the sheet metadata
-      const sheetMetadata =  sheets.spreadsheets.get({ spreadsheetId });
-      console.log(`sheetMetadata: ${sheetMetadata}`);
+      const sheetMetadata = await sheets.spreadsheets.get({ spreadsheetId });
+      console.log(`sheetMetadata: ${JSON.stringify(sheetMetadata.data)}`);
+
+      // Check if the sheets property exists and is an array
+      if (!sheetMetadata.data.sheets || !Array.isArray(sheetMetadata.data.sheets)) {
+          throw new Error('Invalid sheet metadata format');
+      }
+
       const sheetNames = sheetMetadata.data.sheets.map(sheet => sheet.properties.title);
       console.log(`sheetNames: ${sheetNames}`);
-  
+
       // Check if "Logs" sheet exists
       if (!sheetNames.includes('Logs')) {
-        console.log('Creating Logs sheet...');
-        // Create a new Logs sheet with headers
-        await sheets.spreadsheets.batchUpdate({
-          spreadsheetId,
-          requestBody: {
-            requests: [
-              {
-                addSheet: {
-                  properties: {
-                    title: 'Logs',
-                    gridProperties: { rowCount: 1000, columnCount: 5 },
-                  },
-                },
+          console.log('Creating Logs sheet...');
+          // Create a new Logs sheet with headers
+          await sheets.spreadsheets.batchUpdate({
+              spreadsheetId,
+              requestBody: {
+                  requests: [
+                      {
+                          addSheet: {
+                              properties: {
+                                  title: 'Logs',
+                                  gridProperties: { rowCount: 1000, columnCount: 5 },
+                              },
+                          },
+                      },
+                  ],
               },
-            ],
-          },
-        });
-  
-        // Add headers to the Logs sheet
-        await sheets.spreadsheets.values.append({
-          spreadsheetId,
-          range: 'Logs!A1:E1',
-          valueInputOption: 'USER_ENTERED',
-          requestBody: {
-            values: [['Date', 'Time', 'Username', 'Action', 'Details']],
-          },
-        });
+          });
+
+          // Add headers to the Logs sheet
+          await sheets.spreadsheets.values.append({
+              spreadsheetId,
+              range: 'Logs!A1:E1',
+              valueInputOption: 'USER_ENTERED',
+              requestBody: {
+                  values: [['Date', 'Time', 'Username', 'Action', 'Details']],
+              },
+          });
       }
-    } catch (error) {
+  } catch (error) {
       console.error('Error ensuring Logs sheet exists:', error);
       throw error; // Re-throw the error to be handled by the calling function
   }
