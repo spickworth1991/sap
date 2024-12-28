@@ -79,15 +79,18 @@ export function calculateElapsedTimeDecimal(milliseconds) {
   
   // Ensure headers exist if the last entry in Column A is not the current date
 export async function ensureHeaders(sheets, sapSheetName, currentDate, spreadsheetId ) {
-const response = await sheets.spreadsheets.values.get({
+    console.log(`Checking headers for ${sapSheetName}, current date: ${currentDate}`, spreadsheetId); 
+    const sheets = await getGoogleSheetsService();
+    const response = await sheets.spreadsheets.values.get({
     spreadsheetId,
     range: `${sapSheetName}!A:A`,
 });
 
 const rows = response.data.values || [];
-const lastEntry = rows.length > 0 ? rows[rows.length - 1][0] : null;
+const lastEntry = rows.length > 0 ? rows[rows.length - 1][2] : null;
+console.log(`Last entry in Column C: ${lastEntry}`);    
 
-if (lastEntry !== currentDate) {
+if (lastEntry !== "Totals") {
     await sheets.spreadsheets.values.append({
     spreadsheetId,
     range: `${sapSheetName}!A1:E1`,
