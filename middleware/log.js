@@ -8,18 +8,17 @@ import {
 } from '../utils/googleSheetsUtils.js';
 
 export async function logAction(req, res, next) {
+    const { spreadsheetId, role } = req.body;
 
-    const originalSend = res.send;
-    let responseStatus;
+    if (!spreadsheetId) {
+        console.error('Missing spreadsheetId in the request body. Logging aborted.');
+        return next();
+    }
 
-    res.send = function (body) {
-        responseStatus = res.statusCode;
-        originalSend.call(this, body);
-    };
 
     res.on('finish', async () => {
         try {
-            const { spreadsheetId, role } = req.body;
+            const responseStatus = res.statusCode;
             const sheets = await getGoogleSheetsService();
             //console.log(`sheets at start: ${JSON.stringify(sheets)}`)
             const username = req.body['username'] || 'Unknown User';
@@ -93,11 +92,12 @@ export async function logAction(req, res, next) {
 
 // Helper function to ensure the Logs sheet exists
 export async function ensureLogSheetExists(spreadsheetId) {
-    const sheets = await getGoogleSheetsService();
-    console.log('Ensuring Logs sheet exists...');
-    console.log(`spreadsheetId: ${spreadsheetId}`); 
-    console.log(`sheets: ${JSON.stringify(sheets)}`);
     try {
+        const sheets = await getGoogleSheetsService();
+        console.log('Ensuring Logs sheet exists...');
+        console.log(`spreadsheetId: ${spreadsheetId}`); 
+        console.log(`sheets: ${JSON.stringify(sheets)}`);
+
         // Check if the sheets object has the expected structure
         console.log(`sheets.spreadsheets: ${JSON.stringify(sheets.spreadsheets)}`);
         if (!sheets.spreadsheets || typeof sheets.spreadsheets.get !== 'function') {
@@ -149,11 +149,8 @@ export async function ensureLogSheetExists(spreadsheetId) {
         }
     } catch (error) {
         console.error('Error ensuring Logs sheet exists:', error);
-        throw error; // Re-throw the error to be handled by the calling function
+        // Log the error and continue without throwing
     }
-    console.log('Logs sheet exists (or was created)');
 }
-
-
 
 export default logAction;
