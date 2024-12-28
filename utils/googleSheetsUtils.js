@@ -80,7 +80,6 @@ export function calculateElapsedTimeDecimal(milliseconds) {
   // Ensure headers exist if the last entry in Column A is not the current date
 export async function ensureHeaders(sheets, sapSheetName, currentDate, spreadsheetId ) {
     console.log(`Checking headers for ${sapSheetName}, current date: ${currentDate}`, spreadsheetId); 
-    const sheets = await getGoogleSheetsService();
     const response = await sheets.spreadsheets.values.get({
     spreadsheetId,
     range: `${sapSheetName}!A:A`,
