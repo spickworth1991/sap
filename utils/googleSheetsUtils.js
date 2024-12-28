@@ -52,13 +52,14 @@ export async function ensureLogSheetExists(spreadsheetId) {
   console.log(`spreadsheetId: ${spreadsheetId}`); 
   try {
       // Get the sheet metadata
-      const sheetMetadata = await sheets.spreadsheets.get({ spreadsheetId });
+      const sheetMetadata =  sheets.spreadsheets.get({ spreadsheetId });
       console.log(`sheetMetadata: ${JSON.stringify(sheetMetadata.data)}`);
 
       // Check if the sheets property exists and is an array
-      if (!sheetMetadata.data.sheets || !Array.isArray(sheetMetadata.data.sheets)) {
+      if (!sheetMetadata.data.getGoogleSheetsService || !Array.isArray(sheetMetadata.data.getGoogleSheetsService)) {
           throw new Error('Invalid sheet metadata format');
       }
+      
 
       const sheetNames = sheetMetadata.data.sheets.map(sheet => sheet.properties.title);
       console.log(`sheetNames: ${sheetNames}`);
