@@ -75,6 +75,7 @@ export async function logAction(req, res, next) {
 
             // Ensure the Logs sheet exists
             await ensureLogSheetExists(sheets, spreadsheetId);
+            console.log('Logs sheet exists2');
 
             // Append log entry to the Logs sheet
             await sheets.spreadsheets.values.append({

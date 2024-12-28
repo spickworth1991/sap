@@ -85,6 +85,7 @@ export async function ensureLogSheetExists(sheets, spreadsheetId) {
       console.log('Error ensuring Logs sheet exists:', error);
       return res.status(502).json({ error: 'Failed to ensure Logs sheet exists' }); 
     }
+  console.log('Logs sheet exists');
 }
 
 export async function findDateRow(sheets, monthName, currentDate, spreadsheetId ) {
