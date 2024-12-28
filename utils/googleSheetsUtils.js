@@ -49,8 +49,10 @@ export function getCurrentTime() {
 export async function ensureLogSheetExists(sheets, spreadsheetId) {
   console.log('Ensuring Logs sheet exists...');
   console.log(`spreadsheetId: ${spreadsheetId}`); 
+  console.log(`sheets: ${sheets}`);
   try {
       // Get the sheet metadata
+      console.log("Getting sheet metadata");
       const sheetMetadata = await sheets.spreadsheets.get({ spreadsheetId });
       console.log(`sheetMetadata: ${JSON.stringify(sheetMetadata.data)}`);
 
