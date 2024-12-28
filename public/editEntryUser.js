@@ -106,6 +106,7 @@ export async function editEntryHandler(rowNumber) {
     const username = localStorage.getItem('username');
     const role = localStorage.getItem('role');
     const spreadsheetId = localStorage.getItem('spreadsheetId');
+    const token = localStorage.getItem('authToken');
     
     if (!newTime || !newProjectActivity) {
         alert('Both time and project/activity are required.');
