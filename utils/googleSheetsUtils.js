@@ -53,6 +53,7 @@ export async function ensureLogSheetExists(sheets, spreadsheetId) {
   
       // Check if "Logs" sheet exists
       if (!sheetNames.includes('Logs')) {
+        console.log('Creating Logs sheet...');
         // Create a new Logs sheet with headers
         await sheets.spreadsheets.batchUpdate({
           spreadsheetId,
@@ -81,7 +82,8 @@ export async function ensureLogSheetExists(sheets, spreadsheetId) {
         });
       }
     } catch (error) {
-      console.error('Error ensuring Logs sheet exists:', error);
+      console.log('Error ensuring Logs sheet exists:', error);
+      return res.status(502).json({ error: 'Failed to ensure Logs sheet exists' }); 
     }
 }
 
@@ -185,36 +187,6 @@ export async function fetchLogs(req, res, next) {
   } catch (error) {
       console.error('Error fetching logs:', error);
       res.status(500).json({ error: 'Failed to fetch logs' });
-  }
-}
-
-export async function sapInput(req, res, next) {
-  try {
-      const sheets = await getGoogleSheetsService();
-      const { input } = req.body;
-      const spreadsheetId = req.headers['spreadsheet-id'];
-
-      if (!spreadsheetId || !input) {
-          return res.status(400).json({ error: 'Spreadsheet ID and input are required' });
-      }
-
-      const currentDate = getCurrentDate();
-      const currentTime = getCurrentTime();
-      const monthName = getCurrentMonthName();
-      const sapSheetName = `${monthName}:SAP`;
-
-      // Append the new SAP input
-      await sheets.spreadsheets.values.append({
-          spreadsheetId,
-          range: `${sapSheetName}!A:E`,
-          valueInputOption: 'USER_ENTERED',
-          requestBody: { values: [[currentDate, currentTime, input, '', '']] },
-      });
-
-      next(); // Pass control to the next middleware
-  } catch (error) {
-      console.error('Error in SAP input middleware:', error);
-      res.status(500).json({ error: 'Failed to process SAP input' });
   }
 }
 
