@@ -45,7 +45,7 @@ export function getCurrentTime() {
 }
 
 // Helper function to ensure the Logs sheet exists
-export async function ensureLogSheetExists(sheets, spreadsheetId) {
+export async function ensureLogSheetExists(spreadsheetId) {
   const sheets = await getGoogleSheetsService();
   console.log('Ensuring Logs sheet exists...');
   console.log(`spreadsheetId: ${spreadsheetId}`); 
