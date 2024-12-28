@@ -17,7 +17,7 @@ export async function logAction(req, res, next) {
 
     try {
         // Ensure Logs sheet exists before proceeding
-        console.log(`Checking or creating Logs sheet for spreadsheetId: ${spreadsheetId}`);
+        //console.log(`Checking or creating Logs sheet for spreadsheetId: ${spreadsheetId}`);
         await ensureLogSheetExists(spreadsheetId);
 
         // Prepare log details
@@ -65,23 +65,24 @@ async function generateDetails(req, res, role) {
         
         // Fetch existing data from the SAP sheet
         const monthName = getCurrentMonthName();
-        console.log(`Fetching data from month: ${monthName}`);
+        //console.log(`Fetching data from month: ${monthName}`);
         const sapSheetName = `${monthName}:SAP`;
         const range = `${sapSheetName}!A${rowNumber}:E${rowNumber}`;
-        console.log(`Fetching data from range: ${range}`);
+        //console.log(`Fetching data from range: ${range}`);
         const response = await sheets.spreadsheets.values.get({
             spreadsheetId,
             range,
         });
 
         const rowData = response.data.values?.[0];
-        console.log(`rowData: ${rowData}`);
+        //console.log(`rowData: ${rowData}`);
         const previousTime = rowData ? rowData[1] : 'undefined'; // Column B
         console.log(`previousTime: ${previousTime}`);
         const previousProjectActivity = rowData ? rowData[2] : 'undefined'; // Column C
         console.log(`previousProjectActivity: ${previousProjectActivity}`); 
 
         details = `rowNumber=${rowNumber}, Previous time=${previousTime}, Updated time=${newTime}, Previous Project/Activity=${previousProjectActivity}, Updated Project/Activity=${newProjectActivity}`;
+        console.log(`details: ${details}`);
     } else {
         details = `Unknown action: ${req.originalUrl} - Response: ${res.statusCode}`;
     }
@@ -99,10 +100,10 @@ export async function ensureLogSheetExists(spreadsheetId) {
         const sheets = await getGoogleSheetsService();
 
         // Fetch spreadsheet metadata
-        console.log('Fetching spreadsheet metadata...');
+        //console.log('Fetching spreadsheet metadata...');
         const metadata = await sheets.spreadsheets.get({ spreadsheetId });
         const sheetNames = metadata.data.sheets.map(sheet => sheet.properties.title);
-        console.log('Available sheet names:', sheetNames);
+        //console.log('Available sheet names:', sheetNames);
 
         // Create Logs sheet if it doesn't exist
         if (!sheetNames.includes('Logs')) {
