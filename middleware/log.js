@@ -65,16 +65,22 @@ async function generateDetails(req, res, role) {
         details = `rowNumber=${rowNumber}, Updated time=${newTime}, Updated Project/Activity=${newProjectActivity}`;
         // Fetch existing data from the SAP sheet
         const monthName = getCurrentMonthName();
+        console.log(`Fetching data from month: ${monthName}`);
         const sapSheetName = `${monthName}:SAP`;
+        console.log(`Fetching data from range: ${sapSheetName}!A${rowNumber}:E${rowNumber}`);
         const range = `${sapSheetName}!A${rowNumber}:E${rowNumber}`;
+        console.log(`Fetching data from range: ${range}`);
         const response = await sheets.spreadsheets.values.get({
             spreadsheetId,
             range,
         });
 
         const rowData = response.data.values?.[0];
+        console.log(`rowData: ${rowData}`);
         const previousTime = rowData ? rowData[1] : 'undefined'; // Column B
+        console.log(`previousTime: ${previousTime}`);
         const previousProjectActivity = rowData ? rowData[2] : 'undefined'; // Column C
+        console.log(`previousProjectActivity: ${previousProjectActivity}`); 
 
         details = `rowNumber=${rowNumber}, Previous time=${previousTime}, Updated time=${newTime}, ` +
             `Previous Project/Activity=${previousProjectActivity}, Updated Project/Activity=${newProjectActivity}`;
