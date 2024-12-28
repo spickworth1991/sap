@@ -2,7 +2,6 @@
 
 // Import modules (using ES Modules syntax)
 import express from 'express';
-import localStorage from 'node-localstorage';
 import { getGoogleSheetsService } from '../utils/googleSheetsUtils.js';
 import { fetchLogs } from '../utils/googleSheetsUtils.js';
 
