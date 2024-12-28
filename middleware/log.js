@@ -68,7 +68,7 @@ async function generateDetails(req, res, role) {
         console.log(`Fetching data from month: ${monthName}`);
         const sapSheetName = `${monthName}:SAP`;
         console.log(`Fetching data from range: ${sapSheetName}!A${rowNumber}:E${rowNumber}`);
-        const range = `${sapSheetName}!A${rowNumber}:E${rowNumber}`;
+        const range = `${sapSheetName}!A${rowNumber}:C${rowNumber}`;
         console.log(`Fetching data from range: ${range}`);
         const response = await sheets.spreadsheets.values.get({
             spreadsheetId,
