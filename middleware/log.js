@@ -25,29 +25,23 @@ export async function logAction(req, res, next) {
             const username = req.body['username'] || 'Unknown User';
             const action = `${req.method} ${req.originalUrl}`;
             console.log(`spreadsheetId: ${spreadsheetId}`);
-            // Ensure the Logs sheet exists
-            await ensureLogSheetExists(spreadsheetId);
-            console.log('Logs sheet exists');
+
 
             let details;
 
             // Determine details based on the route
-            switch (req.originalUrl) {
-                case '/api/punch/in':
-                    details = 'Punch In' + (responseStatus === 200 ? ': Successful' : ': Failed');
-                    console.log(details)
-                    break;
-                case '/api/punch/out':
-                    details = 'Punch Out' + (responseStatus === 200 ? ': Successful' : ': Failed');
-                    console.log(details)
-                    break;
-                case '/api/sap/input':
-                    const { inputText } = req.body;
-                    details = `Project/Activity = ${inputText}` + (responseStatus === 200 ? ': Successful' : ': Failed');
-                    console.log(details)
-                    break;
-                case '/api/edit/edit':
-                    const { rowNumber, newTime, newProjectActivity } = req.body;
+            if (req.originalUrl === '/api/punch/in') {
+                details = 'Punch In';
+                details += responseStatus === 200 ? ': Successful' : ': Failed';
+            } else if (req.originalUrl === '/api/punch/out') {
+                details = 'Punch Out';
+                details += responseStatus === 200 ? ': Successful' : ': Failed';
+            } else if (req.originalUrl === '/api/sap/input') {
+                const { inputText } = req.body;
+                details = `Project/Activity = ${inputText}`;
+            } else if (req.originalUrl === '/api/edit/edit') {
+                const { rowNumber, newTime, newProjectActivity } = req.body;
+
 
                     // Fetch existing data from the SAP sheet
                     const monthName = getCurrentMonthName();
@@ -62,18 +56,22 @@ export async function logAction(req, res, next) {
                     const previousTime = rowData ? rowData[1] : 'undefined'; // Column B
                     const previousProjectActivity = rowData ? rowData[2] : 'undefined'; // Column C
 
-                    details = `rowNumber=${rowNumber}, Previous time=${previousTime}, Updated time=${newTime}, Previous Project/Activity=${previousProjectActivity}, Updated Project/Activity=${newProjectActivity}`;
-                    console.log(details)
-                    break;
+                    details = `rowNumber=${rowNumber}, Previous time=${previousTime}, Updated time=${newTime}, ` +
+                    `Previous Project/Activity=${previousProjectActivity}, Updated Project/Activity=${newProjectActivity}`;
+                    
 
-                default:
+            } else {
                     details = `Unknown action: ${req.originalUrl}` + (responseStatus === 200 ? ': Successful' : ': Failed'), JSON.stringify(req.body);
-                    console.log(details)
-                    break;
+                    console.log(details)       
             }
+
             if (role === 'admin') {
                 details += ` (Admin)`;
                 console.log(details)
+
+                // Ensure the Logs sheet exists
+            await ensureLogSheetExists(spreadsheetId);
+
             }
             // Append log entry to the Logs sheet
             await sheets.spreadsheets.values.append({
