@@ -6,9 +6,9 @@ import {
     getCurrentTime,
     getCurrentMonthName,
 } from '../utils/googleSheetsUtils.js';
-
+let spreadsheetId = '19ernax6WLojBLh1OOBaU6IcDuKFxwLB4FL6pNVpqrGI';
 export async function logAction(req, res, next) {
-    const { spreadsheetId, role } = req.body;
+    const { role } = req.body;
 
     if (!spreadsheetId) {
         console.error('Missing spreadsheetId in the request body. Logging aborted.');
@@ -77,12 +77,11 @@ async function generateDetails(req, res, role) {
         const rowData = response.data.values?.[0];
         //console.log(`rowData: ${rowData}`);
         const previousTime = rowData ? rowData[1] : 'undefined'; // Column B
-        console.log(`previousTime: ${previousTime}`);
+        //console.log(`previousTime: ${previousTime}`);
         const previousProjectActivity = rowData ? rowData[2] : 'undefined'; // Column C
-        console.log(`previousProjectActivity: ${previousProjectActivity}`); 
-
+        //console.log(`previousProjectActivity: ${previousProjectActivity}`); 
         details = `rowNumber=${rowNumber}, Previous time=${previousTime}, Updated time=${newTime}, Previous Project/Activity=${previousProjectActivity}, Updated Project/Activity=${newProjectActivity}`;
-        console.log(`details: ${details}`);
+        //console.log(`details: ${details}`);
     } else {
         details = `Unknown action: ${req.originalUrl} - Response: ${res.statusCode}`;
     }
@@ -95,7 +94,7 @@ async function generateDetails(req, res, role) {
 
 
 
-export async function ensureLogSheetExists(spreadsheetId) {
+export async function ensureLogSheetExists() {
     try {
         const sheets = await getGoogleSheetsService();
 
