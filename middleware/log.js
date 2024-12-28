@@ -1,7 +1,6 @@
 import { google } from 'googleapis';
 import moment from 'moment-timezone';
 import {
-    getGoogleSheetsService,
     getCurrentDate,
     getCurrentTime,
     getCurrentMonthName,
@@ -91,7 +90,7 @@ export async function logAction(req, res, next) {
 
 
 // Helper function to ensure the Logs sheet exists
-export async function ensureLogSheetExists(spreadsheetId) {
+async function ensureLogSheetExists(spreadsheetId) {
     try {
         const sheets = await getGoogleSheetsService();
         console.log('Ensuring Logs sheet exists...');
@@ -150,6 +149,17 @@ export async function ensureLogSheetExists(spreadsheetId) {
         console.error('Error ensuring Logs sheet exists:', error);
         // Log the error and continue without throwing
     }
+}
+
+
+// Authenticate with Google Sheets API
+async function getGoogleSheetsService() {
+    const credentials = JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY);
+    const auth = new google.auth.GoogleAuth({
+        credentials,
+        scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+    });
+    return google.sheets({ version: 'v4', auth });
 }
 
 export default logAction;
