@@ -46,10 +46,13 @@ export function getCurrentTime() {
 
 // Helper function to ensure the Logs sheet exists
 export async function ensureLogSheetExists(sheets, spreadsheetId) {
+  console.log('Ensuring Logs sheet exists...');
     try {
       // Get the sheet metadata
       const sheetMetadata = await sheets.spreadsheets.get({ spreadsheetId });
+      console.log(`sheetMetadata: ${sheetMetadata}`);
       const sheetNames = sheetMetadata.data.sheets.map(sheet => sheet.properties.title);
+      console.log(`sheetNames: ${sheetNames}`);
   
       // Check if "Logs" sheet exists
       if (!sheetNames.includes('Logs')) {
