@@ -9,22 +9,15 @@ import {
 } from '../utils/googleSheetsUtils.js';
 
 export async function logAction(req, res, next) {
-    const { spreadsheetId, role } = req.body;
-    const originalSend = res.send;
-    let responseStatus;
 
-    if (!spreadsheetId) {
+    if (!spreadsheetId ) {
         console.error('Missing spreadsheetId in the request body. Logging aborted.');
         return;
     }
     
-    res.send = function (body) {
-        responseStatus = res.statusCode;
-        originalSend.call(this, body);
-    };
-
     res.on('finish', async () => {
         try {
+            const responseStatus = res.statusCode;
             const sheets = await getGoogleSheetsService();
             const username = req.body['username'] || 'Unknown User';
             const action = `${req.method} ${req.originalUrl}`;
