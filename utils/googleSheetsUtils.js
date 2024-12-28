@@ -54,6 +54,7 @@ export async function ensureLogSheetExists(spreadsheetId) {
     try {
         // Check if the sheets object has the expected structure
         if (!sheets.spreadsheets || typeof sheets.spreadsheets.get !== 'function') {
+            console.error('Invalid sheets object structure:', sheets);
             throw new Error('Invalid sheets object structure');
         }
   
