@@ -15,99 +15,79 @@ export async function logAction(req, res, next) {
         return next();
     }
 
+    try {
+        // Ensure Logs sheet exists before proceeding
+        console.log(`Checking or creating Logs sheet for spreadsheetId: ${spreadsheetId}`);
+        await ensureLogSheetExists(spreadsheetId);
 
-    res.on('finish', async () => {
-        try {
-            // Ensure Logs sheet exists
-            await ensureLogSheetExists(spreadsheetId);
-            console.log('Logs sheet verified or created.');
-        } catch (error) {
-            console.error('Failed to ensure Logs sheet:', error);
-            return next(error); // Halt logging if this step fails
-        }
-        try {
-            const responseStatus = res.statusCode;
-            const sheets = await getGoogleSheetsService();
-            //console.log(`sheets at start: ${JSON.stringify(sheets)}`)
-            const username = req.body['username'] || 'Unknown User';
-            const action = `${req.method} ${req.originalUrl}`;
-            console.log(`spreadsheetId: ${spreadsheetId}`);
+        // Prepare log details
+        const sheets = await getGoogleSheetsService();
+        const username = req.body['username'] || 'Unknown User';
+        const action = `${req.method} ${req.originalUrl}`;
+        const details = generateDetails(req, res, role);
 
+        // Append log entry to the Logs sheet
+        console.log(`Appending log for action: ${action}`);
+        await sheets.spreadsheets.values.append({
+            spreadsheetId,
+            range: 'Logs!A:E',
+            valueInputOption: 'USER_ENTERED',
+            requestBody: {
+                values: [[getCurrentDate(), getCurrentTime(), username, action, details]],
+            },
+        });
 
-            let details;
+        console.log('Log entry appended successfully.');
+    } catch (error) {
+        console.error('Error logging action:', error);
+    }
 
-            // Determine details based on the route
-            if (req.originalUrl === '/api/punch/in') {
-                details = 'Punch In';
-                details += responseStatus === 200 ? ': Successful' : ': Failed';
-            } else if (req.originalUrl === '/api/punch/out') {
-                details = 'Punch Out';
-                details += responseStatus === 200 ? ': Successful' : ': Failed';
-            } else if (req.originalUrl === '/api/sap/input') {
-                const { inputText } = req.body;
-                details = `Project/Activity = ${inputText}`;
-            } else if (req.originalUrl === '/api/edit/edit') {
-                const { rowNumber, newTime, newProjectActivity } = req.body;
+    next(); // Proceed to the next middleware or route handler
+}
 
+function generateDetails(req, res, role) {
+    let details = '';
+    const responseStatus = res.statusCode;
 
-                    // Fetch existing data from the SAP sheet
-                    const monthName = getCurrentMonthName();
-                    const sapSheetName = `${monthName}:SAP`;
-                    const range = `${sapSheetName}!A${rowNumber}:E${rowNumber}`;
-                    const response = await sheets.spreadsheets.values.get({
-                        spreadsheetId,
-                        range,
-                    });
+    if (req.originalUrl === '/api/punch/in') {
+        details = 'Punch In';
+        details += responseStatus === 200 ? ': Successful' : ': Failed';
+    } else if (req.originalUrl === '/api/punch/out') {
+        details = 'Punch Out';
+        details += responseStatus === 200 ? ': Successful' : ': Failed';
+    } else if (req.originalUrl === '/api/sap/input') {
+        const { inputText } = req.body;
+        details = `Project/Activity = ${inputText}`;
+    } else if (req.originalUrl === '/api/edit/edit') {
+        const { rowNumber, newTime, newProjectActivity } = req.body;
+        details = `rowNumber=${rowNumber}, Updated time=${newTime}, Updated Project/Activity=${newProjectActivity}`;
+    } else {
+        details = `Unknown action: ${req.originalUrl}` + (responseStatus === 200 ? ': Successful' : ': Failed');
+    }
 
-                    const rowData = response.data.values?.[0];
-                    const previousTime = rowData ? rowData[1] : 'undefined'; // Column B
-                    const previousProjectActivity = rowData ? rowData[2] : 'undefined'; // Column C
+    if (role === 'admin') {
+        details += ' (Admin)';
+    }
 
-                    details = `rowNumber=${rowNumber}, Previous time=${previousTime}, Updated time=${newTime}, ` +
-                    `Previous Project/Activity=${previousProjectActivity}, Updated Project/Activity=${newProjectActivity}`;
-                    
-
-            } else {
-                    details = `Unknown action: ${req.originalUrl}` + (responseStatus === 200 ? ': Successful' : ': Failed'), JSON.stringify(req.body);
-                    console.log(details)       
-            }
-
-            if (role === 'admin') {
-                details += ` (Admin)`;
-                console.log(details)
-
-
-            }
-            // Append log entry to the Logs sheet
-            await sheets.spreadsheets.values.append({
-                spreadsheetId,
-                range: 'Logs!A:E',
-                valueInputOption: 'USER_ENTERED',
-                requestBody: {
-                    values: [[getCurrentDate(), getCurrentTime(), username, action, details]],
-                },
-            });
-        } catch (error) {
-            console.error('Error logging action:', error);
-        }
-    });
-
-    next();
+    return details;
 }
 
 
-// Helper function to ensure the Logs sheet exists
+
 export async function ensureLogSheetExists(spreadsheetId) {
     try {
         const sheets = await getGoogleSheetsService();
-        console.log('Checking for Logs sheet...');
+
+        // Fetch spreadsheet metadata
+        console.log('Fetching spreadsheet metadata...');
         const metadata = await sheets.spreadsheets.get({ spreadsheetId });
         const sheetNames = metadata.data.sheets.map(sheet => sheet.properties.title);
         console.log('Available sheet names:', sheetNames);
 
+        // Create Logs sheet if it doesn't exist
         if (!sheetNames.includes('Logs')) {
             console.log('Logs sheet not found. Creating...');
-            const response = await sheets.spreadsheets.batchUpdate({
+            await sheets.spreadsheets.batchUpdate({
                 spreadsheetId,
                 requestBody: {
                     requests: [
@@ -122,9 +102,10 @@ export async function ensureLogSheetExists(spreadsheetId) {
                     ],
                 },
             });
-            console.log('Logs sheet created:', response);
 
-            // Add headers
+            console.log('Logs sheet created.');
+
+            // Add headers to the Logs sheet
             await sheets.spreadsheets.values.append({
                 spreadsheetId,
                 range: 'Logs!A1:E1',
@@ -139,8 +120,9 @@ export async function ensureLogSheetExists(spreadsheetId) {
         }
     } catch (error) {
         console.error('Error ensuring Logs sheet exists:', error);
-        throw error; // Critical to halt further operations if this fails
+        throw error; // Critical error halts further operations
     }
 }
+
 
 export default logAction;
