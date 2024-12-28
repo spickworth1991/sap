@@ -50,7 +50,7 @@ export async function ensureLogSheetExists(spreadsheetId) {
     const sheets = await getGoogleSheetsService();
     console.log('Ensuring Logs sheet exists...');
     console.log(`spreadsheetId: ${spreadsheetId}`); 
-    console.log(`sheets: ${sheets}`);
+    console.log(`sheets: ${JSON.stringify(sheets)}`);
     try {
         // Get the sheet metadata
         console.log("Getting sheet metadata");

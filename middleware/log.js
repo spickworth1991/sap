@@ -22,6 +22,7 @@ export async function logAction(req, res, next) {
         try {
             const { spreadsheetId, role } = req.body;
             const sheets = await getGoogleSheetsService();
+            console.log(`sheets at start: ${sheets}`)
             const username = req.body['username'] || 'Unknown User';
             const action = `${req.method} ${req.originalUrl}`;
             console.log(spreadsheetId)
@@ -74,8 +75,7 @@ export async function logAction(req, res, next) {
             }
 
             // Ensure the Logs sheet exists
-            console.log(`sheets before ensureLog: ${sheets}`)
-            await ensureLogSheetExists(sheets, spreadsheetId);
+            await ensureLogSheetExists(spreadsheetId);
             console.log('Logs sheet exists');
 
             // Append log entry to the Logs sheet
