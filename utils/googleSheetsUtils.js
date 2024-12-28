@@ -2,6 +2,7 @@ import { google } from 'googleapis';
 import moment from 'moment-timezone';
 
 
+
 // Validate JSON format
 function isValidJSON(jsonString) {
   try {
@@ -87,11 +88,11 @@ export async function ensureLogSheetExists(spreadsheetId) {
         });
       }
     } catch (error) {
-      console.log('Error ensuring Logs sheet exists:', error);
-      return res.status(502).json({ error: 'Failed to ensure Logs sheet exists' }); 
-    }
-  console.log('Logs sheet exists');
+      console.error('Error ensuring Logs sheet exists:', error);
+      throw error; // Re-throw the error to be handled by the calling function
+  }
 }
+
 
 export async function findDateRow(sheets, monthName, currentDate, spreadsheetId ) {
     const response = await sheets.spreadsheets.values.get({
