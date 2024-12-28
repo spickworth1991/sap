@@ -101,6 +101,7 @@ export async function ensureLogSheetExists(spreadsheetId) {
     console.log(`sheets: ${JSON.stringify(sheets)}`);
     try {
         // Check if the sheets object has the expected structure
+        console.log(`sheets.spreadsheets: ${JSON.stringify(sheets.spreadsheets)}`);
         if (!sheets.spreadsheets || typeof sheets.spreadsheets.get !== 'function') {
             console.error('Invalid sheets object structure:', sheets);
             throw new Error('Invalid sheets object structure');
