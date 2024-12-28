@@ -62,12 +62,11 @@ async function generateDetails(req, res, role) {
         details = `Project/Activity = ${inputText}`;
     } else if (req.originalUrl === '/api/edit/edit') {
         const { rowNumber, newTime, newProjectActivity } = req.body;
-        details = `rowNumber=${rowNumber}, Updated time=${newTime}, Updated Project/Activity=${newProjectActivity}`;
+        
         // Fetch existing data from the SAP sheet
         const monthName = getCurrentMonthName();
         console.log(`Fetching data from month: ${monthName}`);
         const sapSheetName = `${monthName}:SAP`;
-        console.log(`Fetching data from range: ${sapSheetName}!A${rowNumber}:E${rowNumber}`);
         const range = `${sapSheetName}!A${rowNumber}:E${rowNumber}`;
         console.log(`Fetching data from range: ${range}`);
         const response = await sheets.spreadsheets.values.get({
@@ -82,8 +81,7 @@ async function generateDetails(req, res, role) {
         const previousProjectActivity = rowData ? rowData[2] : 'undefined'; // Column C
         console.log(`previousProjectActivity: ${previousProjectActivity}`); 
 
-        details = `rowNumber=${rowNumber}, Previous time=${previousTime}, Updated time=${newTime}, ` +
-              `Previous Project/Activity=${previousProjectActivity}, Updated Project/Activity=${newProjectActivity}`;
+        details = `rowNumber=${rowNumber}, Previous time=${previousTime}, Updated time=${newTime}, Previous Project/Activity=${previousProjectActivity}, Updated Project/Activity=${newProjectActivity}`;
     } else {
         details = `Unknown action: ${req.originalUrl} - Response: ${res.statusCode}`;
     }
