@@ -9,15 +9,18 @@ import {
 } from '../utils/googleSheetsUtils.js';
 
 export async function logAction(req, res, next) {
-    const { spreadsheetId, role } = req.body;
-    if (!spreadsheetId ) {
-        console.error('Missing spreadsheetId in the request body. Logging aborted.');
-        return;
-    }
-    
+
+    const originalSend = res.send;
+    let responseStatus;
+
+    res.send = function (body) {
+        responseStatus = res.statusCode;
+        originalSend.call(this, body);
+    };
+
     res.on('finish', async () => {
         try {
-            const responseStatus = res.statusCode;
+            const { spreadsheetId, role } = req.body;
             const sheets = await getGoogleSheetsService();
             const username = req.body['username'] || 'Unknown User';
             const action = `${req.method} ${req.originalUrl}`;
@@ -29,13 +32,16 @@ export async function logAction(req, res, next) {
             switch (req.originalUrl) {
                 case '/api/punch/in':
                     details = 'Punch In' + (responseStatus === 200 ? ': Successful' : ': Failed');
+                    console.log(details)
                     break;
                 case '/api/punch/out':
                     details = 'Punch Out' + (responseStatus === 200 ? ': Successful' : ': Failed');
-                    break; 
-                case '/api/sap/input': 
+                    console.log(details)
+                    break;
+                case '/api/sap/input':
                     const { inputText } = req.body;
                     details = `Project/Activity = ${inputText}` + (responseStatus === 200 ? ': Successful' : ': Failed');
+                    console.log(details)
                     break;
                 case '/api/edit/edit':
                     const { rowNumber, newTime, newProjectActivity } = req.body;
@@ -54,13 +60,17 @@ export async function logAction(req, res, next) {
                     const previousProjectActivity = rowData ? rowData[2] : 'undefined'; // Column C
 
                     details = `rowNumber=${rowNumber}, Previous time=${previousTime}, Updated time=${newTime}, Previous Project/Activity=${previousProjectActivity}, Updated Project/Activity=${newProjectActivity}`;
+                    console.log(details)
                     break;
 
-                    default:   
-                        details = `Unknown action: ${req.originalUrl}` + (responseStatus === 200 ? ': Successful' : ': Failed'), JSON.stringify(req.body) ;
-                        break;}
+                default:
+                    details = `Unknown action: ${req.originalUrl}` + (responseStatus === 200 ? ': Successful' : ': Failed'), JSON.stringify(req.body);
+                    console.log(details)
+                    break;
+            }
             if (role === 'admin') {
                 details += ` (Admin)`;
+                console.log(details)
             }
 
             // Ensure the Logs sheet exists
