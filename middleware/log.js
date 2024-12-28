@@ -45,10 +45,11 @@ export async function logAction(req, res, next) {
     next(); // Proceed to the next middleware or route handler
 }
 
-async function generateDetails(req, res, role, spreadsheetId) {
+async function generateDetails(req, res, role) {
     let details = '';
     const responseStatus = res.statusCode;
     const sheets = await getGoogleSheetsService();
+    const { spreadsheetId } = req.body; 
 
     if (req.originalUrl === '/api/punch/in') {
         details = 'Punch In';
