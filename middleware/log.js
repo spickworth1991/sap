@@ -45,7 +45,7 @@ export async function logAction(req, res, next) {
     next(); // Proceed to the next middleware or route handler
 }
 
-async function generateDetails(req, res, role) {
+async function generateDetails(req, res, role, spreadsheetId) {
     let details = '';
     const responseStatus = res.statusCode;
     const sheets = await getGoogleSheetsService();
