@@ -47,35 +47,29 @@ export function getCurrentTime() {
 
 // Helper function to ensure the Logs sheet exists
 export async function ensureLogSheetExists(spreadsheetId) {
-    let sheets;
-    try {
-        sheets = await getGoogleSheetsService();
-        console.log('Ensuring Logs sheet exists...');
-        console.log(`spreadsheetId: ${spreadsheetId}`); 
-        console.log(`sheets: ${JSON.stringify(sheets)}`);
-    } catch (error) {
-        console.error('Error getting Google Sheets service:', error);
-        throw error;
-    }
+    const sheets = await getGoogleSheetsService();
+    console.log('Ensuring Logs sheet exists...');
+    console.log(`spreadsheetId: ${spreadsheetId}`); 
+    console.log(`sheets: ${JSON.stringify(sheets)}`);
     try {
         // Check if the sheets object has the expected structure
         if (!sheets.spreadsheets || typeof sheets.spreadsheets.get !== 'function') {
             console.error('Invalid sheets object structure:', sheets);
             throw new Error('Invalid sheets object structure');
         }
-  
+
         // Get the sheet metadata
         const sheetMetadata = await sheets.spreadsheets.get({ spreadsheetId });
         console.log(`sheetMetadata: ${JSON.stringify(sheetMetadata.data)}`);
-  
+
         // Check if the sheets property exists and is an array
         if (!sheetMetadata.data.sheets || !Array.isArray(sheetMetadata.data.sheets)) {
             throw new Error('Invalid sheet metadata format');
         }
-  
+
         const sheetNames = sheetMetadata.data.sheets.map(sheet => sheet.properties.title);
         console.log(`sheetNames: ${sheetNames}`);
-  
+
         // Check if "Logs" sheet exists
         if (!sheetNames.includes('Logs')) {
             console.log('Creating Logs sheet...');
@@ -95,7 +89,7 @@ export async function ensureLogSheetExists(spreadsheetId) {
                     ],
                 },
             });
-  
+
             // Add headers to the Logs sheet
             await sheets.spreadsheets.values.append({
                 spreadsheetId,
@@ -110,7 +104,7 @@ export async function ensureLogSheetExists(spreadsheetId) {
         console.error('Error ensuring Logs sheet exists:', error);
         throw error; // Re-throw the error to be handled by the calling function
     }
-  }
+}
   
 
 export async function findDateRow(sheets, monthName, currentDate, spreadsheetId ) {
