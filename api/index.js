@@ -9,6 +9,9 @@ import { logAction } from '../middleware/log.js';
 import authRoute from '../routes/auth.js';
 import entriesRoute from '../routes/entries.js';
 import punchRoute from '../routes/punch.js';
+import viewLogsRoute from '../routes/viewLogs.js';  
+import editRoute from '../routes/edit.js';
+import sapRoute from '../routes/sap.js';
 
 dotenv.config();
 
@@ -22,11 +25,11 @@ app.use(helmet());       // Add security headers
 // Logging
 console.log("Starting server...");
 
-// Log all requests
-// Mount auth route explicitly (runs before dynamic routes)
+
+// Mount routes for no logging. (runs before dynamic routes)
 app.use('/api/auth', authRoute);
 app.use('/api/entries', entriesRoute);
-
+app.use('/api/viewLogs', viewLogsRoute);
 
 
 // Global middleware for logging actions
@@ -38,16 +41,18 @@ app.use((req, res, next) => {
     logAction(req, res, next);
 });
 
-
+// Mount routes logging. (runs before dynamic routes)
 app.use('/api/punch', punchRoute);
+app.use('/api/edit', editRoute);
+app.use('/api/sap', sapRoute);
 
 
-// Dynamically load other routes from 'routes' directory
+// for testing new code...Dynamically load other routes from 'routes' directory
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const routesPath = path.join(__dirname, '../routes');
 fs.readdirSync(routesPath).forEach((file) => {
-    if (file.endsWith('.js') && file !== 'auth.js' && file !== 'punch.js' && file !== 'entries.js') { // Skip auth.js and punch.js to avoid duplicate loading
+    if (file.endsWith('.js') && file !== 'auth.js' && file !== 'punch.js' && file !== 'entries.js' && file !== 'viewLogs.js' && file !== 'edit.js' && file !== 'sap.js') { // Skip auth.js and punch.js to avoid duplicate loading
         const routeName = '/' + file.replace('.js', '');
         console.log(`Loading route: /api${routeName}`);
         const filePath = path.join(routesPath, file);

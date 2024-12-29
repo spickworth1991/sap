@@ -5,7 +5,24 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
         console.error('fetchLogs Error at button.');
     }
+
+    const nextPage = document.getElementById('nextPage');
+    if (nextPage) {
+        nextPage.addEventListener('click', () => nextPage(nextPage)); // Attach click event
+    } else {
+        console.error('fetchLogs Error at button.');
+    }
+
+    const prevPage = document.getElementById('prevPage');
+    if (prevPage) {
+        prevPage.addEventListener('click', () => prevPage(prevPage)); // Attach click event
+    } else {
+        console.error('fetchLogs Error at button.');
+    }
 });
+
+
+
 
 
 let logsData = [];
