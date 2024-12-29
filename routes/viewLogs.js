@@ -3,14 +3,13 @@
 // Import modules (using ES Modules syntax)
 import express from 'express';
 import { getGoogleSheetsService } from '../utils/googleSheetsUtils.js';
-import { fetchLogs } from '../utils/googleSheetsUtils.js';
+
 
 // Create the router instance
 const router = express.Router();
-
-router.get('/', fetchLogs, async (req, res) => {
+let spreadsheetId = '19ernax6WLojBLh1OOBaU6IcDuKFxwLB4FL6pNVpqrGI';
+router.get('/', async (req, res) => {
     try {
-      const spreadsheetId = localStorage.getItem('spreadsheetId');
       const sheets = await getGoogleSheetsService();
       const { date, search } = req.query;
   

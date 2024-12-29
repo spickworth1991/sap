@@ -1,9 +1,20 @@
+document.addEventListener('DOMContentLoaded', () => {
+    const viewLogs = document.getElementById('viewLogs');
+    if (viewLogs) {
+        viewLogs.addEventListener('click', () => fetchLogs(viewLogs)); // Attach click event
+    } else {
+        console.error('fetchLogs Error at button.');
+    }
+});
+
+
 let logsData = [];
 let currentPage = 1;
 const logsPerPage = 10;
 
 // Fetch Logs from the Server
-async function fetchLogs() {
+async function fetchLogs(button) {
+    button.style.backgroundColor = "#555";
     const selectedDate = document.getElementById('logDatePicker').value; // In YYYY-MM-DD format
     const searchTerm = document.getElementById('logSearch').value;
 
@@ -12,10 +23,10 @@ async function fetchLogs() {
     const formattedDate = `${month}/${day}/${year}`;
 
     try {
-        const response = await fetch(`/api/logs?date=${formattedDate}&search=${encodeURIComponent(searchTerm)}`, {
+        const response = await fetch(`/api/viewLogs/?date=${formattedDate}&search=${encodeURIComponent(searchTerm)}`, {
             headers: { 
                 'Content-Type': 'application/json',
-                'spreadsheet-id': localStorage.getItem('spreadsheetId') // Attach spreadsheet ID
+                'authorization': `Bearer ${localStorage.getItem('token')}`
             }
         });
 
@@ -30,7 +41,11 @@ async function fetchLogs() {
     } catch (error) {
         console.error('Error fetching logs:', error);
         alert('Error fetching logs.');
+       
+    } finally {
+        button.style.backgroundColor = "";
     }
+    
 }
 
 
