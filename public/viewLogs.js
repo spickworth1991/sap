@@ -8,14 +8,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const nextPage = document.getElementById('nextPage');
     if (nextPage) {
-        nextPage.addEventListener('click', () => nextPage(nextPage)); // Attach click event
+        nextPage.addEventListener('click', () => nextPageHandler(nextPage)); // Attach click event
     } else {
         console.error('fetchLogs Error at button.');
     }
 
     const prevPage = document.getElementById('prevPage');
     if (prevPage) {
-        prevPage.addEventListener('click', () => prevPage(prevPage)); // Attach click event
+        prevPage.addEventListener('click', () => prevPageHandler(prevPage)); // Attach click event
     } else {
         console.error('fetchLogs Error at button.');
     }
@@ -90,14 +90,14 @@ function displayLogs() {
 }
 
 // Pagination Controls
-async function nextPage() {
+async function nextPageHandler() {
     if (currentPage * logsPerPage < logsData.length) {
         currentPage++;
         displayLogs();
     }
 }
 
-async function prevPage() {
+async function prevPageHandler() {
     if (currentPage > 1) {
         currentPage--;
         displayLogs();
