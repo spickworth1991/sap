@@ -90,14 +90,14 @@ function displayLogs() {
 }
 
 // Pagination Controls
-function nextPage() {
+async function nextPage() {
     if (currentPage * logsPerPage < logsData.length) {
         currentPage++;
         displayLogs();
     }
 }
 
-function prevPage() {
+async function prevPage() {
     if (currentPage > 1) {
         currentPage--;
         displayLogs();
