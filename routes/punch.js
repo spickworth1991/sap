@@ -17,6 +17,7 @@ const router = express.Router();
 router.post('/in', async (req, res) => {
     // Extract headers
     const { spreadsheetId, username, role } = req.body;
+    console.log(`spreadsheetId: ${spreadsheetId}`);
     const authHeader = req.headers.authorization;
 
     // Validate data
@@ -33,6 +34,7 @@ router.post('/in', async (req, res) => {
         const currentDate = getCurrentDate();
         const currentTime = getCurrentTime();
         const monthName = getCurrentMonthName();
+        console.log(`monthName: ${monthName}`);
         const sapSheetName = `${monthName}:SAP`;
         
         // Ensure headers are present in the SAP sheet
@@ -99,7 +101,6 @@ router.post('/out',  async (req, res) => {
         const currentDate = getCurrentDate();
         const currentTime = getCurrentTime();
         const monthName = getCurrentMonthName();
-        console.log(`monthName: ${monthName}`);
         const sapSheetName = `${monthName}:SAP`;
     
 
