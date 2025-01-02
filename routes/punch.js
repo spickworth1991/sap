@@ -99,6 +99,7 @@ router.post('/out',  async (req, res) => {
         const currentDate = getCurrentDate();
         const currentTime = getCurrentTime();
         const monthName = getCurrentMonthName();
+        console.log(`monthName: ${monthName}`);
         const sapSheetName = `${monthName}:SAP`;
     
 
