@@ -10,7 +10,7 @@ export const users = [
         username: 'pick',
         password: bcrypt.hashSync('123', 10),
         role: 'admin',
-        spreadsheetId: '1bu86Ld2p1BCXf-wubb9yW26KMigqdZldIeCt_ho12ss',
+        spreadsheetId: '19ernax6WLojBLh1OOBaU6IcDuKFxwLB4FL6pNVpqrGI',
     },
     {
         username: 'user1',
@@ -22,7 +22,7 @@ export const users = [
         username: 'user2',
         password: bcrypt.hashSync('user123', 10),
         role: 'user',
-        spreadsheetId: '19ernax6WLojBLh1OOBaU6IcDuKFxwLB4FL6pNVpqrGI',
+        spreadsheetId: '1bu86Ld2p1BCXf-wubb9yW26KMigqdZldIeCt_ho12ss',
     },
 ];
 
