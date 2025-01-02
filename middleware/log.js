@@ -136,7 +136,7 @@ export async function ensureLogSheetExists() {
             });
             console.log('Headers added to Logs sheet.');
         } else {
-            console.log('Logs sheet already exists.');
+            //console.log('Logs sheet already exists.');
         }
     } catch (error) {
         console.error('Error ensuring Logs sheet exists:', error);

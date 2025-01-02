@@ -51,10 +51,15 @@ export function getCurrentTime() {
 export async function findDateRow(sheets, monthName, currentDate, spreadsheetId ) {
     console.log(`Finding row for ${currentDate} in ${monthName}`);
     console.log(`spreadsheetId: ${spreadsheetId}`);
+    console.log(`sheets: ${sheets}`);
+    console.log(`monthName: ${monthName}`);
+    console.log(`currentDate: ${currentDate}`);
+    
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId,
       range: `${monthName}!B:B`,
     });
+    console.log(`response: ${response}`);
   
     const rows = response.data.values || [];
     //console.log(`rows: ${rows}`);
@@ -81,7 +86,7 @@ export function calculateElapsedTimeDecimal(milliseconds) {
   
   // Ensure headers exist if the last entry in Column A is not the current date
 export async function ensureHeaders(sheets, sapSheetName, currentDate, spreadsheetId ) {
-    console.log(`Checking headers for ${sapSheetName}, current date: ${currentDate}`, spreadsheetId); 
+    //console.log(`Checking headers for ${sapSheetName}, current date: ${currentDate}`, spreadsheetId); 
     const response = await sheets.spreadsheets.values.get({
     spreadsheetId,
     range: `${sapSheetName}!A:A`,
@@ -89,7 +94,7 @@ export async function ensureHeaders(sheets, sapSheetName, currentDate, spreadshe
 
 const rows = response.data.values || [];
 const lastEntry = rows.length > 0 ? rows[rows.length - 1][2] : null;
-console.log(`Last entry in Column C: ${lastEntry}`);    
+//console.log(`Last entry in Column C: ${lastEntry}`);    
 
 if (lastEntry !== "Totals") {
     await sheets.spreadsheets.values.append({
