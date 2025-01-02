@@ -51,7 +51,6 @@ export function getCurrentTime() {
 export async function findDateRow(sheets, monthName, currentDate, spreadsheetId ) {
     console.log(`Finding row for ${currentDate} in ${monthName}`);
     console.log(`spreadsheetId: ${spreadsheetId}`);
-    console.log(`sheets: ${sheets}`);
     console.log(`monthName: ${monthName}`);
     console.log(`currentDate: ${currentDate}`);
     
@@ -59,7 +58,10 @@ export async function findDateRow(sheets, monthName, currentDate, spreadsheetId 
       spreadsheetId,
       range: `${monthName}!B:B`,
     });
-    console.log(`response: ${response}`);
+    console.log(`response.data: ${response.data}`);
+    console.log(`response.data.values: ${response.data.values}`);
+    console.log(`response.data.values.length: ${response.data.values.length}`);
+    
   
     const rows = response.data.values || [];
     //console.log(`rows: ${rows}`);
