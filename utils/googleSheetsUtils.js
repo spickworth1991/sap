@@ -49,6 +49,8 @@ export function getCurrentTime() {
   
 
 export async function findDateRow(sheets, monthName, currentDate, spreadsheetId ) {
+    console.log(`Finding row for ${currentDate} in ${monthName}`);
+    console.log(`spreadsheetId: ${spreadsheetId}`);
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId,
       range: `${monthName}!B:B`,
